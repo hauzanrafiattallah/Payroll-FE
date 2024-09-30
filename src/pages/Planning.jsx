@@ -6,11 +6,11 @@ const Planning = () => {
   return (
     <>
       <Topbar />
-      <div className="flex">
+      <div className="flex mt-20">
         {/* Sidebar */}
         <Sidebar />
         {/* Konten */}
-        <div className="p-8">
+        <div className="p-8 ml-16">
           <h1 className="text-2xl font-bold">Planning</h1>
         </div>
       </div>
