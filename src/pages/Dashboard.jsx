@@ -81,7 +81,7 @@ const Dashboard = () => {
           </div>
           {/* Section untuk History */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-4">
-            <h2 className="text-xl font-bold text-center lg:text-left mb-4 md:mb-0">
+            <h2 className="text-2xl font-bold text-center lg:text-left mb-4 md:mb-0">
               History
             </h2>
             <div className="flex space-x-4">
@@ -148,7 +148,7 @@ const Dashboard = () => {
             </table>
           </div>
           {/* Section untuk Approval List */}
-          <h2 className="mb-4 text-xl font-bold text-center lg:text-left">
+          <h2 className="mb-4 text-2xl font-bold text-center lg:text-left">
             Approval List
           </h2>
           <div className="p-6 bg-white rounded-lg shadow-lg overflow-x-auto">
