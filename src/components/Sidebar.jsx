@@ -1,6 +1,11 @@
 import React, { useState } from "react";
-import { FaTh, FaClipboardList, FaSignOutAlt, FaUpload } from "react-icons/fa";
-import { FaCircleArrowRight } from "react-icons/fa6";
+import {
+  FaTh,
+  FaClipboardList,
+  FaSignOutAlt,
+  FaUpload,
+  FaBars,
+} from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 
 const Sidebar = () => {
@@ -13,19 +18,21 @@ const Sidebar = () => {
 
   return (
     <>
-      {/* Tombol panah untuk membuka sidebar hanya di layar kecil */}
-      <div className="fixed top-4 left-0 z-50 lg:hidden mt-16">
+      {/* Tombol hamburger berbentuk setengah lingkaran yang diperkecil */}
+      <div className="fixed top-24 left-0 z-50 lg:hidden">
+        {" "}
+        {/* Adjusted top position */}
         <button
           onClick={toggleSidebar}
-          className="text-2xl text-[#B4252A] pl-1"
+          className="bg-[#B4252A] text-white w-10 h-10 rounded-r-full flex items-center justify-center"
         >
-          <FaCircleArrowRight />
+          <FaBars className="text-lg rotate-180" /> {/* Membalik ikon */}
         </button>
       </div>
 
       {/* Sidebar */}
       <div
-        className={`p-6 ml-6 bg-white rounded-lg shadow-lg w-64 min-h-[75vh] max-h-[80vh] mt-9 fixed lg:static transition-transform duration-300 ease-in-out transform ${
+        className={`p-6 ml-6 bg-white rounded-lg shadow-lg w-64 min-h-[75vh] max-h-[80vh] mt-20 fixed lg:static transition-transform duration-300 ease-in-out transform ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0 z-50 flex flex-col justify-between`}
       >
