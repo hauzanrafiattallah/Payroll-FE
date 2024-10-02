@@ -11,7 +11,7 @@ const Export = () => {
         {/* Sidebar */}
         <Sidebar />
         {/* Konten */}
-        <div className="w-full lg:max-w-7xl p-8 mx-auto lg:ml-20 mt-2">
+        <div className="w-full lg:max-w-full p-8 mx-auto mt-2 lg:ml-72">
           <h1 className="mb-6 text-2xl font-bold text-center lg:text-left">Export</h1>
 
           {/* Container untuk Export Options */}

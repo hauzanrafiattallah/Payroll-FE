@@ -10,8 +10,10 @@ const Planning = () => {
         {/* Sidebar */}
         <Sidebar />
         {/* Konten */}
-        <div className="p-8 ml-16">
-          <h1 className="text-2xl font-bold">Planning</h1>
+        <div className="w-full lg:max-w-full p-8 mx-auto mt-2 lg:ml-72">
+          <h1 className="mb-6 text-2xl font-bold text-center lg:text-left">
+            Planning
+          </h1>
         </div>
       </div>
     </>

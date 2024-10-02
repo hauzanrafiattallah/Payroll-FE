@@ -41,7 +41,7 @@ const Dashboard = () => {
         {/* Sidebar */}
         <Sidebar />
         {/* Konten */}
-        <div className="w-full lg:max-w-7xl p-8 mx-auto lg:ml-20 mt-2">
+        <div className="w-full lg:max-w-full p-8 mx-auto mt-2 lg:ml-72">
           <h1 className="mb-6 text-2xl font-bold text-center lg:text-left">
             Dashboard
           </h1>
@@ -151,6 +151,276 @@ const Dashboard = () => {
           <h2 className="mb-4 text-2xl font-bold text-center lg:text-left">
             Approval List
           </h2>
+          <div className="p-6 bg-white rounded-lg shadow-lg overflow-x-auto">
+            <table className="min-w-full text-left table-auto">
+              <thead>
+                <tr className="border-b">
+                  <th className="py-2 px-4 text-center">Name</th>
+                  <th className="py-2 px-4 text-center">Amount</th>
+                  <th className="py-2 px-4 text-center">Date</th>
+                  <th className="py-2 px-4 text-center">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b">
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    Pemasukan1
+                  </td>
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    Rp. 60.000.000
+                  </td>
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    23 Sept 2024
+                  </td>
+                  <td className="py-2 px-4 text-green-600 text-center">
+                    Approved
+                  </td>
+                </tr>
+                <tr className="border-b">
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    Pemasukan1
+                  </td>
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    Rp. 60.000.000
+                  </td>
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    23 Sept 2024
+                  </td>
+                  <td className="py-2 px-4 text-red-600 text-center">Denied</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    Pemasukan1
+                  </td>
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    Rp. 60.000.000
+                  </td>
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    23 Sept 2024
+                  </td>
+                  <td className="py-2 px-4 text-green-600 text-center">
+                    Approved
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div className="p-6 bg-white rounded-lg shadow-lg overflow-x-auto">
+            <table className="min-w-full text-left table-auto">
+              <thead>
+                <tr className="border-b">
+                  <th className="py-2 px-4 text-center">Name</th>
+                  <th className="py-2 px-4 text-center">Amount</th>
+                  <th className="py-2 px-4 text-center">Date</th>
+                  <th className="py-2 px-4 text-center">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b">
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    Pemasukan1
+                  </td>
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    Rp. 60.000.000
+                  </td>
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    23 Sept 2024
+                  </td>
+                  <td className="py-2 px-4 text-green-600 text-center">
+                    Approved
+                  </td>
+                </tr>
+                <tr className="border-b">
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    Pemasukan1
+                  </td>
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    Rp. 60.000.000
+                  </td>
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    23 Sept 2024
+                  </td>
+                  <td className="py-2 px-4 text-red-600 text-center">Denied</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    Pemasukan1
+                  </td>
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    Rp. 60.000.000
+                  </td>
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    23 Sept 2024
+                  </td>
+                  <td className="py-2 px-4 text-green-600 text-center">
+                    Approved
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div className="p-6 bg-white rounded-lg shadow-lg overflow-x-auto">
+            <table className="min-w-full text-left table-auto">
+              <thead>
+                <tr className="border-b">
+                  <th className="py-2 px-4 text-center">Name</th>
+                  <th className="py-2 px-4 text-center">Amount</th>
+                  <th className="py-2 px-4 text-center">Date</th>
+                  <th className="py-2 px-4 text-center">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b">
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    Pemasukan1
+                  </td>
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    Rp. 60.000.000
+                  </td>
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    23 Sept 2024
+                  </td>
+                  <td className="py-2 px-4 text-green-600 text-center">
+                    Approved
+                  </td>
+                </tr>
+                <tr className="border-b">
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    Pemasukan1
+                  </td>
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    Rp. 60.000.000
+                  </td>
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    23 Sept 2024
+                  </td>
+                  <td className="py-2 px-4 text-red-600 text-center">Denied</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    Pemasukan1
+                  </td>
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    Rp. 60.000.000
+                  </td>
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    23 Sept 2024
+                  </td>
+                  <td className="py-2 px-4 text-green-600 text-center">
+                    Approved
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div className="p-6 bg-white rounded-lg shadow-lg overflow-x-auto">
+            <table className="min-w-full text-left table-auto">
+              <thead>
+                <tr className="border-b">
+                  <th className="py-2 px-4 text-center">Name</th>
+                  <th className="py-2 px-4 text-center">Amount</th>
+                  <th className="py-2 px-4 text-center">Date</th>
+                  <th className="py-2 px-4 text-center">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b">
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    Pemasukan1
+                  </td>
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    Rp. 60.000.000
+                  </td>
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    23 Sept 2024
+                  </td>
+                  <td className="py-2 px-4 text-green-600 text-center">
+                    Approved
+                  </td>
+                </tr>
+                <tr className="border-b">
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    Pemasukan1
+                  </td>
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    Rp. 60.000.000
+                  </td>
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    23 Sept 2024
+                  </td>
+                  <td className="py-2 px-4 text-red-600 text-center">Denied</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    Pemasukan1
+                  </td>
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    Rp. 60.000.000
+                  </td>
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    23 Sept 2024
+                  </td>
+                  <td className="py-2 px-4 text-green-600 text-center">
+                    Approved
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div className="p-6 bg-white rounded-lg shadow-lg overflow-x-auto">
+            <table className="min-w-full text-left table-auto">
+              <thead>
+                <tr className="border-b">
+                  <th className="py-2 px-4 text-center">Name</th>
+                  <th className="py-2 px-4 text-center">Amount</th>
+                  <th className="py-2 px-4 text-center">Date</th>
+                  <th className="py-2 px-4 text-center">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b">
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    Pemasukan1
+                  </td>
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    Rp. 60.000.000
+                  </td>
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    23 Sept 2024
+                  </td>
+                  <td className="py-2 px-4 text-green-600 text-center">
+                    Approved
+                  </td>
+                </tr>
+                <tr className="border-b">
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    Pemasukan1
+                  </td>
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    Rp. 60.000.000
+                  </td>
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    23 Sept 2024
+                  </td>
+                  <td className="py-2 px-4 text-red-600 text-center">Denied</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    Pemasukan1
+                  </td>
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    Rp. 60.000.000
+                  </td>
+                  <td className="py-2 px-4 text-center whitespace-nowrap">
+                    23 Sept 2024
+                  </td>
+                  <td className="py-2 px-4 text-green-600 text-center">
+                    Approved
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
           <div className="p-6 bg-white rounded-lg shadow-lg overflow-x-auto">
             <table className="min-w-full text-left table-auto">
               <thead>
