@@ -19,7 +19,7 @@ const Sidebar = () => {
   return (
     <>
       {/* Tombol hamburger berbentuk setengah lingkaran yang diperkecil */}
-      <div className="fixed top-24 left-0 z-50 lg:hidden">
+      <div className="fixed left-0 z-50 top-24 lg:hidden">
         {" "}
         {/* Adjusted top position */}
         <button
@@ -93,7 +93,7 @@ const Sidebar = () => {
       {/* Overlay untuk layar kecil ketika sidebar terbuka */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black opacity-50 z-40 lg:hidden"
+          className="fixed inset-0 z-40 bg-black opacity-50 lg:hidden"
           onClick={toggleSidebar}
         ></div>
       )}

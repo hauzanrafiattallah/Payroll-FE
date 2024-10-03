@@ -29,7 +29,7 @@ const SignIn = () => {
               </label>
               {/* Input Username */}
               <input
-                className="shadow appearance-none border rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-[#D9D9D9] h-12 md:h-14 text-base md:text-lg"
+                className="w-full h-12 px-4 py-2 text-base leading-tight text-gray-700 bg-white border rounded shadow appearance-none focus:outline-none focus:shadow-outline md:h-14 md:text-lg"
                 id="username"
                 type="text"
                 placeholder="Enter your username"
@@ -45,7 +45,7 @@ const SignIn = () => {
               </label>
               {/* Input Password */}
               <input
-                className="shadow appearance-none border rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-[#D9D9D9] h-12 md:h-14 text-base md:text-lg"
+                className="w-full h-12 px-4 py-2 text-base leading-tight text-gray-700 bg-white border rounded shadow appearance-none focus:outline-none focus:shadow-outline md:h-14 md:text-lg"
                 id="password"
                 type="password"
                 placeholder="Enter your password"

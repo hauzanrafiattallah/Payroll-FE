@@ -25,11 +25,11 @@ const Topbar = () => {
       }`}
     >
       {/* Logo */}
-      <div className="flex items-center cursor-pointer ml-4 lg:ml-14">
+      <div className="flex items-center ml-4 cursor-pointer lg:ml-14">
         <img
           src="/header2.png"
           alt="Logo"
-          className="h-9 sm:h-12 lg:h-12 mr-3"
+          className="mr-3 h-9 sm:h-12 lg:h-12"
         />
       </div>
 

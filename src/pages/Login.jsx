@@ -1,7 +1,9 @@
+import { Link } from "react-router-dom";
+
 const Login = () => {
   return (
     <>
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="flex items-center justify-center min-h-screen bg-white">
         <div
           className="bg-white p-6 md:p-8 lg:p-12 rounded-lg shadow-lg w-[90%] sm:w-[24rem] md:w-[30rem] lg:w-[30rem] min-h-[26rem] md:min-h-[30rem] lg:min-h-[34rem] relative"
           style={{
@@ -29,7 +31,7 @@ const Login = () => {
               </label>
               {/* Input Username */}
               <input
-                className="shadow appearance-none border rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-[#D9D9D9] h-12 md:h-14 text-base md:text-lg"
+                className="w-full h-12 px-4 py-2 text-base leading-tight text-gray-700 bg-white border rounded shadow appearance-none focus:outline-none focus:shadow-outline md:h-14 md:text-lg"
                 id="username"
                 type="text"
                 placeholder="Enter your username"
@@ -45,21 +47,23 @@ const Login = () => {
               </label>
               {/* Input Password */}
               <input
-                className="shadow appearance-none border rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-[#D9D9D9] h-12 md:h-14 text-base md:text-lg"
+                className="w-full h-12 px-4 py-2 text-base leading-tight text-gray-700 bg-white border rounded shadow appearance-none focus:outline-none focus:shadow-outline md:h-14 md:text-lg"
                 id="password"
                 type="password"
                 placeholder="Enter your password"
               />
             </div>
-            <div className="flex items-center justify-center">
-              {/* Tombol Log In */}
-              <button
-                className="bg-[#B4252A] hover:bg-[#8E1F22] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full mt-7 h-12 md:h-14"
-                type="button"
-              >
-                Log In
-              </button>
-            </div>
+            <Link to="/">
+              <div className="flex items-center justify-center">
+                {/* Tombol Log In */}
+                <button
+                  className="bg-[#B4252A] hover:bg-[#8E1F22] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full mt-7 h-12 md:h-14"
+                  type="button"
+                >
+                  Log In
+                </button>
+              </div>
+            </Link>
           </form>
         </div>
       </div>
