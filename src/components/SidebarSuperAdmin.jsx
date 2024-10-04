@@ -6,7 +6,6 @@ import {
   FaUpload,
   FaBars,
 } from "react-icons/fa";
-import { PiHandWithdrawBold, PiHandDepositBold } from "react-icons/pi";
 import { Link, useLocation } from "react-router-dom";
 
 const Sidebar = () => {
@@ -21,11 +20,13 @@ const Sidebar = () => {
     <>
       {/* Tombol hamburger berbentuk setengah lingkaran yang diperkecil */}
       <div className="fixed left-0 z-50 top-24 lg:hidden">
+        {" "}
+        {/* Adjusted top position */}
         <button
           onClick={toggleSidebar}
           className="bg-[#B4252A] text-white w-10 h-10 rounded-r-full flex items-center justify-center"
         >
-          <FaBars className="text-lg rotate-180" />
+          <FaBars className="text-lg rotate-180" /> {/* Membalik ikon */}
         </button>
       </div>
 
@@ -77,32 +78,17 @@ const Sidebar = () => {
               <span>Export</span>
             </li>
           </Link>
-
-          {/* Income */}
-          <Link to="/income">
+          
+          <Link to="/export">
             <li
               className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
-                location.pathname === "/income"
+                location.pathname === "/export"
                   ? "text-[#B4252A]"
                   : "text-gray-700 hover:bg-gray-100 hover:text-[#B4252A]"
               }`}
             >
-              <PiHandWithdrawBold className="mr-3 text-2xl" />
-              <span>Income</span>
-            </li>
-          </Link>
-
-          {/* Expenses */}
-          <Link to="/expenses">
-            <li
-              className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
-                location.pathname === "/expenses"
-                  ? "text-[#B4252A]"
-                  : "text-gray-700 hover:bg-gray-100 hover:text-[#B4252A]"
-              }`}
-            >
-              <PiHandDepositBold className="mr-3 text-2xl" />
-              <span>Expenses</span>
+              <FaUpload className="mr-3 text-lg" />
+              <span>Export</span>
             </li>
           </Link>
         </ul>
@@ -112,7 +98,7 @@ const Sidebar = () => {
           to="/login"
           className="flex justify-center items-center text-[#B4252A] p-2 hover:bg-gray-100 rounded-lg cursor-pointer transition-colors duration-200"
         >
-          <FaSignOutAlt className="mr-3 text-lg" />
+          <FaSignOutAlt className="mr-3 text-lg" /> {/* Ikon Log Out */}
           <span>Log Out</span>
         </Link>
       </div>
