@@ -94,7 +94,7 @@ const Login = () => {
     <>
       {/* Loading di tengah halaman */}
       {loading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-200 bg-opacity-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-20 ">
           <ReactLoading type="spin" color="#B4252A" height={50} width={50} />
         </div>
       )}

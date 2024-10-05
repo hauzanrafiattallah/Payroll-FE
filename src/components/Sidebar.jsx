@@ -12,17 +12,20 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ReactLoading from "react-loading"; // Import ReactLoading
 
 const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate(); // Untuk mengarahkan pengguna setelah logout
   const [isOpen, setIsOpen] = useState(false);
+  const [loading, setLoading] = useState(false); // State for loading
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
 
   const handleLogout = async () => {
+    setLoading(true); // Start loading spinner
     try {
       // Panggil API logout
       const response = await axios.post(
@@ -48,11 +51,20 @@ const Sidebar = () => {
     } catch (error) {
       console.error(error);
       toast.error("Terjadi kesalahan saat logout.");
+    } finally {
+      setLoading(false); // Stop loading spinner
     }
   };
 
   return (
     <>
+      {/* Loading di tengah halaman */}
+      {loading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-20">
+          <ReactLoading type="spin" color="#B4252A" height={50} width={50} />
+        </div>
+      )}
+
       {/* Tombol hamburger */}
       <div className="fixed left-0 z-50 top-24 lg:hidden">
         <button
