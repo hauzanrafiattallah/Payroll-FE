@@ -9,6 +9,7 @@ import Income from "./pages/Income";
 import Expenses from "./pages/Expenses";
 import ProtectedRoute from "./components/ProtectedRoute"; // Import ProtectedRoute
 import NotFound from "./pages/NotFound"; // Halaman NotFound untuk rute tidak dikenal
+import Approval from "./pages/Approval";
 
 const App = () => {
   return (
@@ -62,6 +63,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <Export />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/approval"
+          element={
+            <ProtectedRoute>
+              <Approval />
             </ProtectedRoute>
           }
         />

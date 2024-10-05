@@ -118,7 +118,7 @@ const Register = () => {
                 <input
                   className="w-full h-12 px-4 py-2 text-base leading-tight text-gray-700 bg-white focus:outline-none"
                   type="text"
-                  placeholder="Username"
+                  placeholder="Name"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                 />
@@ -173,7 +173,7 @@ const Register = () => {
                 <input
                   className="w-full h-12 px-4 py-2 text-base leading-tight text-gray-700 bg-white focus:outline-none"
                   type={showConfirmPassword ? "text" : "password"}
-                  placeholder="Retype Password"
+                  placeholder="Confirm Password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   autoComplete="new-password"

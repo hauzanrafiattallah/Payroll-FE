@@ -7,6 +7,7 @@ import {
   FaBars,
 } from "react-icons/fa";
 import { PiHandWithdrawBold, PiHandDepositBold } from "react-icons/pi";
+import { AiOutlineFileDone } from "react-icons/ai";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
@@ -136,6 +137,20 @@ const Sidebar = () => {
             >
               <PiHandDepositBold className="mr-3 text-2xl" />
               <span>Expenses</span>
+            </li>
+          </Link>
+
+          {/* Approval */}
+          <Link to="/approval">
+            <li
+              className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
+                location.pathname === "/approval"
+                  ? "text-[#B4252A]"
+                  : "text-gray-700 hover:bg-gray-100 hover:text-[#B4252A]"
+              }`}
+            >
+              <AiOutlineFileDone className="mr-3 text-2xl" />
+              <span>Approval</span>
             </li>
           </Link>
         </ul>
