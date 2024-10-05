@@ -7,19 +7,25 @@ import {
   FaBars,
 } from "react-icons/fa";
 import { PiHandWithdrawBold, PiHandDepositBold } from "react-icons/pi";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
   const location = useLocation();
+  const navigate = useNavigate(); // Untuk mengarahkan pengguna setelah logout
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("isAuthenticated"); // Hapus status login
+    navigate("/login"); // Arahkan ke halaman login
+  };
+
   return (
     <>
-      {/* Tombol hamburger berbentuk setengah lingkaran yang diperkecil */}
+      {/* Tombol hamburger */}
       <div className="fixed left-0 z-50 top-24 lg:hidden">
         <button
           onClick={toggleSidebar}
@@ -107,14 +113,14 @@ const Sidebar = () => {
           </Link>
         </ul>
 
-        {/* Log Out */}
-        <Link
-          to="/login"
+        {/* Tombol Log Out */}
+        <div
+          onClick={handleLogout}
           className="flex justify-center items-center text-[#B4252A] p-2 hover:bg-gray-100 rounded-lg cursor-pointer transition-colors duration-200"
         >
           <FaSignOutAlt className="mr-3 text-lg" />
           <span>Log Out</span>
-        </Link>
+        </div>
       </div>
 
       {/* Overlay untuk layar kecil ketika sidebar terbuka */}
