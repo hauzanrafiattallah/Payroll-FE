@@ -8,6 +8,9 @@ import {
 } from "react-icons/fa";
 import { PiHandWithdrawBold, PiHandDepositBold } from "react-icons/pi";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Sidebar = () => {
   const location = useLocation();
@@ -18,9 +21,33 @@ const Sidebar = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("isAuthenticated"); // Hapus status login
-    navigate("/login"); // Arahkan ke halaman login
+  const handleLogout = async () => {
+    try {
+      // Panggil API logout
+      const response = await axios.post(
+        "https://payroll.humicprototyping.com/api/logout",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`, // Menggunakan token dari localStorage
+          },
+        }
+      );
+
+      if (response.status === 200 || response.data.success) {
+        localStorage.removeItem("isAuthenticated"); // Hapus status login
+        localStorage.removeItem("token"); // Hapus token dari localStorage
+        toast.success("Logout berhasil!");
+        setTimeout(() => {
+          navigate("/login"); // Arahkan ke halaman login setelah logout berhasil
+        }, 1000);
+      } else {
+        toast.error("Logout gagal, coba lagi.");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Terjadi kesalahan saat logout.");
+    }
   };
 
   return (
@@ -130,6 +157,22 @@ const Sidebar = () => {
           onClick={toggleSidebar}
         ></div>
       )}
+
+      {/* Toast */}
+      <ToastContainer
+        position="top-center"
+        limit={3}
+        autoClose={2000}
+        style={{
+          width: "auto",
+          maxWidth: "600px", // Perpanjang ukuran maksimal toast
+          padding: "5px",
+          left: "50%", // Posisi horizontal
+          transform: "translateX(-50%)", // Pastikan toast selalu di tengah
+          top: "10px", // Jarak dari atas
+        }}
+        toastClassName="text-center text-sm"
+      />
     </>
   );
 };
