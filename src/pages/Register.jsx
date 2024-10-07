@@ -102,9 +102,9 @@ const Register = () => {
             />
           </div>
 
-          {/* Teks Register */}
+          {/* Teks Sign UP */}
           <div className="relative z-10 mb-5 text-2xl font-semibold text-left text-gray-800">
-            Register
+            Sign UP
           </div>
 
           {/* Form */}
@@ -195,7 +195,7 @@ const Register = () => {
                 onClick={handleRegister}
                 disabled={loading}
               >
-                Register
+                Sign Up
               </button>
             </div>
           </form>
