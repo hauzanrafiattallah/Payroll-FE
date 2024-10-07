@@ -104,7 +104,7 @@ const Register = () => {
 
           {/* Teks Sign UP */}
           <div className="relative z-10 mb-5 text-2xl font-semibold text-left text-gray-800">
-            Sign UP
+            Register
           </div>
 
           {/* Form */}
