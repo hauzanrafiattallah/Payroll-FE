@@ -3,7 +3,7 @@ import { BsUpload } from "react-icons/bs";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-const AddIncomePopup = ({ isOpen, onClose }) => {
+const AddExpensesPopup = ({ isOpen, onClose }) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false); // Untuk mengontrol apakah kalender ditampilkan atau tidak
   const [animatePopup, setAnimatePopup] = useState(false);
@@ -39,9 +39,9 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
           animatePopup ? "translate-y-0" : "-translate-y-full"
         } relative z-10 w-[90%] max-w-2xl mx-auto`}
       >
-        <h2 className="mb-4 text-lg font-semibold text-center">Add Income</h2>
+        <h2 className="mb-4 text-lg font-semibold text-center">Add Expenses</h2>
 
-        {/* Form Add Income */}
+        {/* Form Add Expenses */}
         <form>
           <label className="block mb-2 font-semibold">Nama Kegiatan</label>
           <input
@@ -132,4 +132,4 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
   );
 };
 
-export default AddIncomePopup;
+export default AddExpensesPopup;

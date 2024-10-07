@@ -1,25 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { PiHandDepositBold, PiHandWithdrawBold } from "react-icons/pi";
 import AddIncomePopup from "./AddIncomePopup";
+import AddExpensesPopup from "./AddExpensesPopup";
 
 const Topbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isAddIncomeOpen, setIsAddIncomeOpen] = useState(false);
+  const [isAddExpensesOpen, setIsAddExpensesOpen] = useState(false);
 
   // Gunakan efek untuk mendeteksi scrolling dan mengubah state isScrolled
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 0) {
-        setIsScrolled(true); // Jika pengguna melakukan scroll, ubah state isScrolled menjadi true
+        setIsScrolled(true);
       } else {
-        setIsScrolled(false); // Jika tidak ada scroll, ubah state isScrolled menjadi false
+        setIsScrolled(false);
       }
     };
 
-    // Tambahkan event listener untuk mendeteksi scroll
     window.addEventListener("scroll", handleScroll);
 
-    // Hapus event listener ketika komponen unmount
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
@@ -42,21 +42,22 @@ const Topbar = () => {
         </div>
 
         {/* Dua tombol untuk Add Expenses dan Add Income */}
-        <div className="flex mr-4 space-x-4 lg:mr-14">
+        <div className="flex mr-2 space-x-1 sm:mr-4 sm:space-x-2 lg:space-x-4 lg:mr-14">
           {/* Tombol Add Expenses */}
-          <button className="flex items-center bg-[#F3DCDC] text-[#B4252A] font-bold text-sm sm:text-base py-2 sm:py-3 px-4 sm:px-6 rounded-md hover:bg-[#e4c3c3] cursor-pointer">
-            <PiHandDepositBold className="mr-2" />{" "}
-            {/* Ikon untuk Add Expenses */}
+          <button
+            className="flex items-center bg-[#F3DCDC] text-[#B4252A] font-bold text-xs sm:text-sm lg:text-base py-1.5 sm:py-2 lg:py-3 px-2 sm:px-4 lg:px-6 rounded-md hover:bg-[#e4c3c3] cursor-pointer"
+            onClick={() => setIsAddExpensesOpen(true)}
+          >
+            <PiHandDepositBold className="mr-1.5 sm:mr-2 lg:mr-2" />
             <span>Add Expenses</span>
           </button>
 
           {/* Tombol Add Income */}
           <button
             onClick={() => setIsAddIncomeOpen(true)}
-            className="flex items-center bg-[#B4252A] text-white font-bold text-sm sm:text-base py-2 sm:py-3 px-4 sm:px-6 rounded-md hover:bg-[#8E1F22] cursor-pointer"
+            className="flex items-center bg-[#B4252A] text-white font-bold text-xs sm:text-sm lg:text-base py-1.5 sm:py-2 lg:py-3 px-2 sm:px-4 lg:px-6 rounded-md hover:bg-[#8E1F22] cursor-pointer"
           >
-            <PiHandWithdrawBold className="mr-2" />{" "}
-            {/* Ikon untuk Add Income */}
+            <PiHandWithdrawBold className="mr-1.5 sm:mr-2 lg:mr-2" />
             <span>Add Income</span>
           </button>
         </div>
@@ -66,6 +67,12 @@ const Topbar = () => {
       <AddIncomePopup
         isOpen={isAddIncomeOpen}
         onClose={() => setIsAddIncomeOpen(false)}
+      />
+
+      {/* Popup untuk Add Expenses */}
+      <AddExpensesPopup
+        isOpen={isAddExpensesOpen}
+        onClose={() => setIsAddExpensesOpen(false)}
       />
     </>
   );

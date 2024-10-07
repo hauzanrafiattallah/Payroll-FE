@@ -77,9 +77,9 @@ const Sidebar = () => {
 
       {/* Sidebar */}
       <div
-        className={`p-6 ml-6 bg-white rounded-lg shadow-lg w-64 min-h-[75vh] max-h-[80vh] mt-20 fixed lg:fixed transition-transform duration-300 ease-in-out transform ${
+        className={`p-6 bg-white rounded-lg shadow-lg w-64 min-h-[75vh] max-h-[80vh] mt-20 fixed lg:fixed transition-transform duration-300 ease-in-out transform ${
           isOpen ? "translate-x-0" : "-translate-x-full"
-        } lg:translate-x-0 z-50 flex flex-col justify-between`}
+        } lg:translate-x-0 z-50 lg:z-10 flex flex-col justify-between lg:ml-6`}
       >
         <ul className="flex-1">
           {/* Dashboard */}
@@ -180,7 +180,7 @@ const Sidebar = () => {
       {/* Overlay untuk layar kecil ketika sidebar terbuka */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black opacity-50 lg:hidden"
+          className="fixed inset-0 bg-black opacity-50 lg:hidden"
           onClick={toggleSidebar}
         ></div>
       )}
