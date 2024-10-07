@@ -49,14 +49,10 @@ const Income = () => {
                       Rp. 60.000.000
                     </td>
                     <td className="px-4 py-2 text-center whitespace-nowrap">
-                      <a href="#" className="text-blue-600 underline">
-                        Laporan.Pdf
-                      </a>
+                      <a href="#">Laporan.Pdf</a>
                     </td>
                     <td className="px-4 py-2 text-center whitespace-nowrap">
-                      <a href="#" className="text-blue-600 underline">
-                        Bukti.Pdf
-                      </a>
+                      <a href="#">Bukti.Pdf</a>
                     </td>
                     <td className="px-4 py-2 text-center text-green-600">
                       Approved
