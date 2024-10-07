@@ -39,7 +39,7 @@ const Register = () => {
 
     try {
       const response = await axios.post(
-        "https://payroll.humicprototyping.com/api/register",
+        `${import.meta.env.VITE_API_URL}/register`,
         {
           name: username,
           email,

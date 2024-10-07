@@ -29,7 +29,7 @@ const Sidebar = () => {
     try {
       // Panggil API logout
       const response = await axios.post(
-        "https://payroll.humicprototyping.com/api/logout",
+        `${import.meta.env.VITE_API_URL}/logout`,
         {},
         {
           headers: {

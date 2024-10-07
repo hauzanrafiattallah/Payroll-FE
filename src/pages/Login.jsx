@@ -34,7 +34,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        "https://payroll.humicprototyping.com/api/login",
+        `${import.meta.env.VITE_API_URL}/login`,
         {
           email: trimmedEmail,
           password: trimmedPassword,
