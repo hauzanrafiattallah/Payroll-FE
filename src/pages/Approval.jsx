@@ -90,13 +90,15 @@ const Approval = () => {
                   boxShadow: "0 0 8px 2px rgba(0, 0, 0, 0.05)", // Default shadow
                   transition: "box-shadow 0.3s ease-in-out", // Animasi saat hover
                 }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.boxShadow =
-                    "0 0 15px 3px rgba(180, 37, 42, 0.15)") // Shadow merah saat hover
+                onMouseEnter={
+                  (e) =>
+                    (e.currentTarget.style.boxShadow =
+                      "0 0 15px 3px rgba(180, 37, 42, 0.15)") // Shadow merah saat hover
                 }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.boxShadow =
-                    "0 0 8px 2px rgba(0, 0, 0, 0.05)") // Kembali ke shadow default saat tidak di-hover
+                onMouseLeave={
+                  (e) =>
+                    (e.currentTarget.style.boxShadow =
+                      "0 0 8px 2px rgba(0, 0, 0, 0.05)") // Kembali ke shadow default saat tidak di-hover
                 }
               >
                 {/* Type and Transaction Details */}
@@ -175,7 +177,7 @@ const Approval = () => {
           className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50"
           onClick={handleOutsideClick} // Close on outside click
         >
-          <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
+          <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm sm:max-w-sm md:max-w-md">
             <h2 className="text-xl font-semibold text-center mb-4">
               {actionType === "Approve"
                 ? "Approve Confirmation"
