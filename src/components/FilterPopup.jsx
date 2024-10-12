@@ -5,17 +5,17 @@ const FilterPopup = ({ isOpen, onClose, applyFilter }) => {
   const [filterType, setFilterType] = useState("All");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [animatePopup, setAnimatePopup] = useState(false); // Tambahkan state untuk animasi
+  const [animatePopup, setAnimatePopup] = useState(false);
 
   useEffect(() => {
     const handleOutsideClick = (e) => {
       if (e.target.id === "popup-background") {
-        closePopup(); // Gunakan fungsi closePopup saat klik di luar
+        closePopup();
       }
     };
 
     if (isOpen) {
-      setAnimatePopup(true); // Aktifkan animasi slide-in
+      setAnimatePopup(true);
       window.addEventListener("click", handleOutsideClick);
     }
 
@@ -25,32 +25,33 @@ const FilterPopup = ({ isOpen, onClose, applyFilter }) => {
   }, [isOpen]);
 
   const closePopup = () => {
-    setAnimatePopup(false); // Mulai animasi slide-out
-    setTimeout(onClose, 100); // Tutup pop-up setelah animasi selesai
+    setAnimatePopup(false);
+    setTimeout(onClose, 100);
   };
 
   const handleApply = () => {
-    // Fungsi ini akan dipanggil saat tombol Apply diklik
     applyFilter({ type: filterType, startDate, endDate });
-    closePopup(); // Tutup pop-up setelah apply
+    closePopup();
   };
 
   const stopPropagation = (e) => {
-    e.stopPropagation(); // Agar klik di dalam popup tidak menutupnya
+    e.stopPropagation();
   };
 
   return (
     <div
       id="popup-background"
       className={`fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center transition-opacity duration-200 ${
-        isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        isOpen
+          ? "opacity-100 pointer-events-auto"
+          : "opacity-0 pointer-events-none"
       }`}
     >
       <div
-        className={`bg-white p-8 rounded-lg shadow-lg transform transition-transform duration-200 ease-in-out ${
+        className={`bg-white p-6 sm:p-8 rounded-lg shadow-lg transform transition-transform duration-200 ease-in-out ${
           animatePopup ? "translate-y-0" : "-translate-y-full"
-        } relative z-10 w-[90%] max-w-lg mx-auto`}
-        onClick={stopPropagation} // Menghentikan propagasi klik di dalam pop-up
+        } relative z-10 w-[90%] max-w-lg sm:max-w-xl mx-auto`}
+        onClick={stopPropagation}
       >
         <div className="mb-6 text-center">
           <h2 className="text-2xl font-bold">Apply filter</h2>
@@ -91,8 +92,8 @@ const FilterPopup = ({ isOpen, onClose, applyFilter }) => {
           </div>
 
           <h3 className="mb-4 text-lg font-semibold">Date Range</h3>
-          <div className="flex items-center justify-between mb-6">
-            <div className="relative w-1/2 mr-2">
+          <div className="flex flex-col items-center justify-between mb-6 sm:flex-row">
+            <div className="relative w-full mb-4 sm:w-1/2 sm:mr-2 sm:mb-0">
               <FaCalendarAlt className="absolute text-gray-400 left-3 top-3" />
               <input
                 type="date"
@@ -102,8 +103,8 @@ const FilterPopup = ({ isOpen, onClose, applyFilter }) => {
                 placeholder="Start Date"
               />
             </div>
-            <span className="mx-2 ml-1 text-gray-600">To</span>
-            <div className="relative w-1/2">
+            <span className="mx-2 text-gray-600">To</span>
+            <div className="relative w-full sm:w-1/2">
               <FaCalendarAlt className="absolute text-gray-400 left-3 top-3" />
               <input
                 type="date"
