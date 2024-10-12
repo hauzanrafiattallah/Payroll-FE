@@ -7,9 +7,10 @@ import Planning from "./pages/Planning";
 import Export from "./pages/Export";
 import Income from "./pages/Income";
 import Expenses from "./pages/Expenses";
+import Approval from "./pages/Approval";
+import Profile from "./pages/Profile"; // Import halaman Profile
 import ProtectedRoute from "./components/ProtectedRoute"; // Import ProtectedRoute
 import NotFound from "./pages/NotFound"; // Halaman NotFound untuk rute tidak dikenal
-import Approval from "./pages/Approval";
 
 const App = () => {
   return (
@@ -17,7 +18,6 @@ const App = () => {
       <Routes>
         <Route path="/login" element={<Login />} /> {/* Halaman Login */}
         <Route path="/register" element={<Register />} /> {/* Halaman Register */}
-        {/* Rute yang dilindungi */}
         <Route
           path="/"
           element={
@@ -71,6 +71,15 @@ const App = () => {
           element={
             <ProtectedRoute>
               <Approval />
+            </ProtectedRoute>
+          }
+        />
+        {/* Tambahkan rute Profile */}
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           }
         />
