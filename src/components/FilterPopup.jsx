@@ -1,37 +1,61 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaCalendarAlt } from "react-icons/fa";
 
 const FilterPopup = ({ isOpen, onClose, applyFilter }) => {
   const [filterType, setFilterType] = useState("All");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [animatePopup, setAnimatePopup] = useState(false); // Tambahkan state untuk animasi
 
-  const handleApply = () => {
-    applyFilter({ type: filterType, startDate, endDate });
-    onClose();
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (e.target.id === "popup-background") {
+        closePopup(); // Gunakan fungsi closePopup saat klik di luar
+      }
+    };
+
+    if (isOpen) {
+      setAnimatePopup(true); // Aktifkan animasi slide-in
+      window.addEventListener("click", handleOutsideClick);
+    }
+
+    return () => {
+      window.removeEventListener("click", handleOutsideClick);
+    };
+  }, [isOpen]);
+
+  const closePopup = () => {
+    setAnimatePopup(false); // Mulai animasi slide-out
+    setTimeout(onClose, 100); // Tutup pop-up setelah animasi selesai
   };
 
-  const handleOutsideClick = (e) => {
-    if (e.target.id === "popup-background") {
-      onClose();
-    }
+  const handleApply = () => {
+    // Fungsi ini akan dipanggil saat tombol Apply diklik
+    applyFilter({ type: filterType, startDate, endDate });
+    closePopup(); // Tutup pop-up setelah apply
+  };
+
+  const stopPropagation = (e) => {
+    e.stopPropagation(); // Agar klik di dalam popup tidak menutupnya
   };
 
   return (
     <div
       id="popup-background"
-      onClick={handleOutsideClick}
-      className={`fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center transition-opacity duration-300 ${
+      className={`fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center transition-opacity duration-200 ${
         isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
       }`}
     >
-      <div className="w-full max-w-lg p-8 bg-white rounded-lg shadow-lg">
-        {/* Header */}
+      <div
+        className={`bg-white p-8 rounded-lg shadow-lg transform transition-transform duration-200 ease-in-out ${
+          animatePopup ? "translate-y-0" : "-translate-y-full"
+        } relative z-10 w-[90%] max-w-lg mx-auto`}
+        onClick={stopPropagation} // Menghentikan propagasi klik di dalam pop-up
+      >
         <div className="mb-6 text-center">
           <h2 className="text-2xl font-bold">Apply filter</h2>
         </div>
         <div>
-          {/* Filter Type */}
           <h3 className="mb-4 text-lg font-semibold">Type</h3>
           <div className="flex justify-around mb-6">
             <button
@@ -66,42 +90,40 @@ const FilterPopup = ({ isOpen, onClose, applyFilter }) => {
             </button>
           </div>
 
-          {/* Date Range */}
           <h3 className="mb-4 text-lg font-semibold">Date Range</h3>
           <div className="flex items-center justify-between mb-6">
             <div className="relative w-1/2 mr-2">
               <FaCalendarAlt className="absolute text-gray-400 left-3 top-3" />
               <input
                 type="date"
-                placeholder="Start Date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
                 className="w-full px-4 py-2 pl-10 placeholder-gray-500 border border-gray-300 rounded-lg"
+                placeholder="Start Date"
               />
             </div>
-            <span className="mx-2 text-gray-600">To</span>
+            <span className="mx-2 ml-1 text-gray-600">To</span>
             <div className="relative w-1/2">
               <FaCalendarAlt className="absolute text-gray-400 left-3 top-3" />
               <input
                 type="date"
-                placeholder="End Date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
                 className="w-full px-4 py-2 pl-10 placeholder-gray-500 border border-gray-300 rounded-lg"
+                placeholder="End Date"
               />
             </div>
           </div>
 
-          {/* Buttons */}
           <div className="flex justify-end space-x-2">
             <button
-              className="px-6 py-2 text-red-500 transition duration-300 bg-red-100 rounded-lg hover:bg-red-200"
-              onClick={onClose}
+              className="px-6 py-2 text-red-500 transition duration-200 bg-red-100 rounded-lg hover:bg-red-200"
+              onClick={closePopup}
             >
               Cancel
             </button>
             <button
-              className="px-6 py-2 text-white bg-[#B4252A] rounded-lg hover:bg-red-800 transition duration-300"
+              className="px-6 py-2 text-white bg-[#B4252A] rounded-lg hover:bg-red-800 transition duration-200"
               onClick={handleApply}
             >
               Apply
