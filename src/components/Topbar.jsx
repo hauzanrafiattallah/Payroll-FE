@@ -4,12 +4,16 @@ import AddIncomePopup from "./AddIncomePopup";
 import AddExpensesPopup from "./AddExpensesPopup";
 import { FaCaretDown } from "react-icons/fa";
 import { Link } from "react-router-dom"; // Import Link dari react-router-dom
+import axios from "axios";
 
 const Topbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isAddIncomeOpen, setIsAddIncomeOpen] = useState(false);
   const [isAddExpensesOpen, setIsAddExpensesOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [userData, setUserData] = useState(null); // State untuk menyimpan data user
+
+  const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
 
   // Detect scrolling to apply a background to the top bar
   useEffect(() => {
@@ -27,6 +31,25 @@ const Topbar = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  // Fetch data user saat komponen pertama kali dirender
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/user`, {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${authToken}`, // Sertakan token di header
+          },
+        });
+        setUserData(response.data); // Simpan data user ke state
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, [authToken]);
 
   // Handle outside click to close dropdown
   useEffect(() => {
@@ -91,7 +114,8 @@ const Topbar = () => {
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               className="flex items-center text-gray-700 bg-white rounded-full focus:outline-none"
             >
-              <span className="mr-2 text-sm font-medium">User</span>
+              {/* Tampilkan nama dari API */}
+              <span className="mr-2 text-sm font-medium">{userData?.name || "User"}</span>
               <img
                 src="/image_placeholder.png"
                 alt="User"

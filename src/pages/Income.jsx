@@ -57,7 +57,12 @@ const Income = () => {
           {/* Loading State */}
           {loading ? (
             <div className="flex justify-center items-center min-h-screen">
-              <ReactLoading type="spin" color="#B4252A" height={50} width={50} />
+              <ReactLoading
+                type="spin"
+                color="#B4252A"
+                height={50}
+                width={50}
+              />
             </div>
           ) : (
             <div className="p-6 overflow-x-auto bg-white rounded-lg shadow-lg">
@@ -79,25 +84,44 @@ const Income = () => {
                     incomeData.map((income, index) => (
                       <tr key={index} className="border-b">
                         <td className="px-4 py-2 text-center whitespace-nowrap">
-                          {income.no_agenda || index + 1}
+                          {index + 1} {/* Menampilkan nomor urut */}
                         </td>
                         <td className="px-4 py-2 text-center whitespace-nowrap">
-                          {income.kegiatan}
+                          {income.activity_name} {/* Mengambil activity_name */}
                         </td>
                         <td className="px-4 py-2 text-center whitespace-nowrap">
-                          {income.tanggal}
+                          {new Date(income.created_at).toLocaleDateString(
+                            "id-ID"
+                          )}{" "}
+                          {/* Mengambil created_at dan memformatnya */}
                         </td>
                         <td className="px-4 py-2 text-center whitespace-nowrap">
-                          Rp. {income.pemasukan}
+                          Rp. {income.amount}{" "}
+                          {/* Mengambil amount untuk Pemasukan */}
                         </td>
                         <td className="px-4 py-2 text-center whitespace-nowrap">
-                          Rp. {income.pajak}
+                          Rp. {income.tax_amount}{" "}
+                          {/* Mengambil tax_amount untuk Pajak */}
                         </td>
                         <td className="px-4 py-2 text-center whitespace-nowrap">
-                          <a href={income.upload}>Laporan.Pdf</a>
+                          <a
+                            href={income.document_evidence}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Laporan.Pdf
+                          </a>{" "}
+                          {/* Mengambil link document_evidence */}
                         </td>
                         <td className="px-4 py-2 text-center whitespace-nowrap">
-                          <a href={income.evidence}>Bukti.Pdf</a>
+                          <a
+                            href={income.image_evidence}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Bukti.Pdf
+                          </a>{" "}
+                          {/* Mengambil link image_evidence */}
                         </td>
                         <td
                           className={`px-4 py-2 text-center ${
@@ -108,7 +132,7 @@ const Income = () => {
                               : "text-red-600"
                           }`}
                         >
-                          {income.status}
+                          {income.status} {/* Mengambil status */}
                         </td>
                       </tr>
                     ))

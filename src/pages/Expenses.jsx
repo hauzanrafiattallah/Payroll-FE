@@ -85,25 +85,42 @@ const Expenses = () => {
                     expenseData.map((expense, index) => (
                       <tr key={index} className="border-b">
                         <td className="px-4 py-2 text-center whitespace-nowrap">
-                          {expense.no_agenda || index + 1}
+                          {index + 1}
                         </td>
                         <td className="px-4 py-2 text-center whitespace-nowrap">
-                          {expense.kegiatan}
+                          {expense.activity_name}{" "}
+                          {/* Menggunakan activity_name */}
                         </td>
                         <td className="px-4 py-2 text-center whitespace-nowrap">
-                          {expense.tanggal}
+                          {new Date(expense.created_at).toLocaleDateString(
+                            "id-ID"
+                          )}{" "}
+                          {/* Menggunakan created_at */}
                         </td>
                         <td className="px-4 py-2 text-center whitespace-nowrap">
-                          Rp. {expense.pengeluaran}
+                          Rp. {expense.amount} {/* Menggunakan amount */}
                         </td>
                         <td className="px-4 py-2 text-center whitespace-nowrap">
-                          Rp. {expense.pajak}
+                          Rp. {expense.tax_amount}{" "}
+                          {/* Menggunakan tax_amount */}
                         </td>
                         <td className="px-4 py-2 text-center whitespace-nowrap">
-                          <a href={expense.upload}>Laporan.Pdf</a>
+                          <a
+                            href={expense.document_evidence}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Laporan.Pdf
+                          </a>
                         </td>
                         <td className="px-4 py-2 text-center whitespace-nowrap">
-                          <a href={expense.evidence}>Bukti.Pdf</a>
+                          <a
+                            href={expense.image_evidence}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Bukti.Pdf
+                          </a>
                         </td>
                         <td
                           className={`px-4 py-2 text-center ${
@@ -114,7 +131,7 @@ const Expenses = () => {
                               : "text-red-600"
                           }`}
                         >
-                          {expense.status}
+                          {expense.status} {/* Menggunakan status */}
                         </td>
                       </tr>
                     ))

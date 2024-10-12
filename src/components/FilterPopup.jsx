@@ -71,23 +71,23 @@ const FilterPopup = ({ isOpen, onClose, applyFilter }) => {
             </button>
             <button
               className={`w-1/3 py-2 mx-2 rounded-md font-semibold ${
-                filterType === "Income"
+                filterType === "income"
                   ? "bg-[#B4252A] text-white"
                   : "border border-[#B4252A] text-[#B4252A]"
               }`}
-              onClick={() => setFilterType("Income")}
+              onClick={() => setFilterType("income")}
             >
               Income
             </button>
             <button
               className={`w-1/3 py-2 rounded-md font-semibold ${
-                filterType === "Expenses"
+                filterType === "expense"
                   ? "bg-[#B4252A] text-white"
                   : "border border-[#B4252A] text-[#B4252A]"
               }`}
-              onClick={() => setFilterType("Expenses")}
+              onClick={() => setFilterType("expense")}
             >
-              Expenses
+              Expense
             </button>
           </div>
 
