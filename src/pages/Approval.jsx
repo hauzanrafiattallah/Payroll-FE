@@ -1,47 +1,54 @@
 import React, { useState } from "react";
 import Topbar from "../components/Topbar";
 import Sidebar from "../components/Sidebar";
-import { FaCheck, FaTimes } from "react-icons/fa";
+import TransactionPopup from "../components/TransactionPopup"; // Import komponen popup
+import { PiHandWithdrawBold, PiHandDepositBold } from "react-icons/pi"; // Import icons
 
 const Approval = () => {
-  // Dummy data for the table
+  const [selectedTransaction, setSelectedTransaction] = useState(null); // State untuk transaksi terpilih
+  const [isPopupOpen, setIsPopupOpen] = useState(false); // State untuk mengatur apakah popup terbuka
+
+  // Dummy data for the approval
   const [approvalData, setApprovalData] = useState([
     {
-      name: "Conference",
-      date: "24 Sept 2024",
-      amount: "Rp.60.000.000",
+      id: 1,
+      name: "Conference 1",
+      date: "03 Okt 2024",
+      amount: "Rp.600.000.000",
       type: "Income",
-      approved: true,
     },
     {
-      name: "Conference",
-      date: "24 Sept 2024",
-      amount: "Rp.60.000.000",
-      type: "Income",
-      approved: true,
+      id: 2,
+      name: "Conference 2",
+      date: "04 Okt 2024",
+      amount: "Rp.500.000.000",
+      type: "Expenses",
     },
     {
-      name: "Conference",
-      date: "24 Sept 2024",
-      amount: "Rp.60.000.000",
+      id: 3,
+      name: "Conference 3",
+      date: "05 Okt 2024",
+      amount: "Rp.600.000.000",
       type: "Income",
-      approved: true,
     },
     {
-      name: "Conference",
-      date: "24 Sept 2024",
-      amount: "Rp.60.000.000",
+      id: 4,
+      name: "Conference 4",
+      date: "06 Okt 2024",
+      amount: "Rp.600.000.000",
       type: "Income",
-      approved: true,
-    },
-    {
-      name: "Conference",
-      date: "24 Sept 2024",
-      amount: "Rp.60.000.000",
-      type: "Income",
-      approved: true,
     },
   ]);
+
+  const handleCardClick = (transaction) => {
+    setSelectedTransaction(transaction); // Set data transaksi yang dipilih
+    setIsPopupOpen(true); // Buka popup
+  };
+
+  const handleClosePopup = () => {
+    setIsPopupOpen(false); // Tutup popup
+    setSelectedTransaction(null); // Reset transaksi yang dipilih
+  };
 
   return (
     <>
@@ -50,59 +57,86 @@ const Approval = () => {
         {/* Sidebar */}
         <Sidebar />
         {/* Content */}
-        <div className="w-full p-8 mx-auto mt-2 lg:max-w-full lg:ml-72">
-          <h1 className="mb-6 text-2xl font-bold text-center lg:text-left">
+        <div className="w-full p-4 mx-auto mt-2 sm:p-8 lg:max-w-full lg:ml-72">
+          <h1 className="mb-6 text-xl font-bold text-center sm:text-2xl lg:text-left">
             Approval
           </h1>
 
-          <div className="p-6 mb-6 overflow-x-auto bg-white rounded-lg shadow-lg">
-            <table className="min-w-full text-left table-auto">
-              <thead>
-                <tr className="border-b">
-                  <th className="px-4 py-2 text-center">Kegiatan</th>
-                  <th className="px-4 py-2 text-center">Tanggal</th>
-                  <th className="px-4 py-2 text-center">Jumlah</th>
-                  <th className="px-4 py-2 text-center">Type</th>
-                  <th className="px-4 py-2 text-center">Approve</th>
-                </tr>
-              </thead>
-              <tbody>
-                {approvalData.map((item, index) => (
-                  <tr key={index} className="border-b">
-                    <td className="px-4 py-2 text-center whitespace-nowrap">
-                      {item.name}
-                    </td>
-                    <td className="px-4 py-2 text-center whitespace-nowrap">
+          <div className="space-y-4">
+            {approvalData.map((item, index) => (
+              <div
+                key={index}
+                className="flex flex-col justify-between p-4 transition-all duration-200 bg-white border rounded-lg shadow-sm cursor-pointer md:flex-row" // Menghapus hover di sini, dan menambahkannya di inline-style
+                onClick={() => handleCardClick(item)} // Handle klik card
+                style={{
+                  boxShadow: "0 0 8px 2px rgba(0, 0, 0, 0.05)", // Default shadow
+                  transition: "box-shadow 0.3s ease-in-out", // Animasi saat hover
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.boxShadow =
+                    "0 0 15px 3px rgba(180, 37, 42, 0.15)") // Shadow merah saat hover
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.boxShadow =
+                    "0 0 8px 2px rgba(0, 0, 0, 0.05)") // Kembali ke shadow default saat tidak di-hover
+                }
+              >
+                {/* Type and Transaction Details */}
+                <div className="flex items-center mb-4 space-x-4 md:mb-0">
+                  {/* Type Icon */}
+                  <div className="flex items-center">
+                    <div className="flex flex-col items-center justify-center text-center">
+                      {item.type === "Income" ? (
+                        <PiHandWithdrawBold
+                          className="text-[#B4252A]"
+                          size={24}
+                        />
+                      ) : (
+                        <PiHandDepositBold
+                          className="text-[#B4252A]"
+                          size={24}
+                        />
+                      )}
+                      <span className="mt-1 text-sm font-semibold text-[#B4252A]">
+                        {item.type}
+                      </span>
+                    </div>
+                  </div>
+                  {/* Transaction Details */}
+                  <div>
+                    <p className="text-sm font-semibold text-[#B4252A]">
                       {item.date}
-                    </td>
-                    <td className="px-4 py-2 text-center whitespace-nowrap">
+                    </p>
+                    <h3 className="text-lg font-bold">{item.name}</h3>
+                    <p className="text-lg text-gray-600 sm:text-xl">
                       {item.amount}
-                    </td>
-                    <td className="px-4 py-2 text-center whitespace-nowrap">
-                      {item.type}
-                    </td>
-                    <td className="flex items-center justify-center py-2 space-x-2">
-                      {/* Check button with restored hover */}
-                      <button
-                        className={`w-8 h-8 rounded-full flex items-center justify-center bg-[#B4252A] text-white hover:bg-red-800 `}
-                      >
-                        <FaCheck />
-                      </button>
+                    </p>
+                  </div>
+                </div>
 
-                      {/* Cross button with hover effect */}
-                      <button
-                        className={`w-8 h-8 rounded-full border border-gray-500 flex items-center justify-center text-black hover:text-gray-700 hover:bg-gray-100`}
-                      >
-                        <FaTimes />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                {/* Action Buttons */}
+                <div className="flex items-center justify-center space-x-4">
+                  <button className="w-24 h-10 px-4 py-1 text-[#B4252A] transition-colors duration-200 bg-red-100 rounded-lg hover:bg-red-200 sm:w-36 sm:h-12 sm:px-6 sm:py-2">
+                    Decline
+                  </button>
+                  <button className="w-24 h-10 px-4 py-1 text-white bg-[#B4252A] rounded-lg hover:bg-red-800 transition-colors duration-200 sm:w-36 sm:h-12 sm:px-6 sm:py-2">
+                    Approve
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
+
+      {/* Popup */}
+      {selectedTransaction && (
+        <TransactionPopup
+          isOpen={isPopupOpen}
+          onClose={handleClosePopup}
+          transaction={selectedTransaction}
+        />
+      )}
     </>
   );
 };
