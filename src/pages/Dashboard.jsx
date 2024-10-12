@@ -1,38 +1,30 @@
 import React, { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
+import { FaSlidersH } from "react-icons/fa";
+import FilterPopup from "../components/FilterPopup"; // Import komponen FilterPopup
 
 const Dashboard = () => {
-  // State untuk tombol yang aktif
-  const [activeFilter, setActiveFilter] = useState("All");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [filter, setFilter] = useState({ type: "All", startDate: "", endDate: "" });
 
-  // Data untuk ditampilkan berdasarkan filter
   const data = [
     {
-      name: "Pemasukan1",
+      name: "Pemasukan 1",
+      date: "23 Sept 2024",
       amount: "Rp. 60.000.000",
       type: "Income",
-      date: "23 Sept 2024",
+      status: "Approved",
     },
-    {
-      name: "Pemasukan1",
-      amount: "Rp. 60.000.000",
-      type: "Income",
-      date: "23 Sept 2024",
-    },
-    {
-      name: "Expenses1",
-      amount: "Rp. 60.000.000",
-      type: "Expenses",
-      date: "23 Sept 2024",
-    },
+    // ... data lainnya
   ];
 
-  // Filter data berdasarkan tombol yang aktif
-  const filteredData =
-    activeFilter === "All"
-      ? data
-      : data.filter((item) => item.type === activeFilter);
+  const filteredData = data.filter((item) => {
+    if (filter.type !== "All" && item.type !== filter.type) return false;
+    if (filter.startDate && new Date(item.date) < new Date(filter.startDate)) return false;
+    if (filter.endDate && new Date(item.date) > new Date(filter.endDate)) return false;
+    return true;
+  });
 
   return (
     <>
@@ -42,441 +34,99 @@ const Dashboard = () => {
         <Sidebar />
         {/* Konten */}
         <div className="w-full p-8 mx-auto mt-2 lg:max-w-full lg:ml-72">
-          <h1 className="mb-6 text-2xl font-bold text-center lg:text-left">
-            Dashboard
-          </h1>
+          <h1 className="mb-6 text-2xl font-bold text-center lg:text-left">Dashboard</h1>
           {/* Section untuk Balance, Income, dan Expenses */}
           <div className="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2 lg:grid-cols-3">
             {/* Balance */}
-            <div
-              className={`p-6 ${
-                activeFilter === "All" ? "bg-[#B4252A] text-white" : "bg-white"
-              } rounded-lg shadow-lg`}
-            >
+            <div className="p-6 bg-[#B4252A] text-white rounded-lg shadow-lg">
               <h2 className="text-lg font-semibold">Balance</h2>
               <p className="text-2xl font-bold">Rp. 60.000.000</p>
             </div>
             {/* Monthly Income */}
-            <div
-              className={`p-6 ${
-                activeFilter === "Income"
-                  ? "bg-[#B4252A] text-white"
-                  : "bg-white"
-              } rounded-lg shadow-lg`}
-            >
+            <div className="p-6 bg-white rounded-lg shadow-lg">
               <h2 className="text-lg font-semibold">Monthly Income</h2>
               <p className="text-2xl font-bold">Rp. 60.000.000</p>
             </div>
             {/* Monthly Expenses */}
-            <div
-              className={`p-6 ${
-                activeFilter === "Expenses"
-                  ? "bg-[#B4252A] text-white"
-                  : "bg-white"
-              } rounded-lg shadow-lg`}
-            >
+            <div className="p-6 bg-white rounded-lg shadow-lg">
               <h2 className="text-lg font-semibold">Monthly Expenses</h2>
               <p className="text-2xl font-bold">Rp. 60.000.000</p>
             </div>
           </div>
-          {/* Section untuk History */}
-          <div className="flex flex-col items-center justify-between mb-4 md:flex-row">
-            <h2 className="mb-4 text-2xl font-bold text-center lg:text-left md:mb-0">
-              History
-            </h2>
-            <div className="flex space-x-4">
-              <button
-                onClick={() => setActiveFilter("All")}
-                className={`px-4 py-2 rounded-lg ${
-                  activeFilter === "All"
-                    ? "bg-[#B4252A] text-white"
-                    : "bg-gray-100 text-black"
-                }`}
-              >
-                All
-              </button>
-              <button
-                onClick={() => setActiveFilter("Income")}
-                className={`px-4 py-2 rounded-lg ${
-                  activeFilter === "Income"
-                    ? "bg-[#B4252A] text-white"
-                    : "bg-gray-100 text-black"
-                }`}
-              >
-                Income
-              </button>
-              <button
-                onClick={() => setActiveFilter("Expenses")}
-                className={`px-4 py-2 rounded-lg ${
-                  activeFilter === "Expenses"
-                    ? "bg-[#B4252A] text-white"
-                    : "bg-gray-100 text-black"
-                }`}
-              >
-                Expenses
-              </button>
-            </div>
+
+          {/* Transaction List */}
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold">Transaction List</h2>
+            <button
+              className="flex items-center px-4 py-2 text-black bg-white rounded-lg shadow hover:bg-gray-200"
+              onClick={() => setIsFilterOpen(true)}
+            >
+              <FaSlidersH className="mr-2" />
+              Filter
+            </button>
           </div>
+
+          {/* Tabel Transaction */}
           <div className="p-6 mb-6 overflow-x-auto bg-white rounded-lg shadow-lg">
-            <table className="min-w-full text-left table-auto">
+            <table className="w-full text-left table-auto min-w-[600px]">
               <thead>
                 <tr className="border-b">
                   <th className="px-4 py-2 text-center">Name</th>
+                  <th className="px-4 py-2 text-center">Date</th>
                   <th className="px-4 py-2 text-center">Amount</th>
                   <th className="px-4 py-2 text-center">Type</th>
-                  <th className="px-4 py-2 text-center">Date</th>
+                  <th className="px-4 py-2 text-center">Status</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredData.map((item, index) => (
                   <tr key={index} className="border-b">
-                    <td className="px-4 py-2 text-center whitespace-nowrap">
-                      {item.name}
-                    </td>
-                    <td className="px-4 py-2 text-center whitespace-nowrap">
-                      {item.amount}
-                    </td>
-                    <td className="px-4 py-2 text-center whitespace-nowrap">
-                      {item.type}
-                    </td>
-                    <td className="px-4 py-2 text-center whitespace-nowrap">
-                      {item.date}
+                    <td className="px-4 py-2 text-center">{item.name}</td>
+                    <td className="px-4 py-2 text-center">{item.date}</td>
+                    <td className="px-4 py-2 text-center">{item.amount}</td>
+                    <td className="px-4 py-2 text-center">{item.type}</td>
+                    <td className="px-4 py-2 text-center">
+                      <span
+                        className={`inline-block w-[100px] px-2 py-1 text-sm font-semibold rounded-md text-center ${
+                          item.status === "Approved"
+                            ? "bg-green-100 text-green-600"
+                            : item.status === "Pending"
+                            ? "bg-yellow-100 text-yellow-600"
+                            : "bg-red-100 text-red-600"
+                        }`}
+                      >
+                        {item.status}
+                      </span>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-          {/* Section untuk Approval List */}
-          <h2 className="mb-4 text-2xl font-bold text-center lg:text-left">
-            Approval List
-          </h2>
-          <div className="p-6 overflow-x-auto bg-white rounded-lg shadow-lg">
-            <table className="min-w-full text-left table-auto">
-              <thead>
-                <tr className="border-b">
-                  <th className="px-4 py-2 text-center">Name</th>
-                  <th className="px-4 py-2 text-center">Amount</th>
-                  <th className="px-4 py-2 text-center">Date</th>
-                  <th className="px-4 py-2 text-center">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b">
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Pemasukan1
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Rp. 60.000.000
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    23 Sept 2024
-                  </td>
-                  <td className="px-4 py-2 text-center text-green-600">
-                    Approved
-                  </td>
-                </tr>
-                <tr className="border-b">
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Pemasukan1
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Rp. 60.000.000
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    23 Sept 2024
-                  </td>
-                  <td className="px-4 py-2 text-center text-red-600">Denied</td>
-                </tr>
-                <tr className="border-b">
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Pemasukan1
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Rp. 60.000.000
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    23 Sept 2024
-                  </td>
-                  <td className="px-4 py-2 text-center text-green-600">
-                    Approved
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div className="p-6 overflow-x-auto bg-white rounded-lg shadow-lg">
-            <table className="min-w-full text-left table-auto">
-              <thead>
-                <tr className="border-b">
-                  <th className="px-4 py-2 text-center">Name</th>
-                  <th className="px-4 py-2 text-center">Amount</th>
-                  <th className="px-4 py-2 text-center">Date</th>
-                  <th className="px-4 py-2 text-center">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b">
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Pemasukan1
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Rp. 60.000.000
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    23 Sept 2024
-                  </td>
-                  <td className="px-4 py-2 text-center text-green-600">
-                    Approved
-                  </td>
-                </tr>
-                <tr className="border-b">
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Pemasukan1
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Rp. 60.000.000
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    23 Sept 2024
-                  </td>
-                  <td className="px-4 py-2 text-center text-red-600">Denied</td>
-                </tr>
-                <tr className="border-b">
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Pemasukan1
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Rp. 60.000.000
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    23 Sept 2024
-                  </td>
-                  <td className="px-4 py-2 text-center text-green-600">
-                    Approved
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div className="p-6 overflow-x-auto bg-white rounded-lg shadow-lg">
-            <table className="min-w-full text-left table-auto">
-              <thead>
-                <tr className="border-b">
-                  <th className="px-4 py-2 text-center">Name</th>
-                  <th className="px-4 py-2 text-center">Amount</th>
-                  <th className="px-4 py-2 text-center">Date</th>
-                  <th className="px-4 py-2 text-center">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b">
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Pemasukan1
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Rp. 60.000.000
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    23 Sept 2024
-                  </td>
-                  <td className="px-4 py-2 text-center text-green-600">
-                    Approved
-                  </td>
-                </tr>
-                <tr className="border-b">
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Pemasukan1
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Rp. 60.000.000
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    23 Sept 2024
-                  </td>
-                  <td className="px-4 py-2 text-center text-red-600">Denied</td>
-                </tr>
-                <tr className="border-b">
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Pemasukan1
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Rp. 60.000.000
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    23 Sept 2024
-                  </td>
-                  <td className="px-4 py-2 text-center text-green-600">
-                    Approved
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div className="p-6 overflow-x-auto bg-white rounded-lg shadow-lg">
-            <table className="min-w-full text-left table-auto">
-              <thead>
-                <tr className="border-b">
-                  <th className="px-4 py-2 text-center">Name</th>
-                  <th className="px-4 py-2 text-center">Amount</th>
-                  <th className="px-4 py-2 text-center">Date</th>
-                  <th className="px-4 py-2 text-center">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b">
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Pemasukan1
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Rp. 60.000.000
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    23 Sept 2024
-                  </td>
-                  <td className="px-4 py-2 text-center text-green-600">
-                    Approved
-                  </td>
-                </tr>
-                <tr className="border-b">
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Pemasukan1
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Rp. 60.000.000
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    23 Sept 2024
-                  </td>
-                  <td className="px-4 py-2 text-center text-red-600">Denied</td>
-                </tr>
-                <tr className="border-b">
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Pemasukan1
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Rp. 60.000.000
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    23 Sept 2024
-                  </td>
-                  <td className="px-4 py-2 text-center text-green-600">
-                    Approved
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div className="p-6 overflow-x-auto bg-white rounded-lg shadow-lg">
-            <table className="min-w-full text-left table-auto">
-              <thead>
-                <tr className="border-b">
-                  <th className="px-4 py-2 text-center">Name</th>
-                  <th className="px-4 py-2 text-center">Amount</th>
-                  <th className="px-4 py-2 text-center">Date</th>
-                  <th className="px-4 py-2 text-center">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b">
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Pemasukan1
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Rp. 60.000.000
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    23 Sept 2024
-                  </td>
-                  <td className="px-4 py-2 text-center text-green-600">
-                    Approved
-                  </td>
-                </tr>
-                <tr className="border-b">
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Pemasukan1
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Rp. 60.000.000
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    23 Sept 2024
-                  </td>
-                  <td className="px-4 py-2 text-center text-red-600">Denied</td>
-                </tr>
-                <tr className="border-b">
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Pemasukan1
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Rp. 60.000.000
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    23 Sept 2024
-                  </td>
-                  <td className="px-4 py-2 text-center text-green-600">
-                    Approved
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div className="p-6 overflow-x-auto bg-white rounded-lg shadow-lg">
-            <table className="min-w-full text-left table-auto">
-              <thead>
-                <tr className="border-b">
-                  <th className="px-4 py-2 text-center">Name</th>
-                  <th className="px-4 py-2 text-center">Amount</th>
-                  <th className="px-4 py-2 text-center">Date</th>
-                  <th className="px-4 py-2 text-center">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b">
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Pemasukan1
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Rp. 60.000.000
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    23 Sept 2024
-                  </td>
-                  <td className="px-4 py-2 text-center text-green-600">
-                    Approved
-                  </td>
-                </tr>
-                <tr className="border-b">
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Pemasukan1
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Rp. 60.000.000
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    23 Sept 2024
-                  </td>
-                  <td className="px-4 py-2 text-center text-red-600">Denied</td>
-                </tr>
-                <tr className="border-b">
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Pemasukan1
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    Rp. 60.000.000
-                  </td>
-                  <td className="px-4 py-2 text-center whitespace-nowrap">
-                    23 Sept 2024
-                  </td>
-                  <td className="px-4 py-2 text-center text-green-600">
-                    Approved
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+
+          {/* Pagination */}
+          <div className="flex justify-end mt-6">
+            <div className="flex items-center px-4 py-2 space-x-2 bg-white rounded-full shadow-md">
+              <button className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100">
+                &lt;
+              </button>
+              <button className="px-3 py-1 text-white bg-[#B4252A] rounded-full">1</button>
+              <button className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100">2</button>
+              <button className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100">3</button>
+              <span className="px-3 py-1 text-gray-600">...</span>
+              <button className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100">69</button>
+              <button className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100">&gt;</button>
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Filter Pop-Up */}
+      <FilterPopup
+        isOpen={isFilterOpen}
+        onClose={() => setIsFilterOpen(false)}
+        applyFilter={setFilter}
+      />
     </>
   );
 };

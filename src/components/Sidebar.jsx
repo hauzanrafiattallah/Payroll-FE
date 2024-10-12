@@ -175,15 +175,12 @@ const Sidebar = () => {
           <FaSignOutAlt className="mr-3 text-lg" />
           <span>Log Out</span>
         </div>
-      </div>
 
-      {/* Overlay untuk layar kecil ketika sidebar terbuka */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-black opacity-50 lg:hidden"
-          onClick={toggleSidebar}
-        ></div>
-      )}
+        {/* Copyright */}
+        <div className="mt-4 text-xs text-center text-gray-500">
+          <p>Copyright © 2024 HUMIC Engineering</p>
+        </div>
+      </div>
 
       {/* Toast */}
       <ToastContainer
