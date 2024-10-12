@@ -3,6 +3,7 @@ import { PiHandDepositBold, PiHandWithdrawBold } from "react-icons/pi";
 import AddIncomePopup from "./AddIncomePopup";
 import AddExpensesPopup from "./AddExpensesPopup";
 import { FaCaretDown } from "react-icons/fa";
+import { Link } from "react-router-dom"; // Import Link dari react-router-dom
 
 const Topbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -90,7 +91,7 @@ const Topbar = () => {
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               className="flex items-center text-gray-700 bg-white rounded-full focus:outline-none"
             >
-              <span className="mr-2 text-sm font-medium">Raffa Juher</span>
+              <span className="mr-2 text-sm font-medium">User</span>
               <img
                 src="/image_placeholder.png"
                 alt="User"
@@ -99,7 +100,7 @@ const Topbar = () => {
               {/* Tambahkan animasi rotasi pada panah */}
               <FaCaretDown
                 className={`ml-2 text-sm transform transition-transform duration-300 ${
-                  isDropdownOpen ? "rotate-180" : "rotate-0"
+                  isDropdownOpen ? "rotate-90" : "rotate-0"
                 }`}
               />
             </button>
@@ -107,12 +108,12 @@ const Topbar = () => {
             {/* Dropdown */}
             {isDropdownOpen && (
               <div className="absolute right-0 w-40 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg">
-                <a
-                  href="/profile"
+                <Link
+                  to="/profile"
                   className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                 >
                   Profile
-                </a>
+                </Link>
               </div>
             )}
           </div>
