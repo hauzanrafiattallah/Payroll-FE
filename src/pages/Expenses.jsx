@@ -1,8 +1,42 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 
 const Expenses = () => {
+  const [expenseData, setExpenseData] = useState([]); // State untuk menyimpan data expenses
+  const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
+
+  // Fetch data dari API
+  useEffect(() => {
+    const fetchExpenseData = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/expense`, // Sesuaikan dengan endpoint expense
+          {
+            params: {
+              page: 1,
+              limit: 10, // Sesuaikan limit sesuai kebutuhan
+            },
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${authToken}`, // Gunakan token yang sesuai
+            },
+          }
+        );
+
+        console.log(response.data); // Debugging untuk melihat response yang diterima
+
+        // Update state dengan array data expense yang berada di dalam response.data.data
+        setExpenseData(response.data.data.data); // Ambil array data dari dalam nested `data`
+      } catch (error) {
+        console.error("Error fetching expense data:", error);
+      }
+    };
+
+    fetchExpenseData();
+  }, [authToken]);
+
   return (
     <>
       <Topbar />
@@ -31,34 +65,50 @@ const Expenses = () => {
                 </tr>
               </thead>
               <tbody>
-                {Array.from({ length: 6 }).map((_, index) => (
-                  <tr key={index} className="border-b">
-                    <td className="px-4 py-2 text-center whitespace-nowrap">
-                      {index + 1}
-                    </td>
-                    <td className="px-4 py-2 text-center whitespace-nowrap">
-                      Conference
-                    </td>
-                    <td className="px-4 py-2 text-center whitespace-nowrap">
-                      03 Okt 2024
-                    </td>
-                    <td className="px-4 py-2 text-center whitespace-nowrap">
-                      Rp. 600.000.000
-                    </td>
-                    <td className="px-4 py-2 text-center whitespace-nowrap">
-                      Rp. 60.000.000
-                    </td>
-                    <td className="px-4 py-2 text-center whitespace-nowrap">
-                      <a href="#">Laporan.Pdf</a>
-                    </td>
-                    <td className="px-4 py-2 text-center whitespace-nowrap">
-                      <a href="#">Bukti.Pdf</a>
-                    </td>
-                    <td className="px-4 py-2 text-center text-green-600">
-                      Approved
+                {expenseData.length > 0 ? (
+                  expenseData.map((expense, index) => (
+                    <tr key={index} className="border-b">
+                      <td className="px-4 py-2 text-center whitespace-nowrap">
+                        {expense.no_agenda || index + 1}
+                      </td>
+                      <td className="px-4 py-2 text-center whitespace-nowrap">
+                        {expense.kegiatan}
+                      </td>
+                      <td className="px-4 py-2 text-center whitespace-nowrap">
+                        {expense.tanggal}
+                      </td>
+                      <td className="px-4 py-2 text-center whitespace-nowrap">
+                        Rp. {expense.pengeluaran}
+                      </td>
+                      <td className="px-4 py-2 text-center whitespace-nowrap">
+                        Rp. {expense.pajak}
+                      </td>
+                      <td className="px-4 py-2 text-center whitespace-nowrap">
+                        <a href={expense.upload}>Laporan.Pdf</a>
+                      </td>
+                      <td className="px-4 py-2 text-center whitespace-nowrap">
+                        <a href={expense.evidence}>Bukti.Pdf</a>
+                      </td>
+                      <td
+                        className={`px-4 py-2 text-center ${
+                          expense.status === "approve"
+                            ? "text-green-600"
+                            : expense.status === "pending"
+                            ? "text-yellow-500"
+                            : "text-red-600"
+                        }`}
+                      >
+                        {expense.status}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="8" className="px-4 py-2 text-center">
+                      No data available
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>

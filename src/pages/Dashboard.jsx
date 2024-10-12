@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import { FaSlidersH } from "react-icons/fa";
-import FilterPopup from "../components/FilterPopup"; // Import komponen FilterPopup
+import FilterPopup from "../components/FilterPopup";
 
 const Dashboard = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -12,25 +13,52 @@ const Dashboard = () => {
     endDate: "",
   });
 
-  const data = [
-    {
-      name: "Pemasukan 1",
-      date: "23 Sept 2024",
-      amount: "Rp. 60.000.000",
-      type: "Income",
-      status: "Approved",
-    },
-    // ... data lainnya
-  ];
-
-  const filteredData = data.filter((item) => {
-    if (filter.type !== "All" && item.type !== filter.type) return false;
-    if (filter.startDate && new Date(item.date) < new Date(filter.startDate))
-      return false;
-    if (filter.endDate && new Date(item.date) > new Date(filter.endDate))
-      return false;
-    return true;
+  const [dashboardData, setDashboardData] = useState({
+    balance: 0,
+    monthlyIncome: 0,
+    monthlyExpense: 0,
+    transactionList: [],
   });
+
+  const [currentPage, setCurrentPage] = useState(1); // Menyimpan halaman saat ini
+  const authToken = localStorage.getItem('token'); // Ambil token dari localStorage
+
+  // Fetch API data when component mounts or filter/page changes
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/dashboard`, {
+          params: {
+            transaction_type: filter.type === "All" ? "" : filter.type,
+            start_date: filter.startDate || '2024-10-01', // Default value jika kosong
+            end_date: filter.endDate || '2024-10-07', // Default value jika kosong
+            page: currentPage, // Gunakan currentPage untuk pagination
+            limit: 10, // Sesuaikan limit sesuai kebutuhan
+          },
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${authToken}`, // Gunakan token dari localStorage
+          },
+        });
+
+        setDashboardData({
+          balance: response.data.data.balance,
+          monthlyIncome: response.data.data.monthlyIncome,
+          monthlyExpense: response.data.data.monthlyExpense,
+          transactionList: response.data.data.transactionList.data,
+        });
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      }
+    };
+
+    fetchDashboardData();
+  }, [filter, currentPage, authToken]); // Refetch data saat filter atau halaman berubah
+
+  // Event handler untuk pagination
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage); // Update halaman dan fetch data ulang
+  };
 
   return (
     <>
@@ -43,22 +71,27 @@ const Dashboard = () => {
           <h1 className="mb-6 text-2xl font-bold text-center lg:text-left">
             Dashboard
           </h1>
-          {/* Section untuk Balance, Income, dan Expenses */}
+
+          {/* Section untuk Balance, Income, dan Expense */}
           <div className="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2 lg:grid-cols-3">
             {/* Balance */}
             <div className="p-6 bg-[#B4252A] text-white rounded-lg shadow-lg">
               <h2 className="text-lg font-semibold">Balance</h2>
-              <p className="text-2xl font-bold">Rp. 60.000.000</p>
+              <p className="text-2xl font-bold">Rp. {dashboardData.balance}</p>
             </div>
             {/* Monthly Income */}
             <div className="p-6 bg-white rounded-lg shadow-lg">
               <h2 className="text-lg font-semibold">Monthly Income</h2>
-              <p className="text-2xl font-bold">Rp. 60.000.000</p>
+              <p className="text-2xl font-bold">
+                Rp. {dashboardData.monthlyIncome}
+              </p>
             </div>
-            {/* Monthly Expenses */}
+            {/* Monthly Expense */}
             <div className="p-6 bg-white rounded-lg shadow-lg">
-              <h2 className="text-lg font-semibold">Monthly Expenses</h2>
-              <p className="text-2xl font-bold">Rp. 60.000.000</p>
+              <h2 className="text-lg font-semibold">Monthly Expense</h2>
+              <p className="text-2xl font-bold">
+                Rp. {dashboardData.monthlyExpense}
+              </p>
             </div>
           </div>
 
@@ -89,18 +122,18 @@ const Dashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredData.map((item, index) => (
+                {dashboardData.transactionList.map((item, index) => (
                   <tr key={index} className="border-b">
-                    <td className="px-4 py-2 text-center">{item.name}</td>
-                    <td className="px-4 py-2 text-center">{item.date}</td>
-                    <td className="px-4 py-2 text-center">{item.amount}</td>
-                    <td className="px-4 py-2 text-center">{item.type}</td>
+                    <td className="px-4 py-2 text-center">{item.name || 'Unknown'}</td>
+                    <td className="px-4 py-2 text-center">{item.date || 'Unknown'}</td>
+                    <td className="px-4 py-2 text-center">{item.amount || 0}</td>
+                    <td className="px-4 py-2 text-center">{item.type || 'N/A'}</td>
                     <td className="px-4 py-2 text-center">
                       <span
                         className={`inline-block w-[100px] px-2 py-1 text-sm font-semibold rounded-md text-center ${
-                          item.status === "Approved"
+                          item.status === "approve"
                             ? "bg-green-100 text-green-600"
-                            : item.status === "Pending"
+                            : item.status === "pending"
                             ? "bg-yellow-100 text-yellow-600"
                             : "bg-red-100 text-red-600"
                         }`}
@@ -117,23 +150,20 @@ const Dashboard = () => {
           {/* Pagination */}
           <div className="flex justify-end mt-6">
             <div className="flex items-center px-4 py-2 space-x-2 bg-white rounded-full shadow-md">
-              <button className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100">
+              <button 
+                className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
                 &lt;
               </button>
               <button className="px-3 py-1 text-white bg-[#B4252A] rounded-full">
-                1
+                {currentPage}
               </button>
-              <button className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100">
-                2
-              </button>
-              <button className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100">
-                3
-              </button>
-              <span className="px-3 py-1 text-gray-600">...</span>
-              <button className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100">
-                69
-              </button>
-              <button className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100">
+              <button 
+                className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
+                onClick={() => handlePageChange(currentPage + 1)}
+              >
                 &gt;
               </button>
             </div>
