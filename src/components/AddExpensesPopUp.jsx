@@ -40,6 +40,16 @@ const AddExpensesPopup = ({ isOpen, onClose }) => {
     setTimeout(onClose, 200);
   };
 
+  // Fungsi untuk membatasi panjang nama file
+  const formatFileName = (name, maxLength = 20) => {
+    if (name.length > maxLength) {
+      const ext = name.split('.').pop(); // Dapatkan ekstensi file
+      const shortName = `${name.slice(0, 8)}...${name.slice(-8)}`;
+      return `${shortName}.${ext}`;
+    }
+    return name;
+  };
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
@@ -56,9 +66,10 @@ const AddExpensesPopup = ({ isOpen, onClose }) => {
       return;
     }
 
-    // Validasi tipe file documentEvidence (harus PDF)
-    if (documentEvidence && documentEvidence.type !== "application/pdf") {
-      toast.error("File keuangan harus dalam format PDF.");
+    // Validasi tipe file documentEvidence (harus PDF atau XLSX)
+    const allowedFileTypes = ["application/pdf", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"];
+    if (documentEvidence && !allowedFileTypes.includes(documentEvidence.type)) {
+      toast.error("File keuangan harus dalam format PDF atau XLSX.");
       return;
     }
 
@@ -75,12 +86,6 @@ const AddExpensesPopup = ({ isOpen, onClose }) => {
       selectedDate.toISOString().split("T")[0]
     ); // Mengubah format tanggal jadi YYYY-MM-DD
 
-    // Log data yang dikirim
-    console.log("Form Data Preview:");
-    formData.forEach((value, key) => {
-      console.log(`${key}:`, value);
-    });
-
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/finance`,
@@ -94,15 +99,10 @@ const AddExpensesPopup = ({ isOpen, onClose }) => {
         }
       );
 
-      console.log(response.data); // Log response untuk melihat hasil dari API
       toast.success("Data berhasil disimpan!"); // Tampilkan pesan sukses
       closePopup(); // Tutup popup setelah submit berhasil
     } catch (error) {
       console.error("Error submitting form data:", error.response || error);
-      console.log(
-        "Error response data:",
-        error.response?.data || error.message
-      );
       toast.error(
         "Gagal mengirim data, pastikan semua field terisi dengan benar."
       );
@@ -192,14 +192,14 @@ const AddExpensesPopup = ({ isOpen, onClose }) => {
                 <BsUpload className="mx-auto mb-2 text-2xl text-gray-500" />
                 <span className="text-gray-500">
                   {documentEvidence
-                    ? documentEvidence.name
-                    : "Upload File Keuangan (PDF)"}
+                    ? formatFileName(documentEvidence.name)
+                    : "Upload File Keuangan (PDF/XLSX)"}
                 </span>
               </div>
               <input
                 type="file"
                 id="documentEvidence"
-                accept="application/pdf" // Hanya menerima file PDF
+                accept=".pdf, .xlsx" // Menerima file PDF dan XLSX
                 className="hidden"
                 onChange={(e) => setDocumentEvidence(e.target.files[0])}
                 required
@@ -214,14 +214,14 @@ const AddExpensesPopup = ({ isOpen, onClose }) => {
                 <BsUpload className="mx-auto mb-2 text-2xl text-gray-500" />
                 <span className="text-gray-500">
                   {imageEvidence
-                    ? imageEvidence.name
+                    ? formatFileName(imageEvidence.name)
                     : "Upload File Bukti (PNG/JPG/JPEG)"}
                 </span>
               </div>
               <input
                 type="file"
                 id="imageEvidence"
-                accept="image/png, image/jpeg, application/pdf" // PNG/JPG/PDF untuk bukti
+                accept="image/png, image/jpeg" // PNG/JPG untuk bukti
                 className="hidden"
                 onChange={(e) => setImageEvidence(e.target.files[0])}
                 required

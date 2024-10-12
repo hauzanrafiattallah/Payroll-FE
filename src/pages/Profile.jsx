@@ -3,10 +3,12 @@ import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import ReactLoading from "react-loading";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const Profile = () => {
   const [userData, setUserData] = useState(null); // State untuk menyimpan data user
   const [loading, setLoading] = useState(true); // State untuk loading
+  const navigate = useNavigate(); // Inisialisasi useNavigate
 
   // Ambil token dari localStorage
   const authToken = localStorage.getItem("token");
@@ -123,7 +125,10 @@ const Profile = () => {
 
                 {/* Bottom Buttons */}
                 <div className="flex justify-end mt-8 space-x-4">
-                  <button className="px-6 py-2 font-semibold text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100">
+                  <button
+                    className="px-6 py-2 font-semibold text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100"
+                    onClick={() => navigate(-1)} // Kembali ke halaman sebelumnya
+                  >
                     Cancel
                   </button>
                   <button className="px-6 py-2 font-semibold text-white bg-[#B4252A] rounded-lg hover:bg-red-800">

@@ -3,7 +3,7 @@ import { BsUpload } from "react-icons/bs";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import "react-toastify/dist/ReactToastify.css"; 
 
 const AddIncomePopup = ({ isOpen, onClose }) => {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -35,6 +35,16 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
   const closePopup = () => {
     setAnimatePopup(false);
     setTimeout(onClose, 200);
+  };
+
+  // Fungsi untuk membatasi panjang nama file
+  const formatFileName = (name, maxLength = 20) => {
+    if (name.length > maxLength) {
+      const ext = name.split('.').pop(); // Dapatkan ekstensi file
+      const shortName = `${name.slice(0, 8)}...${name.slice(-8)}`;
+      return `${shortName}.${ext}`;
+    }
+    return name;
   };
 
   const handleFormSubmit = (e) => {
@@ -75,7 +85,7 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 overlay">
-      <ToastContainer /> {/* Tempat di mana toast akan ditampilkan */}
+      <ToastContainer /> {/* Tempat untuk menampilkan toast notifications */}
       <div
         className={`bg-white p-8 rounded-lg shadow-lg transform transition-transform duration-300 ease-in-out ${
           animatePopup ? "translate-y-0" : "-translate-y-full"
@@ -121,7 +131,7 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
           <label className="block mb-2 font-semibold">Jumlah</label>
           <input
             className="w-full p-2 mb-4 border border-gray-300 rounded-lg"
-            placeholder="Masukkan Jumlah Pengeluaran..."
+            placeholder="Masukkan Jumlah Pendapatan..."
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             required
@@ -148,14 +158,14 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
                 <BsUpload className="mx-auto mb-2 text-2xl text-gray-500" />
                 <span className="text-gray-500">
                   {documentEvidence
-                    ? documentEvidence.name
+                    ? formatFileName(documentEvidence.name)
                     : "Upload File Keuangan (PDF/xlsx)"}
                 </span>
               </div>
               <input
                 type="file"
                 id="documentEvidence"
-                accept="application/pdf, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                accept=".pdf, .xlsx" // Menerima file PDF dan XLSX
                 className="hidden"
                 onChange={(e) => setDocumentEvidence(e.target.files[0])}
                 required
@@ -170,14 +180,14 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
                 <BsUpload className="mx-auto mb-2 text-2xl text-gray-500" />
                 <span className="text-gray-500">
                   {imageEvidence
-                    ? imageEvidence.name
+                    ? formatFileName(imageEvidence.name)
                     : "Upload File Bukti (PNG/JPG/JPEG)"}
                 </span>
               </div>
               <input
                 type="file"
                 id="imageEvidence"
-                accept="image/png, image/jpeg, application/pdf"
+                accept="image/png, image/jpeg"
                 className="hidden"
                 onChange={(e) => setImageEvidence(e.target.files[0])}
                 required
