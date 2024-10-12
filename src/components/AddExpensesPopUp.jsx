@@ -4,7 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; // Import CSS toast
+import "react-toastify/dist/ReactToastify.css"; 
 
 const AddExpensesPopup = ({ isOpen, onClose }) => {
   const [selectedDate, setSelectedDate] = useState(null);

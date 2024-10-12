@@ -3,7 +3,7 @@ import { BsUpload } from "react-icons/bs";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; // Import CSS react-toastify
+import "react-toastify/dist/ReactToastify.css";
 
 const AddIncomePopup = ({ isOpen, onClose }) => {
   const [selectedDate, setSelectedDate] = useState(null);
