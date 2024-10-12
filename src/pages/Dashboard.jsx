@@ -6,7 +6,11 @@ import FilterPopup from "../components/FilterPopup"; // Import komponen FilterPo
 
 const Dashboard = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [filter, setFilter] = useState({ type: "All", startDate: "", endDate: "" });
+  const [filter, setFilter] = useState({
+    type: "All",
+    startDate: "",
+    endDate: "",
+  });
 
   const data = [
     {
@@ -21,8 +25,10 @@ const Dashboard = () => {
 
   const filteredData = data.filter((item) => {
     if (filter.type !== "All" && item.type !== filter.type) return false;
-    if (filter.startDate && new Date(item.date) < new Date(filter.startDate)) return false;
-    if (filter.endDate && new Date(item.date) > new Date(filter.endDate)) return false;
+    if (filter.startDate && new Date(item.date) < new Date(filter.startDate))
+      return false;
+    if (filter.endDate && new Date(item.date) > new Date(filter.endDate))
+      return false;
     return true;
   });
 
@@ -34,7 +40,9 @@ const Dashboard = () => {
         <Sidebar />
         {/* Konten */}
         <div className="w-full p-8 mx-auto mt-2 lg:max-w-full lg:ml-72">
-          <h1 className="mb-6 text-2xl font-bold text-center lg:text-left">Dashboard</h1>
+          <h1 className="mb-6 text-2xl font-bold text-center lg:text-left">
+            Dashboard
+          </h1>
           {/* Section untuk Balance, Income, dan Expenses */}
           <div className="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2 lg:grid-cols-3">
             {/* Balance */}
@@ -56,7 +64,9 @@ const Dashboard = () => {
 
           {/* Transaction List */}
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold">Transaction List</h2>
+            <h1 className="mb-6 text-2xl font-bold text-center lg:text-left">
+              Transaction List
+            </h1>
             <button
               className="flex items-center px-4 py-2 text-black bg-white rounded-lg shadow hover:bg-gray-200"
               onClick={() => setIsFilterOpen(true)}
@@ -110,12 +120,22 @@ const Dashboard = () => {
               <button className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100">
                 &lt;
               </button>
-              <button className="px-3 py-1 text-white bg-[#B4252A] rounded-full">1</button>
-              <button className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100">2</button>
-              <button className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100">3</button>
+              <button className="px-3 py-1 text-white bg-[#B4252A] rounded-full">
+                1
+              </button>
+              <button className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100">
+                2
+              </button>
+              <button className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100">
+                3
+              </button>
               <span className="px-3 py-1 text-gray-600">...</span>
-              <button className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100">69</button>
-              <button className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100">&gt;</button>
+              <button className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100">
+                69
+              </button>
+              <button className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100">
+                &gt;
+              </button>
             </div>
           </div>
         </div>
