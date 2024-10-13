@@ -5,7 +5,7 @@ import Topbar from "../components/Topbar";
 import TransactionPopup from "../components/TransactionPopup"; // Import komponen popup
 import { PiHandWithdrawBold, PiHandDepositBold } from "react-icons/pi"; // Import icons
 import ReactLoading from "react-loading";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Approval = () => {
@@ -14,6 +14,7 @@ const Approval = () => {
   const [actionType, setActionType] = useState(""); // State untuk menyimpan tipe aksi (approve atau decline)
   const [approvalData, setApprovalData] = useState([]); // State untuk menyimpan data approval
   const [loading, setLoading] = useState(true); // State untuk mengatur loading
+  const [isTransactionPopupOpen, setIsTransactionPopupOpen] = useState(false); // State untuk TransactionPopup
 
   const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
 
@@ -106,6 +107,12 @@ const Approval = () => {
     }
   };
 
+  // Fungsi untuk menampilkan popup detail transaksi
+  const handleTransactionClick = (transaction) => {
+    setSelectedTransaction(transaction); // Simpan transaksi yang dipilih
+    setIsTransactionPopupOpen(true); // Buka TransactionPopup
+  };
+
   return (
     <>
       <Topbar />
@@ -148,6 +155,7 @@ const Approval = () => {
                       (e.currentTarget.style.boxShadow =
                         "0 0 8px 2px rgba(0, 0, 0, 0.05)") // Kembali ke shadow default saat tidak di-hover
                   }
+                  onClick={() => handleTransactionClick(item)} // Ketika item diklik, tampilkan detail transaksi
                 >
                   {/* Type and Transaction Details */}
                   <div className="flex items-center mb-4 space-x-4 md:mb-0">
@@ -211,6 +219,15 @@ const Approval = () => {
           )}
         </div>
       </div>
+
+      {/* Transaction Popup */}
+      {selectedTransaction && (
+        <TransactionPopup
+          isOpen={isTransactionPopupOpen}
+          onClose={() => setIsTransactionPopupOpen(false)}
+          transaction={selectedTransaction} // Kirim detail transaksi ke TransactionPopup
+        />
+      )}
 
       {/* Confirm Popup */}
       {isConfirmPopupOpen && (

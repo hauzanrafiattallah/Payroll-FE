@@ -5,9 +5,12 @@ import Topbar from "../components/Topbar";
 import { FaSlidersH } from "react-icons/fa";
 import FilterPopup from "../components/FilterPopup";
 import ReactLoading from "react-loading";
+import TransactionPopup from "../components/TransactionPopup"; // Import TransactionPopup
 
 const Dashboard = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isTransactionPopupOpen, setIsTransactionPopupOpen] = useState(false); // State untuk popup transaksi
+  const [selectedTransactionId, setSelectedTransactionId] = useState(null); // State untuk menyimpan ID transaksi yang dipilih
   const [filter, setFilter] = useState({
     type: "All",
     startDate: "",
@@ -87,6 +90,11 @@ const Dashboard = () => {
     if (newPage >= 1 && newPage <= lastPage) {
       setCurrentPage(newPage);
     }
+  };
+
+  const handleTransactionClick = (transactionId) => {
+    setSelectedTransactionId(transactionId); // Set ID transaksi yang dipilih
+    setIsTransactionPopupOpen(true); // Tampilkan popup
   };
 
   const renderPagination = () => {
@@ -222,7 +230,11 @@ const Dashboard = () => {
                   </thead>
                   <tbody>
                     {dashboardData.transactionList.map((item, index) => (
-                      <tr key={index} className="border-b">
+                      <tr
+                        key={index}
+                        className="border-b cursor-pointer hover:bg-gray-100"
+                        onClick={() => handleTransactionClick(item.id)} // Saat baris diklik, tampilkan popup
+                      >
                         <td className="px-4 py-2 text-center">
                           {item.activity_name || "Unknown"}
                         </td>
@@ -287,6 +299,15 @@ const Dashboard = () => {
         onClose={() => setIsFilterOpen(false)}
         applyFilter={setFilter}
       />
+
+      {/* Tambahkan komponen TransactionPopup */}
+      {selectedTransactionId && (
+        <TransactionPopup
+          isOpen={isTransactionPopupOpen}
+          onClose={() => setIsTransactionPopupOpen(false)}
+          transactionId={selectedTransactionId} // Kirim ID transaksi yang dipilih
+        />
+      )}
     </>
   );
 };

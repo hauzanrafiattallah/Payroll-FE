@@ -1,7 +1,41 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FaFileAlt } from "react-icons/fa"; // Ikon untuk upload dan evidence
+import axios from "axios";
 
-const TransactionPopup = ({ isOpen, onClose, transaction }) => {
+const TransactionPopup = ({ isOpen, onClose, transactionId }) => {
+  const [transaction, setTransaction] = useState(null); // State untuk menyimpan data transaksi
+  const [loading, setLoading] = useState(true); // State untuk loading
+  const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
+
+  // Base URL for accessing storage files
+  const baseURL = "https://payroll.humicprototyping.com/storage/app/public/";
+
+  // Fetch data transaksi dari API berdasarkan transactionId
+  useEffect(() => {
+    const fetchTransactionData = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/finance/${transactionId}`, // Sesuaikan endpoint API
+          {
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${authToken}`, // Sertakan token di header
+            },
+          }
+        );
+        setTransaction(response.data.data); // Simpan data transaksi ke state
+        setLoading(false); // Hentikan loading
+      } catch (error) {
+        console.error("Error fetching transaction data:", error);
+        setLoading(false); // Hentikan loading jika terjadi error
+      }
+    };
+
+    if (transactionId) {
+      fetchTransactionData(); // Panggil fungsi fetch jika transactionId tersedia
+    }
+  }, [transactionId, authToken]);
+
   if (!isOpen) return null;
 
   const handleOutsideClick = (e) => {
@@ -20,47 +54,70 @@ const TransactionPopup = ({ isOpen, onClose, transaction }) => {
         <h2 className="mb-4 text-lg font-bold text-center sm:text-xl">
           Transaction Details
         </h2>
-        <div className="space-y-4 sm:space-y-5">
-          {/* No Kegiatan */}
-          <div className="flex justify-between">
-            <span className="font-semibold text-gray-600">No Kegiatan</span>
-            <span className="text-gray-800">{transaction.id}</span>
+
+        {/* Loading State */}
+        {loading ? (
+          <div className="text-center">Loading...</div>
+        ) : (
+          <div className="space-y-4 sm:space-y-5">
+            {/* No Kegiatan */}
+            <div className="flex justify-between">
+              <span className="font-semibold text-gray-600">No Kegiatan</span>
+              <span className="text-gray-800">{transaction.id}</span>
+            </div>
+            {/* Kegiatan */}
+            <div className="flex justify-between">
+              <span className="font-semibold text-gray-600">Kegiatan</span>
+              <span className="text-gray-800">{transaction.activity_name}</span>
+            </div>
+            {/* Tanggal */}
+            <div className="flex justify-between">
+              <span className="font-semibold text-gray-600">Tanggal</span>
+              <span>{new Date(transaction.created_at).toLocaleDateString("id-ID")}</span>
+            </div>
+            {/* Pemasukan */}
+            <div className="flex justify-between">
+              <span className="font-semibold text-gray-600">Pemasukan</span>
+              <span className="text-gray-800">
+                Rp. {transaction.amount.toLocaleString("id-ID")}
+              </span>
+            </div>
+            {/* Pajak */}
+            <div className="flex justify-between">
+              <span className="font-semibold text-gray-600">Pajak</span>
+              <span className="text-gray-800">
+                Rp. {transaction.tax_amount.toLocaleString("id-ID")}
+              </span>
+            </div>
+            {/* Upload */}
+            <div className="flex items-center justify-between">
+              <span className="font-semibold text-gray-600">Upload</span>
+              <a
+                href={`${baseURL}${transaction.document_evidence}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center hover:underline"
+              >
+                <FaFileAlt className="mr-2" />{" "}
+                {`Laporan.${transaction.document_evidence.split('.').pop()}`}
+              </a>
+            </div>
+            {/* Evidence */}
+            <div className="flex items-center justify-between">
+              <span className="font-semibold text-gray-600">Evidence</span>
+              <a
+                href={`${baseURL}${transaction.image_evidence}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center hover:underline"
+              >
+                <FaFileAlt className="mr-2" />{" "}
+                {`Bukti.${transaction.image_evidence.split('.').pop()}`}
+              </a>
+            </div>
           </div>
-          {/* Kegiatan */}
-          <div className="flex justify-between">
-            <span className="font-semibold text-gray-600">Kegiatan</span>
-            <span className="text-gray-800">{transaction.name}</span>
-          </div>
-          {/* Tanggal */}
-          <div className="flex justify-between">
-            <span className="font-semibold text-gray-600">Tanggal</span>
-            <span>{transaction.date}</span>
-          </div>
-          {/* Pemasukan */}
-          <div className="flex justify-between">
-            <span className="font-semibold text-gray-600">Pemasukan</span>
-            <span className="text-gray-800">{transaction.amount}</span>
-          </div>
-          {/* Pajak */}
-          <div className="flex justify-between">
-            <span className="font-semibold text-gray-600">Pajak</span>
-            <span className="text-gray-800">Rp.600.000.000</span>
-          </div>
-          {/* Upload */}
-          <div className="flex items-center justify-between">
-            <span className="font-semibold text-gray-600">Upload</span>
-            <a href="#" className="flex items-center hover:underline">
-              <FaFileAlt className="mr-2" /> Laporan.Xlsx
-            </a>
-          </div>
-          {/* Evidence */}
-          <div className="flex items-center justify-between">
-            <span className="font-semibold text-gray-600">Evidence</span>
-            <a href="#" className="flex items-center hover:underline">
-              <FaFileAlt className="mr-2" /> Bukti.Pdf
-            </a>
-          </div>
-        </div>
+        )}
+
         {/* Tombol Close */}
         <button
           onClick={onClose}
