@@ -48,13 +48,22 @@ const Dashboard = () => {
     const fetchDashboardData = async () => {
       setLoading(true);
       try {
+        // Log parameter yang dikirim ke API
+        console.log("Sending request with params:", {
+          transaction_type: filter.type === "All" ? "" : filter.type,
+          start_date: filter.startDate, // Rentang waktu lebih luas
+          end_date: filter.endDate, // Rentang waktu lebih luas
+          page: currentPage,
+          limit: 10,
+        });
+
         const response = await axios.get(
           `${import.meta.env.VITE_API_URL}/dashboard`,
           {
             params: {
               transaction_type: filter.type === "All" ? "" : filter.type,
-              start_date: filter.startDate || "2024-10-01",
-              end_date: filter.endDate || "2024-10-07",
+              start_date: filter.startDate, // Rentang waktu lebih luas
+              end_date: filter.endDate, // Rentang waktu lebih luas
               page: currentPage,
               limit: 10,
             },
@@ -76,6 +85,10 @@ const Dashboard = () => {
         setLastPage(response.data.data.transactionList.last_page);
         setNextPageUrl(response.data.data.transactionList.next_page_url);
         setPrevPageUrl(response.data.data.transactionList.prev_page_url);
+
+        // Log response dari API untuk memastikan jumlah data
+        console.log("API Response: ", response.data);
+
         setLoading(false);
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
@@ -87,6 +100,7 @@ const Dashboard = () => {
   }, [filter, currentPage, authToken]);
 
   const handlePageChange = (newPage) => {
+    console.log("Page change requested: ", newPage);
     if (newPage >= 1 && newPage <= lastPage) {
       setCurrentPage(newPage);
     }
@@ -100,6 +114,10 @@ const Dashboard = () => {
   const renderPagination = () => {
     const pageNumbers = [];
     const maxPagesToShow = 2;
+
+    console.log("Rendering pagination...");
+    console.log("Next Page URL: ", nextPageUrl);
+    console.log("Prev Page URL: ", prevPageUrl);
 
     if (currentPage > maxPagesToShow + 1) {
       pageNumbers.push(
