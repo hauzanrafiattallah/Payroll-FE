@@ -10,7 +10,7 @@ import { PiHandWithdrawBold, PiHandDepositBold } from "react-icons/pi";
 import { AiOutlineFileDone } from "react-icons/ai";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ReactLoading from "react-loading"; // Import ReactLoading
 
@@ -21,11 +21,32 @@ const Sidebar = () => {
   const [loading, setLoading] = useState(false); // State for loading
   const [role, setRole] = useState(null); // State for user role
 
-  // Ambil role dari localStorage atau API setelah komponen di-mount
+  // Ambil role dari API user
   useEffect(() => {
-    const userRole = localStorage.getItem("role"); // Ambil role dari localStorage atau API
-    console.log("User role:", userRole); // Debugging untuk memeriksa role
-    setRole(userRole);
+    const fetchUserRole = async () => {
+      try {
+        const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
+
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/user`,
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+              Accept: "application/json",
+            },
+          }
+        );
+
+        setRole(response.data.role); // Set role pengguna dari API
+        localStorage.setItem("role", response.data.role); // Simpan role ke localStorage
+      } catch (error) {
+        console.error("Error fetching user role:", error);
+
+        toast.error("Gagal mendapatkan data pengguna.");
+      }
+    };
+
+    fetchUserRole(); // Panggil fungsi untuk ambil role saat komponen di-mount
   }, []);
 
   const toggleSidebar = () => {
@@ -35,21 +56,20 @@ const Sidebar = () => {
   const handleLogout = async () => {
     setLoading(true); // Start loading spinner
     try {
-      // Panggil API logout
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/logout`,
         {},
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // Menggunakan token dari localStorage
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
 
       if (response.status === 200 || response.data.success) {
-        localStorage.removeItem("isAuthenticated"); // Hapus status login
-        localStorage.removeItem("token"); // Hapus token dari localStorage
-        localStorage.removeItem("role"); // Hapus role dari localStorage
+        localStorage.removeItem("isAuthenticated");
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
         toast.success("Logout berhasil!");
         setTimeout(() => {
           navigate("/login"); // Arahkan ke halaman login setelah logout berhasil
@@ -161,7 +181,7 @@ const Sidebar = () => {
             </li>
           </Link>
 
-          {/* Approval */}
+          {/* Approval hanya untuk superAdmin */}
           {role === "superAdmin" && (
             <Link to="/approval">
               <li
