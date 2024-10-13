@@ -11,7 +11,11 @@ const Topbar = () => {
   const [isAddIncomeOpen, setIsAddIncomeOpen] = useState(false);
   const [isAddExpensesOpen, setIsAddExpensesOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [userData, setUserData] = useState(null); // State untuk menyimpan data user
+  const [userData, setUserData] = useState(() => {
+    // Ambil data user dari localStorage jika tersedia
+    const savedUserData = localStorage.getItem("userData");
+    return savedUserData ? JSON.parse(savedUserData) : null;
+  });
 
   const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
 
@@ -35,21 +39,25 @@ const Topbar = () => {
   // Fetch data user saat komponen pertama kali dirender
   useEffect(() => {
     const fetchUserData = async () => {
-      try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/user`, {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${authToken}`, // Sertakan token di header
-          },
-        });
-        setUserData(response.data); // Simpan data user ke state
-      } catch (error) {
-        console.error("Error fetching user data:", error);
+      // Jika data user tidak ada di state, ambil dari API
+      if (!userData) {
+        try {
+          const response = await axios.get(`${import.meta.env.VITE_API_URL}/user`, {
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${authToken}`, // Sertakan token di header
+            },
+          });
+          setUserData(response.data); // Simpan data user ke state
+          localStorage.setItem("userData", JSON.stringify(response.data)); // Simpan ke localStorage
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
       }
     };
 
     fetchUserData();
-  }, [authToken]);
+  }, [authToken, userData]);
 
   // Handle outside click to close dropdown
   useEffect(() => {
@@ -114,7 +122,7 @@ const Topbar = () => {
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               className="flex items-center text-gray-700 bg-white rounded-full focus:outline-none"
             >
-              {/* Tampilkan nama dari API */}
+              {/* Tampilkan nama dari localStorage atau state */}
               <span className="mr-2 text-sm font-medium">{userData?.name || "User"}</span>
               <img
                 src="/image_placeholder.png"
