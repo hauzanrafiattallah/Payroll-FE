@@ -15,7 +15,7 @@ const Income = () => {
 
   // Fungsi untuk mendapatkan ekstensi file
   const getFileExtension = (filePath) => {
-    return filePath ? filePath.split('.').pop() : ''; // Mengambil ekstensi file setelah titik
+    return filePath ? filePath.split(".").pop() : ""; // Mengambil ekstensi file setelah titik
   };
 
   // Fetch data dari API
@@ -63,12 +63,13 @@ const Income = () => {
   };
 
   // Fungsi untuk menampilkan pagination dengan format tertentu
+  // Fungsi untuk menampilkan pagination dengan format tertentu
   const renderPagination = () => {
     const pageNumbers = [];
-    const maxPagesToShow = 3; // Jumlah halaman yang ditampilkan sebelum dan sesudah halaman saat ini
+    const maxPagesToShow = 2; // Jumlah halaman yang ditampilkan sebelum dan sesudah halaman saat ini
 
     // Menambahkan tombol untuk halaman pertama jika halaman saat ini lebih dari maxPagesToShow
-    if (currentPage > maxPagesToShow) {
+    if (currentPage > maxPagesToShow + 1) {
       pageNumbers.push(
         <button
           key={1}
@@ -78,18 +79,22 @@ const Income = () => {
           1
         </button>
       );
-      if (currentPage > maxPagesToShow + 1) {
-        pageNumbers.push(<span key="dots-before">...</span>);
-      }
+      pageNumbers.push(<span key="dots-before">...</span>);
     }
 
     // Menampilkan halaman sekitar halaman saat ini
-    for (let i = Math.max(1, currentPage - maxPagesToShow); i <= Math.min(lastPage, currentPage + maxPagesToShow); i++) {
+    for (
+      let i = Math.max(1, currentPage - maxPagesToShow);
+      i <= Math.min(lastPage, currentPage + maxPagesToShow);
+      i++
+    ) {
       pageNumbers.push(
         <button
           key={i}
           className={`px-3 py-1 rounded-full ${
-            i === currentPage ? "text-white bg-[#B4252A]" : "text-gray-600 bg-white hover:bg-gray-100"
+            i === currentPage
+              ? "text-white bg-[#B4252A]"
+              : "text-gray-600 bg-white hover:bg-gray-100"
           }`}
           onClick={() => handlePageChange(i)}
         >
@@ -100,9 +105,7 @@ const Income = () => {
 
     // Menambahkan tombol untuk halaman terakhir jika halaman saat ini mendekati halaman terakhir
     if (currentPage < lastPage - maxPagesToShow) {
-      if (currentPage < lastPage - maxPagesToShow - 1) {
-        pageNumbers.push(<span key="dots-after">...</span>);
-      }
+      pageNumbers.push(<span key="dots-after">...</span>);
       pageNumbers.push(
         <button
           key={lastPage}
@@ -164,7 +167,8 @@ const Income = () => {
                             {index + 1} {/* Menampilkan nomor urut */}
                           </td>
                           <td className="px-4 py-2 text-center whitespace-nowrap">
-                            {income.activity_name} {/* Mengambil activity_name */}
+                            {income.activity_name}{" "}
+                            {/* Mengambil activity_name */}
                           </td>
                           <td className="px-4 py-2 text-center whitespace-nowrap">
                             {new Date(income.created_at).toLocaleDateString(
@@ -177,7 +181,8 @@ const Income = () => {
                             {/* Format amount sebagai Rupiah tanpa ,00 */}
                           </td>
                           <td className="px-4 py-2 text-center whitespace-nowrap">
-                            Rp. {Number(income.tax_amount).toLocaleString("id-ID")}{" "}
+                            Rp.{" "}
+                            {Number(income.tax_amount).toLocaleString("id-ID")}{" "}
                             {/* Format tax_amount sebagai Rupiah tanpa ,00 */}
                           </td>
                           <td className="px-4 py-2 text-center whitespace-nowrap">
@@ -186,7 +191,9 @@ const Income = () => {
                               target="_blank"
                               rel="noopener noreferrer"
                             >
-                              {`Laporan.${getFileExtension(income.document_evidence)}`}
+                              {`Laporan.${getFileExtension(
+                                income.document_evidence
+                              )}`}
                             </a>{" "}
                             {/* Tampilkan nama file berdasarkan ekstensi */}
                           </td>
@@ -196,7 +203,9 @@ const Income = () => {
                               target="_blank"
                               rel="noopener noreferrer"
                             >
-                              {`Bukti.${getFileExtension(income.image_evidence)}`}
+                              {`Bukti.${getFileExtension(
+                                income.image_evidence
+                              )}`}
                             </a>{" "}
                             {/* Tampilkan nama file berdasarkan ekstensi */}
                           </td>
@@ -230,7 +239,7 @@ const Income = () => {
                   <button
                     className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
                     onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={!prevPageUrl} // Disabled jika tidak ada halaman sebelumnya
+                    disabled={currentPage === 1} // Disable button ketika di halaman pertama
                   >
                     &lt;
                   </button>
@@ -238,7 +247,7 @@ const Income = () => {
                   <button
                     className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
                     onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={!nextPageUrl} // Disabled jika tidak ada halaman berikutnya
+                    disabled={currentPage === lastPage} // Disable button ketika di halaman terakhir
                   >
                     &gt;
                   </button>
