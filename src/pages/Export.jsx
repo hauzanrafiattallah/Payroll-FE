@@ -15,7 +15,7 @@ const Export = () => {
   const [loading, setLoading] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [exportType, setExportType] = useState("xlsx"); // Format default: Excel (.xlsx)
+  const [exportType, setExportType] = useState("excel"); // Format default: Excel (.xlsx)
   const [showDatePicker, setShowDatePicker] = useState(false); // Untuk menampilkan date picker
   const [showExportTypeDropdown, setShowExportTypeDropdown] = useState(false); // Untuk dropdown export type
   const datePickerRef = useRef(null); // Ref untuk date picker
@@ -25,7 +25,7 @@ const Export = () => {
   const handleFormSubmit = async () => {
     const formattedStartDate = format(startDate, "yyyy-MM-dd");
     const formattedEndDate = format(endDate, "yyyy-MM-dd");
-
+  
     if (!startDate || !endDate) {
       if (!toast.isActive("toast-error")) {
         toast.dismiss();
@@ -35,9 +35,9 @@ const Export = () => {
       }
       return;
     }
-
+  
     setLoading(true);
-
+  
     try {
       const response = await axios.get(
         `${
@@ -46,12 +46,13 @@ const Export = () => {
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
-            "Content-Type": "application/json",
           },
-          responseType: "blob", // Response akan dalam bentuk blob untuk file
+          responseType: "blob", // Agar menerima file sebagai blob
         }
       );
-
+  
+      console.log(response.data.size); // Cek ukuran data yang diterima
+  
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
@@ -60,15 +61,15 @@ const Export = () => {
         `export_${format(startDate, "yyyyMMdd")}_${format(
           endDate,
           "yyyyMMdd"
-        )}.${exportType}`
+        )}.${exportType === 'excel' ? 'xlsx' : exportType}` // Penyesuaian ekstensi file
       );
       document.body.appendChild(link);
       link.click();
       link.parentNode.removeChild(link);
-
+  
       toast.dismiss();
       toast.success("Data berhasil diexport!", { toastId: "toast-success" });
-
+  
       setLoading(false);
     } catch (error) {
       if (!toast.isActive("toast-error")) {
@@ -80,6 +81,7 @@ const Export = () => {
       setLoading(false);
     }
   };
+  
 
   const getDisplayDateRange = (start, end) => {
     if (start && end) {
@@ -139,7 +141,7 @@ const Export = () => {
                   <div className="truncate max-w-[200px]">
                     <p className="text-gray-500">Export As</p>
                     <h2 className="text-lg font-bold md:text-xl">
-                      {exportType === "xlsx" ? "Excel (.Xlsx)" : "PDF (.Pdf)"}
+                      {exportType === "excel" ? "Excel (.Xlsx)" : "PDF (.Pdf)"}
                     </h2>
                   </div>
                 </div>
@@ -163,7 +165,7 @@ const Export = () => {
                       }}
                       className="block w-full p-2 mt-1 border border-gray-300 rounded-lg shadow-sm"
                     >
-                      <option value="xlsx">Excel (.Xlsx)</option>
+                      <option value="excel">Excel (.Xlsx)</option>
                       <option value="pdf">PDF (.Pdf)</option>
                     </select>
                   </div>
