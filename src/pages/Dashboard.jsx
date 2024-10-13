@@ -4,7 +4,7 @@ import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import { FaSlidersH } from "react-icons/fa";
 import FilterPopup from "../components/FilterPopup";
-import ReactLoading from "react-loading"; // Import loading component
+import ReactLoading from "react-loading";
 
 const Dashboard = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -15,63 +15,20 @@ const Dashboard = () => {
   });
 
   const [dashboardData, setDashboardData] = useState({
-    ballance: 0, // Menggunakan 'ballance' sesuai dengan API response
+    ballance: 0,
     monthlyIncome: 0,
     monthlyExpense: 0,
     transactionList: [],
   });
 
-  const [currentPage, setCurrentPage] = useState(1); // Menyimpan halaman saat ini
-  const [loading, setLoading] = useState(true); // State for loading
-  const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
+  const [currentPage, setCurrentPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
+  const [nextPageUrl, setNextPageUrl] = useState(null);
+  const [prevPageUrl, setPrevPageUrl] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const authToken = localStorage.getItem("token");
 
-  // Fetch API data when component mounts or filter/page changes
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      setLoading(true); // Set loading to true before fetching data
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/dashboard`,
-          {
-            params: {
-              transaction_type: filter.type === "All" ? "" : filter.type,
-              start_date: filter.startDate || "2024-10-01", // Default value jika kosong
-              end_date: filter.endDate || "2024-10-07", // Default value jika kosong
-              page: currentPage, // Gunakan currentPage untuk pagination
-              limit: 10, // Sesuaikan limit sesuai kebutuhan
-            },
-            headers: {
-              Accept: "application/json",
-              Authorization: `Bearer ${authToken}`, // Gunakan token dari localStorage
-            },
-          }
-        );
-
-        // Cek data dari API dengan console.log
-        console.log("Data dari API:", response.data.data);
-
-        setDashboardData({
-          ballance: response.data.data.ballance, // Gunakan ballance dari API
-          monthlyIncome: response.data.data.monthlyIncome,
-          monthlyExpense: response.data.data.monthlyExpense,
-          transactionList: response.data.data.transactionList.data,
-        });
-        setLoading(false); // Set loading to false once data is fetched
-      } catch (error) {
-        console.error("Error fetching dashboard data:", error);
-        setLoading(false); // Set loading to false in case of error
-      }
-    };
-
-    fetchDashboardData();
-  }, [filter, currentPage, authToken]); // Refetch data saat filter atau halaman berubah
-
-  // Event handler untuk pagination
-  const handlePageChange = (newPage) => {
-    setCurrentPage(newPage); // Update halaman dan fetch data ulang
-  };
-
-  // Function to get the background color based on the filter
+  // Function to determine background color
   const getBackgroundColor = (section) => {
     if (filter.type === "income" && section === "income") {
       return "bg-[#B4252A] text-white";
@@ -80,24 +37,121 @@ const Dashboard = () => {
     } else if (filter.type === "All" && section === "balance") {
       return "bg-[#B4252A] text-white";
     } else {
-      return "bg-white text-black"; // Default white background for non-selected sections
+      return "bg-white text-black"; // Default color
     }
+  };
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/dashboard`,
+          {
+            params: {
+              transaction_type: filter.type === "All" ? "" : filter.type,
+              start_date: filter.startDate || "2024-10-01",
+              end_date: filter.endDate || "2024-10-07",
+              page: currentPage,
+              limit: 10,
+            },
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        );
+
+        setDashboardData({
+          ballance: response.data.data.ballance,
+          monthlyIncome: response.data.data.monthlyIncome,
+          monthlyExpense: response.data.data.monthlyExpense,
+          transactionList: response.data.data.transactionList.data,
+        });
+
+        setCurrentPage(response.data.data.transactionList.current_page);
+        setLastPage(response.data.data.transactionList.last_page);
+        setNextPageUrl(response.data.data.transactionList.next_page_url);
+        setPrevPageUrl(response.data.data.transactionList.prev_page_url);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, [filter, currentPage, authToken]);
+
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= lastPage) {
+      setCurrentPage(newPage);
+    }
+  };
+
+  const renderPagination = () => {
+    const pageNumbers = [];
+    const maxPagesToShow = 2;
+
+    if (currentPage > maxPagesToShow + 1) {
+      pageNumbers.push(
+        <button
+          key={1}
+          className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
+          onClick={() => handlePageChange(1)}
+        >
+          1
+        </button>
+      );
+      pageNumbers.push(<span key="dots-before">...</span>);
+    }
+
+    for (
+      let i = Math.max(1, currentPage - maxPagesToShow);
+      i <= Math.min(lastPage, currentPage + maxPagesToShow);
+      i++
+    ) {
+      pageNumbers.push(
+        <button
+          key={i}
+          className={`px-3 py-1 rounded-full ${
+            i === currentPage
+              ? "text-white bg-[#B4252A]"
+              : "text-gray-600 bg-white hover:bg-gray-100"
+          }`}
+          onClick={() => handlePageChange(i)}
+        >
+          {i}
+        </button>
+      );
+    }
+
+    if (currentPage < lastPage - maxPagesToShow) {
+      pageNumbers.push(<span key="dots-after">...</span>);
+      pageNumbers.push(
+        <button
+          key={lastPage}
+          className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
+          onClick={() => handlePageChange(lastPage)}
+        >
+          {lastPage}
+        </button>
+      );
+    }
+
+    return pageNumbers;
   };
 
   return (
     <>
       <Topbar />
       <div className="flex flex-col mt-20 lg:flex-row">
-        {/* Sidebar */}
         <Sidebar />
-
-        {/* Konten */}
         <div className="w-full p-8 mx-auto mt-2 lg:max-w-full lg:ml-72">
           <h1 className="mb-6 text-2xl font-bold text-center lg:text-left">
             Dashboard
           </h1>
 
-          {/* Loading state */}
           {loading ? (
             <div className="flex justify-center items-center min-h-screen">
               <ReactLoading
@@ -109,9 +163,7 @@ const Dashboard = () => {
             </div>
           ) : (
             <>
-              {/* Section untuk Balance, Income, dan Expense */}
               <div className="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2 lg:grid-cols-3">
-                {/* Balance */}
                 <div
                   className={`p-6 rounded-lg shadow-lg ${getBackgroundColor(
                     "balance"
@@ -120,10 +172,8 @@ const Dashboard = () => {
                   <h2 className="text-lg font-semibold">Balance</h2>
                   <p className="text-2xl font-bold">
                     Rp. {dashboardData.ballance.toLocaleString("id-ID")}{" "}
-                    {/* Gunakan 'ballance' */}
                   </p>
                 </div>
-                {/* Monthly Income */}
                 <div
                   className={`p-6 rounded-lg shadow-lg ${getBackgroundColor(
                     "income"
@@ -134,7 +184,6 @@ const Dashboard = () => {
                     Rp. {dashboardData.monthlyIncome.toLocaleString("id-ID")}
                   </p>
                 </div>
-                {/* Monthly Expense */}
                 <div
                   className={`p-6 rounded-lg shadow-lg ${getBackgroundColor(
                     "expense"
@@ -147,7 +196,6 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* Transaction List */}
               <div className="flex items-center justify-between mb-4">
                 <h1 className="mb-6 text-2xl font-bold text-center lg:text-left">
                   Transaction List
@@ -161,7 +209,6 @@ const Dashboard = () => {
                 </button>
               </div>
 
-              {/* Tabel Transaction */}
               <div className="p-6 mb-6 overflow-x-auto bg-white rounded-lg shadow-lg">
                 <table className="w-full text-left table-auto min-w-[600px]">
                   <thead>
@@ -178,24 +225,20 @@ const Dashboard = () => {
                       <tr key={index} className="border-b">
                         <td className="px-4 py-2 text-center">
                           {item.activity_name || "Unknown"}
-                        </td>{" "}
-                        {/* Menggunakan activity_name dari API */}
+                        </td>
                         <td className="px-4 py-2 text-center">
                           {item.created_at
                             ? new Date(item.created_at).toLocaleDateString(
                                 "id-ID"
                               )
                             : "Unknown"}
-                        </td>{" "}
-                        {/* Menggunakan created_at dari API */}
+                        </td>
                         <td className="px-4 py-2 text-center">
                           Rp. {item.amount.toLocaleString("id-ID") || 0}
-                        </td>{" "}
-                        {/* Menggunakan amount dari API */}
+                        </td>
                         <td className="px-4 py-2 text-center">
                           {item.transaction_type || "N/A"}
-                        </td>{" "}
-                        {/* Menggunakan transaction_type dari API */}
+                        </td>
                         <td className="px-4 py-2 text-center">
                           <span
                             className={`inline-block w-[100px] px-2 py-1 text-sm font-semibold rounded-md text-center ${
@@ -215,22 +258,20 @@ const Dashboard = () => {
                 </table>
               </div>
 
-              {/* Pagination */}
               <div className="flex justify-end mt-6">
                 <div className="flex items-center px-4 py-2 space-x-2 bg-white rounded-full shadow-md">
                   <button
                     className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
                     onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
+                    disabled={!prevPageUrl}
                   >
                     &lt;
                   </button>
-                  <button className="px-3 py-1 text-white bg-[#B4252A] rounded-full">
-                    {currentPage}
-                  </button>
+                  {renderPagination()}
                   <button
                     className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
                     onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={!nextPageUrl}
                   >
                     &gt;
                   </button>
@@ -241,7 +282,6 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Filter Pop-Up */}
       <FilterPopup
         isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}
