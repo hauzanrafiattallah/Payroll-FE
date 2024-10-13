@@ -28,6 +28,8 @@ const Expenses = () => {
         );
 
         console.log(response.data); // Debugging untuk melihat response yang diterima
+        console.log("Document Evidence:", response.data.data.data[0].document_evidence); // Debugging document_evidence
+        console.log("Image Evidence:", response.data.data.data[0].image_evidence); // Debugging image_evidence
 
         // Update state dengan array data expense yang berada di dalam response.data.data
         setExpenseData(response.data.data.data); // Ambil array data dari dalam nested `data`
@@ -98,15 +100,16 @@ const Expenses = () => {
                           {/* Menggunakan created_at */}
                         </td>
                         <td className="px-4 py-2 text-center whitespace-nowrap">
-                          Rp. {expense.amount} {/* Menggunakan amount */}
+                          Rp. {Number(expense.amount).toLocaleString("id-ID")}{" "}
+                          {/* Menggunakan amount dan format sebagai Rupiah tanpa ,00 */}
                         </td>
                         <td className="px-4 py-2 text-center whitespace-nowrap">
-                          Rp. {expense.tax_amount}{" "}
-                          {/* Menggunakan tax_amount */}
+                          Rp. {Number(expense.tax_amount).toLocaleString("id-ID")}{" "}
+                          {/* Menggunakan tax_amount dan format sebagai Rupiah tanpa ,00 */}
                         </td>
                         <td className="px-4 py-2 text-center whitespace-nowrap">
                           <a
-                            href={expense.document_evidence}
+                            href={`https://payroll.humicprototyping.com/storage/app/public/${expense.document_evidence}`} // Tambahkan "/storage/app/public/"
                             target="_blank"
                             rel="noopener noreferrer"
                           >
@@ -115,7 +118,7 @@ const Expenses = () => {
                         </td>
                         <td className="px-4 py-2 text-center whitespace-nowrap">
                           <a
-                            href={expense.image_evidence}
+                            href={`https://payroll.humicprototyping.com/storage/app/public/${expense.image_evidence}`} // Tambahkan "/storage/app/public/"
                             target="_blank"
                             rel="noopener noreferrer"
                           >
