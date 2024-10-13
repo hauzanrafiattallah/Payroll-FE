@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { PiHandDepositBold, PiHandWithdrawBold } from "react-icons/pi";
-import AddIncomePopup from "./AddIncomePopup";
-import AddExpensesPopup from "./AddExpensesPopup";
+import AddIncomePopUp from "./AddIncomePopUp";
+import AddExpensesPopUp from "./AddExpensesPopUp";
 import { Link } from "react-router-dom"; // Import Link dari react-router-dom
 import axios from "axios";
 
@@ -115,13 +115,13 @@ const Topbar = () => {
       </div>
 
       {/* Popup untuk Add Income */}
-      <AddIncomePopup
+      <AddIncomePopUp
         isOpen={isAddIncomeOpen}
         onClose={() => setIsAddIncomeOpen(false)}
       />
 
       {/* Popup untuk Add Expenses */}
-      <AddExpensesPopup
+      <AddExpensesPopUp
         isOpen={isAddExpensesOpen}
         onClose={() => setIsAddExpensesOpen(false)}
       />
