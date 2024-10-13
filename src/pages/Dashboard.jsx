@@ -4,8 +4,8 @@ import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import { FaSlidersH } from "react-icons/fa";
 import FilterPopup from "../components/FilterPopup";
+import TransactionPopup from "../components/TransactionPopup";
 import ReactLoading from "react-loading";
-import TransactionPopup from "../components/TransactionPopup"; // Import TransactionPopup
 
 const Dashboard = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
