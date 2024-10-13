@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { PiHandDepositBold, PiHandWithdrawBold } from "react-icons/pi";
 import AddIncomePopup from "./AddIncomePopup";
 import AddExpensesPopup from "./AddExpensesPopup";
-import { FaCaretDown } from "react-icons/fa";
 import { Link } from "react-router-dom"; // Import Link dari react-router-dom
 import axios from "axios";
 
@@ -12,74 +11,38 @@ const Topbar = () => {
   const [isAddExpensesOpen, setIsAddExpensesOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [userData, setUserData] = useState(() => {
-    // Ambil data user dari localStorage jika tersedia
+    // Ambil data user dari localStorage jika ada
     const savedUserData = localStorage.getItem("userData");
     return savedUserData ? JSON.parse(savedUserData) : null;
   });
 
   const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
 
-  // Detect scrolling to apply a background to the top bar
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 0) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
   // Fetch data user saat komponen pertama kali dirender
   useEffect(() => {
     const fetchUserData = async () => {
-      // Jika data user tidak ada di state, ambil dari API
-      if (!userData) {
-        try {
-          const response = await axios.get(
-            `${import.meta.env.VITE_API_URL}/user`,
-            {
-              headers: {
-                Accept: "application/json",
-                Authorization: `Bearer ${authToken}`, // Sertakan token di header
-              },
-            }
-          );
-          setUserData(response.data); // Simpan data user ke state
-          localStorage.setItem("userData", JSON.stringify(response.data)); // Simpan ke localStorage
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-        }
+      try {
+        // Ambil data pengguna dari API setelah login
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/user`,
+          {
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${authToken}`, // Sertakan token di header
+            },
+          }
+        );
+        setUserData(response.data); // Simpan data user ke state
+        localStorage.setItem("userData", JSON.stringify(response.data)); // Simpan ke localStorage
+      } catch (error) {
+        console.error("Error fetching user data:", error);
       }
     };
 
-    fetchUserData();
-  }, [authToken, userData]);
-
-  // Handle outside click to close dropdown
-  useEffect(() => {
-    const handleOutsideClick = (event) => {
-      if (!event.target.closest(".dropdown-button")) {
-        setIsDropdownOpen(false);
-      }
-    };
-
-    if (isDropdownOpen) {
-      window.addEventListener("click", handleOutsideClick);
-    } else {
-      window.removeEventListener("click", handleOutsideClick);
+    if (authToken) {
+      fetchUserData(); // Panggil API untuk mendapatkan data pengguna terbaru
     }
-
-    return () => {
-      window.removeEventListener("click", handleOutsideClick);
-    };
-  }, [isDropdownOpen]);
+  }, [authToken]);
 
   return (
     <>
@@ -125,7 +88,7 @@ const Topbar = () => {
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               className="flex items-center text-gray-700 bg-white rounded-full focus:outline-none"
             >
-              {/* Tampilkan nama dari localStorage atau state */}
+              {/* Tampilkan nama dari state atau fallback ke "User" */}
               <span className="mr-2 ml-5 text-sm font-medium">
                 {userData?.name || "User"}
               </span>
