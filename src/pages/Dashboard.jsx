@@ -47,8 +47,11 @@ const Dashboard = () => {
           }
         );
 
+        // Cek data dari API dengan console.log
+        console.log("Data dari API:", response.data.data);
+
         setDashboardData({
-          ballance: response.data.data.ballance, // Pastikan penggunaan 'ballance' sesuai dengan API response
+          ballance: response.data.data.ballance, // Gunakan ballance dari API
           monthlyIncome: response.data.data.monthlyIncome,
           monthlyExpense: response.data.data.monthlyExpense,
           transactionList: response.data.data.transactionList.data,
@@ -116,7 +119,8 @@ const Dashboard = () => {
                 >
                   <h2 className="text-lg font-semibold">Balance</h2>
                   <p className="text-2xl font-bold">
-                    Rp. {dashboardData.ballance} {/* Gunakan 'ballance' */}
+                    Rp. {dashboardData.ballance.toLocaleString("id-ID")}{" "}
+                    {/* Gunakan 'ballance' */}
                   </p>
                 </div>
                 {/* Monthly Income */}
@@ -127,7 +131,7 @@ const Dashboard = () => {
                 >
                   <h2 className="text-lg font-semibold">Monthly Income</h2>
                   <p className="text-2xl font-bold">
-                    Rp. {dashboardData.monthlyIncome}
+                    Rp. {dashboardData.monthlyIncome.toLocaleString("id-ID")}
                   </p>
                 </div>
                 {/* Monthly Expense */}
@@ -138,7 +142,7 @@ const Dashboard = () => {
                 >
                   <h2 className="text-lg font-semibold">Monthly Expense</h2>
                   <p className="text-2xl font-bold">
-                    Rp. {dashboardData.monthlyExpense}
+                    Rp. {dashboardData.monthlyExpense.toLocaleString("id-ID")}
                   </p>
                 </div>
               </div>
@@ -185,7 +189,7 @@ const Dashboard = () => {
                         </td>{" "}
                         {/* Menggunakan created_at dari API */}
                         <td className="px-4 py-2 text-center">
-                          Rp. {item.amount || 0}
+                          Rp. {item.amount.toLocaleString("id-ID") || 0}
                         </td>{" "}
                         {/* Menggunakan amount dari API */}
                         <td className="px-4 py-2 text-center">
