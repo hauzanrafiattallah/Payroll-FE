@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { BsUpload } from "react-icons/bs";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -14,6 +15,8 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
   const [imageEvidence, setImageEvidence] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [animatePopup, setAnimatePopup] = useState(false);
+
+  const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
 
   useEffect(() => {
     const handleOutsideClick = (e) => {
@@ -47,9 +50,10 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
     return name;
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    // Validasi sederhana
+
+    // Validasi form
     if (
       !activityName ||
       !selectedDate ||
@@ -62,21 +66,53 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
       return;
     }
 
-    // Lakukan sesuatu di sini, misal submit form ke server
-    console.log({
-      activity_name: activityName,
-      date: selectedDate,
-      amount,
-      tax: taxAmount,
-      documentEvidence,
-      imageEvidence,
-    });
+    // Validasi tipe file documentEvidence (harus PDF atau XLSX)
+    const allowedFileTypes = [
+      "application/pdf",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ];
+    if (documentEvidence && !allowedFileTypes.includes(documentEvidence.type)) {
+      toast.error("File keuangan harus dalam format PDF atau XLSX.");
+      return;
+    }
 
-    // Jika berhasil, tampilkan toast success
-    toast.success("Data berhasil disimpan!");
-    closePopup(); // Tutup popup setelah submit
+    // Buat FormData untuk mengirim file bersama dengan field lainnya
+    const formData = new FormData();
+    formData.append("activity_name", activityName);
+    formData.append("transaction_type", "income"); // Ubah sesuai kebutuhan "income" atau "expense"
+    formData.append("amount", amount);
+    formData.append("tax_amount", taxAmount);
+    formData.append("document_evidence", documentEvidence);
+    formData.append("image_evidence", imageEvidence);
+    formData.append(
+      "transaction_date",
+      selectedDate.toISOString().split("T")[0]
+    ); // Mengubah format tanggal jadi YYYY-MM-DD
+
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/finance`,
+        formData,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${authToken}`, // Gunakan token yang sesuai
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      toast.success("Data berhasil disimpan!"); // Tampilkan pesan sukses
+      closePopup(); // Tutup popup setelah submit berhasil
+    } catch (error) {
+      console.error("Error submitting form data:", error.response || error);
+      toast.error(
+        "Gagal mengirim data, pastikan semua field terisi dengan benar."
+      );
+    }
   };
 
+  // Fungsi untuk memicu klik pada input file yang disembunyikan
   const triggerFileUpload = (id) => {
     document.getElementById(id).click();
   };
@@ -113,6 +149,7 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
               placeholder="DD/MM/YY"
               onClick={() => setShowDatePicker(true)}
               readOnly
+              required
             />
             {showDatePicker && (
               <DatePicker
@@ -130,7 +167,7 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
           <label className="block mb-2 font-semibold">Jumlah</label>
           <input
             className="w-full p-2 mb-4 border border-gray-300 rounded-lg"
-            placeholder="Masukkan Jumlah Pendapatan..."
+            placeholder="Masukkan Jumlah Pengeluaran..."
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             required
@@ -158,7 +195,7 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
                 <span className="text-gray-500">
                   {documentEvidence
                     ? formatFileName(documentEvidence.name)
-                    : "Upload File Keuangan (PDF/xlsx)"}
+                    : "Upload File Keuangan (PDF/XLSX)"}
                 </span>
               </div>
               <input
@@ -186,7 +223,7 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
               <input
                 type="file"
                 id="imageEvidence"
-                accept="image/png, image/jpeg"
+                accept="image/png, image/jpeg" // PNG/JPG untuk bukti
                 className="hidden"
                 onChange={(e) => setImageEvidence(e.target.files[0])}
                 required

@@ -79,7 +79,7 @@ const AddExpensesPopup = ({ isOpen, onClose }) => {
     // Buat FormData untuk mengirim file bersama dengan field lainnya
     const formData = new FormData();
     formData.append("activity_name", activityName);
-    formData.append("transaction_type", "income"); // Ubah sesuai kebutuhan "income" atau "expense"
+    formData.append("transaction_type", "expense"); // Ubah sesuai kebutuhan "income" atau "expense"
     formData.append("amount", amount);
     formData.append("tax_amount", taxAmount);
     formData.append("document_evidence", documentEvidence);
