@@ -9,6 +9,11 @@ const Expenses = () => {
   const [loading, setLoading] = useState(true); // State untuk loading
   const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
 
+  // Fungsi untuk mendapatkan ekstensi file
+  const getFileExtension = (filePath) => {
+    return filePath ? filePath.split('.').pop() : ''; // Mengambil ekstensi file setelah titik
+  };
+
   // Fetch data dari API
   useEffect(() => {
     const fetchExpenseData = async () => {
@@ -109,21 +114,23 @@ const Expenses = () => {
                         </td>
                         <td className="px-4 py-2 text-center whitespace-nowrap">
                           <a
-                            href={`https://payroll.humicprototyping.com/storage/app/public/${expense.document_evidence}`} // Tambahkan "/storage/app/public/"
+                            href={`https://payroll.humicprototyping.com/storage/app/public/${expense.document_evidence}`}
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            Laporan.Pdf
+                            {`Laporan.${getFileExtension(expense.document_evidence)}`}
                           </a>
+                          {/* Tampilkan nama file berdasarkan ekstensi */}
                         </td>
                         <td className="px-4 py-2 text-center whitespace-nowrap">
                           <a
-                            href={`https://payroll.humicprototyping.com/storage/app/public/${expense.image_evidence}`} // Tambahkan "/storage/app/public/"
+                            href={`https://payroll.humicprototyping.com/storage/app/public/${expense.image_evidence}`}
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            Bukti.Pdf
+                            {`Bukti.${getFileExtension(expense.image_evidence)}`}
                           </a>
+                          {/* Tampilkan nama file berdasarkan ekstensi */}
                         </td>
                         <td
                           className={`px-4 py-2 text-center ${

@@ -9,6 +9,11 @@ const Income = () => {
   const [loading, setLoading] = useState(true); // State untuk loading
   const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
 
+  // Fungsi untuk mendapatkan ekstensi file
+  const getFileExtension = (filePath) => {
+    return filePath ? filePath.split('.').pop() : ''; // Mengambil ekstensi file setelah titik
+  };
+
   // Fetch data dari API
   useEffect(() => {
     const fetchIncomeData = async () => {
@@ -105,23 +110,23 @@ const Income = () => {
                         </td>
                         <td className="px-4 py-2 text-center whitespace-nowrap">
                           <a
-                            href={income.document_evidence}
+                            href={`https://payroll.humicprototyping.com/storage/app/public/${income.document_evidence}`}
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            Laporan.Pdf
+                            {`Laporan.${getFileExtension(income.document_evidence)}`}
                           </a>{" "}
-                          {/* Mengambil link document_evidence */}
+                          {/* Tampilkan nama file berdasarkan ekstensi */}
                         </td>
                         <td className="px-4 py-2 text-center whitespace-nowrap">
                           <a
-                            href={income.image_evidence}
+                            href={`https://payroll.humicprototyping.com/storage/app/public/${income.image_evidence}`}
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            Bukti.Pdf
+                            {`Bukti.${getFileExtension(income.image_evidence)}`}
                           </a>{" "}
-                          {/* Mengambil link image_evidence */}
+                          {/* Tampilkan nama file berdasarkan ekstensi */}
                         </td>
                         <td
                           className={`px-4 py-2 text-center ${
