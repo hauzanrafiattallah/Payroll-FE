@@ -4,10 +4,20 @@ import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import ReactLoading from "react-loading";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import icon untuk mata
+import { toast } from "react-toastify"; // Import toast dari react-toastify
 
 const Profile = () => {
   const [userData, setUserData] = useState(null); // State untuk menyimpan data user
-  const [loading, setLoading] = useState(true); // State untuk loading
+  const [loading, setLoading] = useState(true); // State untuk loading fetch data
+  const [isSaving, setIsSaving] = useState(false); // State untuk loading save password
+  const [currentPassword, setCurrentPassword] = useState(""); // State untuk password saat ini
+  const [newPassword, setNewPassword] = useState(""); // State untuk password baru
+  const [confirmPassword, setConfirmPassword] = useState(""); // State untuk konfirmasi password
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false); // Untuk toggle visibility current password
+  const [showNewPassword, setShowNewPassword] = useState(false); // Untuk toggle visibility new password
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Untuk toggle visibility confirm password
+  const [error, setError] = useState(false); // State untuk error handling
   const navigate = useNavigate(); // Inisialisasi useNavigate
 
   // Ambil token dari localStorage
@@ -17,12 +27,15 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/user`, {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${authToken}`, // Sertakan token di header
-          },
-        });
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/user`,
+          {
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${authToken}`, // Sertakan token di header
+            },
+          }
+        );
         console.log(response.data); // Debugging untuk melihat respons dari API
         setUserData(response.data); // Simpan data user ke state
         setLoading(false); // Set loading ke false setelah data diambil
@@ -34,6 +47,49 @@ const Profile = () => {
 
     fetchUserData();
   }, [authToken]);
+
+  // Fungsi untuk meng-handle perubahan password
+  const handleChangePassword = async () => {
+    if (newPassword !== confirmPassword) {
+      setError(true);
+      toast.error("New password and confirmation password do not match");
+      return;
+    }
+
+    setIsSaving(true); // Aktifkan state loading
+
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/update-password`,
+        {
+          current_password: currentPassword,
+          new_password: newPassword,
+          new_password_confirmation: confirmPassword,
+        },
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${authToken}`, // Sertakan token di header
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        // Reset form fields after successful update
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+        setError(false);
+        toast.success("Password updated successfully!"); // Toast sukses
+      }
+    } catch (error) {
+      console.error("Error updating password:", error);
+      setError(true);
+      toast.error("Failed to update password. Please try again."); // Toast error
+    } finally {
+      setIsSaving(false); // Matikan state loading setelah selesai
+    }
+  };
 
   return (
     <>
@@ -47,11 +103,16 @@ const Profile = () => {
           <h1 className="mb-6 text-2xl font-bold text-center lg:text-left">
             Profile
           </h1>
-          
-          {/* Loading State */}
+
+          {/* Loading State untuk fetch data user */}
           {loading ? (
             <div className="flex justify-center items-center min-h-screen">
-              <ReactLoading type="spin" color="#B4252A" height={50} width={50} />
+              <ReactLoading
+                type="spin"
+                color="#B4252A"
+                height={50}
+                width={50}
+              />
             </div>
           ) : (
             <div className="bg-white rounded-lg shadow-lg">
@@ -102,21 +163,57 @@ const Profile = () => {
                     Change Password
                   </h3>
                   <div className="flex flex-col space-y-4 w-full lg:w-3/4">
-                    <input
-                      type="password"
-                      placeholder="Enter your old password"
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                    />
-                    <input
-                      type="password"
-                      placeholder="Enter your new password"
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                    />
-                    <input
-                      type="password"
-                      placeholder="Reenter your new password"
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                    />
+                    <div className="relative">
+                      <input
+                        type={showCurrentPassword ? "text" : "password"}
+                        placeholder="Enter your old password"
+                        value={currentPassword}
+                        onChange={(e) => setCurrentPassword(e.target.value)}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                      />
+                      <span
+                        className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 cursor-pointer"
+                        onClick={() =>
+                          setShowCurrentPassword(!showCurrentPassword)
+                        }
+                      >
+                        {showCurrentPassword ? <FaEye /> : <FaEyeSlash />}
+                      </span>
+                    </div>
+
+                    <div className="relative">
+                      <input
+                        type={showNewPassword ? "text" : "password"}
+                        placeholder="Enter your new password"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                      />
+                      <span
+                        className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 cursor-pointer"
+                        onClick={() => setShowNewPassword(!showNewPassword)}
+                      >
+                        {showNewPassword ? <FaEye /> : <FaEyeSlash />}
+                      </span>
+                    </div>
+
+                    <div className="relative">
+                      <input
+                        type={showConfirmPassword ? "text" : "password"}
+                        placeholder="Reenter your new password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                      />
+                      <span
+                        className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 cursor-pointer"
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
+                      >
+                        {showConfirmPassword ? <FaEye /> : <FaEyeSlash />}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
@@ -131,8 +228,21 @@ const Profile = () => {
                   >
                     Cancel
                   </button>
-                  <button className="px-6 py-2 font-semibold text-white bg-[#B4252A] rounded-lg hover:bg-red-800">
-                    Save
+                  <button
+                    className="px-6 py-2 font-semibold text-white bg-[#B4252A] rounded-lg hover:bg-red-800 flex items-center justify-center"
+                    onClick={handleChangePassword} // Panggil fungsi handleChangePassword
+                    disabled={isSaving} // Disable tombol ketika sedang loading
+                  >
+                    {isSaving ? (
+                      <ReactLoading
+                        type="spin"
+                        color="#ffffff"
+                        height={20}
+                        width={20}
+                      />
+                    ) : (
+                      "Save"
+                    )}
                   </button>
                 </div>
               </div>
