@@ -1,28 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import { FaFileExcel, FaCalendarAlt } from "react-icons/fa";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ReactLoading from "react-loading"; // Untuk loading state
+import { format } from "date-fns";
+import { id } from "date-fns/locale"; // Import untuk lokal Indonesia
 
 const Export = () => {
   const [loading, setLoading] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [file, setFile] = useState(null); // Untuk menyimpan file yang di-upload
-  const [showDatePicker, setShowDatePicker] = useState(false); // Menampilkan date picker
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [file, setFile] = useState(null);
+  const [showDatePicker, setShowDatePicker] = useState(false); // Untuk menampilkan date picker
+  const datePickerRef = useRef(null); // Ref untuk date picker
   const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
 
   // Fungsi untuk menangani pengiriman form
   const handleFormSubmit = async () => {
-    if (!file || !selectedDate) {
-      // Periksa jika sudah ada toast aktif sebelum menampilkan error baru
+    if (!file || !startDate || !endDate) {
       if (!toast.isActive("toast-error")) {
         toast.dismiss();
-        toast.error("Harap pilih file Excel dan tanggal!", {
+        toast.error("Harap pilih file Excel dan rentang tanggal!", {
           toastId: "toast-error",
         });
       }
@@ -33,25 +36,32 @@ const Export = () => {
 
     const formData = new FormData();
     formData.append("file", file); // Masukkan file yang di-upload
-    formData.append("date", selectedDate.toISOString().split("T")[0]); // Format tanggal jadi YYYY-MM-DD
+    formData.append("startDate", startDate.toISOString().split("T")[0]); // Format start date jadi YYYY-MM-DD
+    formData.append("endDate", endDate.toISOString().split("T")[0]); // Format end date jadi YYYY-MM-DD
 
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/export`, // Endpoint API
-        formData,
+      await axios.get(
+        `${import.meta.env.VITE_API_URL}/export?type=excel&startDate=${
+          startDate.toISOString().split("T")[0]
+        }&endDate=${endDate.toISOString().split("T")[0]}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
-            "Content-Type": "multipart/form-data", // Header untuk mengirim file
+            "Content-Type": "application/json",
           },
         }
       );
 
-      toast.dismiss(); // Menghapus toast yang ada sebelum menampilkan yang baru
+      toast.dismiss();
       toast.success("Data berhasil diexport!", { toastId: "toast-success" });
+
+      // Clear file dan date range setelah sukses
+      setFile(null);
+      setStartDate(null);
+      setEndDate(null);
+
       setLoading(false);
     } catch (error) {
-      // Periksa jika sudah ada toast aktif sebelum menampilkan error baru
       if (!toast.isActive("toast-error")) {
         toast.dismiss();
         console.error("Error exporting data:", error);
@@ -76,13 +86,40 @@ const Export = () => {
     return fileName;
   };
 
+  // Fungsi untuk menampilkan date range dalam format yang singkat
+  const getDisplayDateRange = (start, end) => {
+    if (start && end) {
+      return `${format(start, "dd MMM", { locale: id })} - ${format(
+        end,
+        "dd MMM yyyy",
+        { locale: id }
+      )}`;
+    }
+    return "Pilih Tanggal";
+  };
+
+  // Event listener untuk menutup DatePicker saat klik di luar
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        datePickerRef.current &&
+        !datePickerRef.current.contains(event.target)
+      ) {
+        setShowDatePicker(false); // Sembunyikan DatePicker
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [datePickerRef]);
+
   return (
     <>
       <Topbar />
       <div className="flex flex-col mt-20 lg:flex-row">
-        {/* Sidebar */}
         <Sidebar />
-        {/* Konten */}
         <div className="w-full p-8 mx-auto mt-2 lg:max-w-full lg:ml-72">
           <h1 className="mb-6 text-2xl font-bold text-center lg:text-left">
             Export
@@ -99,60 +136,69 @@ const Export = () => {
                 <div className="flex items-center">
                   <FaFileExcel className="mr-4 text-2xl text-gray-500" />
                   <div className="truncate max-w-[200px]">
-                    {" "}
-                    {/* Batasi lebar teks */}
                     <p className="text-gray-500">Export As</p>
                     <h2 className="text-lg font-bold md:text-xl">
                       {file ? getDisplayFileName(file.name) : "Excel (.Xlsx)"}
                     </h2>
                   </div>
                 </div>
-                <div className="text-4xl md:text-6xl">&rsaquo;</div>{" "}
-                {/* Arrow symbol */}
+                <div className="text-4xl md:text-6xl">&rsaquo;</div>
               </div>
               <input
                 type="file"
                 id="fileUpload"
                 className="hidden"
                 accept=".xlsx" // Hanya menerima file dengan format .xlsx
-                onChange={(e) => setFile(e.target.files[0])} // Simpan file ke state
+                onChange={(e) => setFile(e.target.files[0])}
               />
 
-              {/* Select Date Range */}
+              {/* Date Range Picker */}
               <div
                 className="relative flex items-center justify-between p-4 border rounded-lg cursor-pointer md:p-6"
-                onClick={() => setShowDatePicker(!showDatePicker)} // Toggle date picker visibility
+                onClick={() => setShowDatePicker(!showDatePicker)} // Toggle picker visibility
               >
                 <div className="flex items-center">
                   <FaCalendarAlt className="mr-4 text-2xl text-gray-500" />
                   <div className="truncate max-w-[200px]">
-                    {" "}
-                    {/* Batasi lebar teks */}
                     <p className="text-gray-500">Select Date Range</p>
                     <h2 className="text-lg font-bold md:text-xl">
-                      {selectedDate
-                        ? selectedDate.toLocaleDateString()
-                        : "Pilih Tanggal"}
+                      {getDisplayDateRange(startDate, endDate)}
                     </h2>
                   </div>
                 </div>
-                <div className="text-4xl md:text-6xl">&rsaquo;</div>{" "}
-                {/* Arrow symbol */}
-                {/* Date Picker */}
-                {showDatePicker && (
-                  <div className="absolute top-full left-0 z-50 mt-2">
+                <div className="text-4xl md:text-6xl">&rsaquo;</div>
+              </div>
+
+              {/* DatePicker muncul tanpa auto close */}
+              {showDatePicker && (
+                <div
+                  ref={datePickerRef} // Tambahkan ref ke div yang mengandung DatePicker
+                  className="absolute z-50 mt-32 bg-white border rounded-lg shadow-lg p-4 w-72 right-0 md:mr-64 md:right-0"
+                >
+                  <div>
+                    <label className="block text-sm font-semibold mb-1">
+                      Start Date
+                    </label>
                     <DatePicker
-                      selected={selectedDate}
-                      onChange={(date) => {
-                        setSelectedDate(date);
-                        setShowDatePicker(false); // Tutup picker setelah memilih
-                      }}
-                      className="block p-2 mt-1 border border-gray-300 rounded-lg shadow-lg"
-                      inline // Tampilkan date picker langsung
+                      selected={startDate}
+                      onChange={(date) => setStartDate(date)}
+                      className="block w-full p-2 mt-1 border border-gray-300 rounded-lg shadow-sm"
+                      placeholderText="Pilih Tanggal Mulai"
                     />
                   </div>
-                )}
-              </div>
+                  <div className="mt-4">
+                    <label className="block text-sm font-semibold mb-1">
+                      End Date
+                    </label>
+                    <DatePicker
+                      selected={endDate}
+                      onChange={(date) => setEndDate(date)}
+                      className="block w-full p-2 mt-1 border border-gray-300 rounded-lg shadow-sm"
+                      placeholderText="Pilih Tanggal Akhir"
+                    />
+                  </div>
+                </div>
+              )}
 
               {/* Export Button */}
               <div className="flex justify-end col-span-1 md:col-span-2">
