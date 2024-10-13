@@ -19,35 +19,38 @@ const Sidebar = () => {
   const navigate = useNavigate(); // Untuk mengarahkan pengguna setelah logout
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false); // State for loading
-  const [role, setRole] = useState(null); // State for user role
+  const [role, setRole] = useState(localStorage.getItem("role")); // Ambil role dari localStorage jika ada
 
-  // Ambil role dari API user
+  // Ambil role dari API user jika belum ada di localStorage
   useEffect(() => {
     const fetchUserRole = async () => {
-      try {
-        const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
+      if (!role) {
+        // Hanya fetch role jika belum ada di localStorage
+        try {
+          const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
 
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/user`,
-          {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-              Accept: "application/json",
-            },
-          }
-        );
+          const response = await axios.get(
+            `${import.meta.env.VITE_API_URL}/user`,
+            {
+              headers: {
+                Authorization: `Bearer ${authToken}`,
+                Accept: "application/json",
+              },
+            }
+          );
 
-        setRole(response.data.role); // Set role pengguna dari API
-        localStorage.setItem("role", response.data.role); // Simpan role ke localStorage
-      } catch (error) {
-        console.error("Error fetching user role:", error);
-
-        toast.error("Gagal mendapatkan data pengguna.");
+          const userRole = response.data.role;
+          setRole(userRole); // Set role pengguna dari API
+          localStorage.setItem("role", userRole); // Simpan role ke localStorage
+        } catch (error) {
+          console.error("Error fetching user role:", error);
+          toast.error("Gagal mendapatkan data pengguna.");
+        }
       }
     };
 
     fetchUserRole(); // Panggil fungsi untuk ambil role saat komponen di-mount
-  }, []);
+  }, [role]); // Hanya panggil useEffect jika role tidak ada
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);

@@ -96,12 +96,12 @@ const Income = () => {
                           {/* Mengambil created_at dan memformatnya */}
                         </td>
                         <td className="px-4 py-2 text-center whitespace-nowrap">
-                          Rp. {income.amount}{" "}
-                          {/* Mengambil amount untuk Pemasukan */}
+                          Rp. {Number(income.amount).toLocaleString("id-ID")}{" "}
+                          {/* Format amount sebagai Rupiah tanpa ,00 */}
                         </td>
                         <td className="px-4 py-2 text-center whitespace-nowrap">
-                          Rp. {income.tax_amount}{" "}
-                          {/* Mengambil tax_amount untuk Pajak */}
+                          Rp. {Number(income.tax_amount).toLocaleString("id-ID")}{" "}
+                          {/* Format tax_amount sebagai Rupiah tanpa ,00 */}
                         </td>
                         <td className="px-4 py-2 text-center whitespace-nowrap">
                           <a
