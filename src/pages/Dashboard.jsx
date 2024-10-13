@@ -4,7 +4,7 @@ import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import { FaSlidersH } from "react-icons/fa";
 import FilterPopup from "../components/FilterPopup";
-import TransactionPopup from "../components/TransactionPopup";
+import TransaksiPopup from "../components/TransaksiPopUp";
 import ReactLoading from "react-loading";
 
 const Dashboard = () => {
@@ -320,7 +320,7 @@ const Dashboard = () => {
 
       {/* Tambahkan komponen TransactionPopup */}
       {selectedTransactionId && (
-        <TransactionPopup
+        <TransaksiPopup
           isOpen={isTransactionPopupOpen}
           onClose={() => setIsTransactionPopupOpen(false)}
           transactionId={selectedTransactionId} // Kirim ID transaksi yang dipilih

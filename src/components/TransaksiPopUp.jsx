@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaFileAlt } from "react-icons/fa"; // Ikon untuk upload dan evidence
 import axios from "axios";
 
-const TransactionPopup = ({ isOpen, onClose, transactionId }) => {
+const TransaksiPopup = ({ isOpen, onClose, transactionId }) => {
   const [transaction, setTransaction] = useState(null); // State untuk menyimpan data transaksi
   const [loading, setLoading] = useState(true); // State untuk loading
   const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
@@ -145,4 +145,4 @@ const TransactionPopup = ({ isOpen, onClose, transactionId }) => {
   );
 };
 
-export default TransactionPopup;
+export default TransaksiPopup;
