@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FaTh,
   FaClipboardList,
@@ -19,6 +19,14 @@ const Sidebar = () => {
   const navigate = useNavigate(); // Untuk mengarahkan pengguna setelah logout
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false); // State for loading
+  const [role, setRole] = useState(null); // State for user role
+
+  // Ambil role dari localStorage atau API setelah komponen di-mount
+  useEffect(() => {
+    const userRole = localStorage.getItem("role"); // Ambil role dari localStorage atau API
+    console.log("User role:", userRole); // Debugging untuk memeriksa role
+    setRole(userRole);
+  }, []);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -41,6 +49,7 @@ const Sidebar = () => {
       if (response.status === 200 || response.data.success) {
         localStorage.removeItem("isAuthenticated"); // Hapus status login
         localStorage.removeItem("token"); // Hapus token dari localStorage
+        localStorage.removeItem("role"); // Hapus role dari localStorage
         toast.success("Logout berhasil!");
         setTimeout(() => {
           navigate("/login"); // Arahkan ke halaman login setelah logout berhasil
@@ -153,18 +162,20 @@ const Sidebar = () => {
           </Link>
 
           {/* Approval */}
-          <Link to="/approval">
-            <li
-              className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
-                location.pathname === "/approval"
-                  ? "text-[#B4252A]"
-                  : "text-gray-700 hover:bg-gray-100 hover:text-[#B4252A]"
-              }`}
-            >
-              <AiOutlineFileDone className="mr-3 text-2xl" />
-              <span>Approval</span>
-            </li>
-          </Link>
+          {role === "superAdmin" && (
+            <Link to="/approval">
+              <li
+                className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
+                  location.pathname === "/approval"
+                    ? "text-[#B4252A]"
+                    : "text-gray-700 hover:bg-gray-100 hover:text-[#B4252A]"
+                }`}
+              >
+                <AiOutlineFileDone className="mr-3 text-2xl" />
+                <span>Approval</span>
+              </li>
+            </Link>
+          )}
         </ul>
 
         {/* Tombol Log Out */}
@@ -181,22 +192,6 @@ const Sidebar = () => {
           <p>Copyright © 2024 HUMIC Engineering</p>
         </div>
       </div>
-
-      {/* Toast */}
-      <ToastContainer
-        position="top-center"
-        limit={3}
-        autoClose={2000}
-        style={{
-          width: "auto",
-          maxWidth: "600px", // Perpanjang ukuran maksimal toast
-          padding: "5px",
-          left: "50%", // Posisi horizontal
-          transform: "translateX(-50%)", // Pastikan toast selalu di tengah
-          top: "10px", // Jarak dari atas
-        }}
-        toastClassName="text-center text-sm"
-      />
     </>
   );
 };

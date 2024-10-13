@@ -22,7 +22,9 @@ const Export = () => {
       // Periksa jika sudah ada toast aktif sebelum menampilkan error baru
       if (!toast.isActive("toast-error")) {
         toast.dismiss();
-        toast.error("Harap pilih file Excel dan tanggal!", { toastId: "toast-error" });
+        toast.error("Harap pilih file Excel dan tanggal!", {
+          toastId: "toast-error",
+        });
       }
       return;
     }
@@ -53,7 +55,9 @@ const Export = () => {
       if (!toast.isActive("toast-error")) {
         toast.dismiss();
         console.error("Error exporting data:", error);
-        toast.error("Gagal mengirim data, silakan coba lagi.", { toastId: "toast-error" });
+        toast.error("Gagal mengirim data, silakan coba lagi.", {
+          toastId: "toast-error",
+        });
       }
       setLoading(false);
     }
@@ -84,20 +88,6 @@ const Export = () => {
             Export
           </h1>
 
-          {/* Tambahkan ToastContainer */}
-          <ToastContainer
-            position="top-center"
-            autoClose={2000}
-            hideProgressBar
-            newestOnTop={true}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss={false}
-            draggable={false}
-            pauseOnHover
-            limit={1} // Batasi hanya 1 toast pada satu waktu
-          />
-
           {/* Container untuk Export Options */}
           <div className="p-6 bg-white rounded-lg shadow-lg md:p-8">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 relative">
@@ -108,14 +98,17 @@ const Export = () => {
               >
                 <div className="flex items-center">
                   <FaFileExcel className="mr-4 text-2xl text-gray-500" />
-                  <div className="truncate max-w-[200px]"> {/* Batasi lebar teks */}
+                  <div className="truncate max-w-[200px]">
+                    {" "}
+                    {/* Batasi lebar teks */}
                     <p className="text-gray-500">Export As</p>
                     <h2 className="text-lg font-bold md:text-xl">
                       {file ? getDisplayFileName(file.name) : "Excel (.Xlsx)"}
                     </h2>
                   </div>
                 </div>
-                <div className="text-4xl md:text-6xl">&rsaquo;</div> {/* Arrow symbol */}
+                <div className="text-4xl md:text-6xl">&rsaquo;</div>{" "}
+                {/* Arrow symbol */}
               </div>
               <input
                 type="file"
@@ -132,15 +125,19 @@ const Export = () => {
               >
                 <div className="flex items-center">
                   <FaCalendarAlt className="mr-4 text-2xl text-gray-500" />
-                  <div className="truncate max-w-[200px]"> {/* Batasi lebar teks */}
+                  <div className="truncate max-w-[200px]">
+                    {" "}
+                    {/* Batasi lebar teks */}
                     <p className="text-gray-500">Select Date Range</p>
                     <h2 className="text-lg font-bold md:text-xl">
-                      {selectedDate ? selectedDate.toLocaleDateString() : "Pilih Tanggal"}
+                      {selectedDate
+                        ? selectedDate.toLocaleDateString()
+                        : "Pilih Tanggal"}
                     </h2>
                   </div>
                 </div>
-                <div className="text-4xl md:text-6xl">&rsaquo;</div> {/* Arrow symbol */}
-
+                <div className="text-4xl md:text-6xl">&rsaquo;</div>{" "}
+                {/* Arrow symbol */}
                 {/* Date Picker */}
                 {showDatePicker && (
                   <div className="absolute top-full left-0 z-50 mt-2">
@@ -165,7 +162,12 @@ const Export = () => {
                   disabled={loading} // Nonaktifkan tombol saat sedang loading
                 >
                   {loading ? (
-                    <ReactLoading type="spin" color="#fff" height={20} width={20} />
+                    <ReactLoading
+                      type="spin"
+                      color="#fff"
+                      height={20}
+                      width={20}
+                    />
                   ) : (
                     "Export"
                   )}

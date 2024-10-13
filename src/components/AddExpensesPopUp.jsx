@@ -4,7 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; 
+import "react-toastify/dist/ReactToastify.css";
 
 const AddExpensesPopup = ({ isOpen, onClose }) => {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -43,7 +43,7 @@ const AddExpensesPopup = ({ isOpen, onClose }) => {
   // Fungsi untuk membatasi panjang nama file
   const formatFileName = (name, maxLength = 20) => {
     if (name.length > maxLength) {
-      const ext = name.split('.').pop(); // Dapatkan ekstensi file
+      const ext = name.split(".").pop(); // Dapatkan ekstensi file
       const shortName = `${name.slice(0, 8)}...${name.slice(-8)}`;
       return `${shortName}.${ext}`;
     }
@@ -67,7 +67,10 @@ const AddExpensesPopup = ({ isOpen, onClose }) => {
     }
 
     // Validasi tipe file documentEvidence (harus PDF atau XLSX)
-    const allowedFileTypes = ["application/pdf", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"];
+    const allowedFileTypes = [
+      "application/pdf",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ];
     if (documentEvidence && !allowedFileTypes.includes(documentEvidence.type)) {
       toast.error("File keuangan harus dalam format PDF atau XLSX.");
       return;
@@ -118,7 +121,6 @@ const AddExpensesPopup = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 overlay">
-      <ToastContainer /> {/* Tempat untuk menampilkan toast notifications */}
       <div
         className={`bg-white p-8 rounded-lg shadow-lg transform transition-transform duration-300 ease-in-out ${
           animatePopup ? "translate-y-0" : "-translate-y-full"

@@ -177,21 +177,6 @@ const Login = () => {
           </div>
         </div>
       </div>
-
-      <ToastContainer
-        position="top-center"
-        limit={3}
-        autoClose={2000}
-        style={{
-          width: "auto",
-          maxWidth: "600px", // Perpanjang ukuran maksimal toast
-          padding: "5px",
-          left: "50%", // Posisi horizontal
-          transform: "translateX(-50%)", // Pastikan toast selalu di tengah
-          top: "10px", // Jarak dari atas
-        }}
-        toastClassName="text-center text-sm"
-      />
     </>
   );
 };

@@ -11,10 +11,26 @@ import Approval from "./pages/Approval";
 import Profile from "./pages/Profile"; // Import halaman Profile
 import ProtectedRoute from "./components/ProtectedRoute"; // Import ProtectedRoute
 import NotFound from "./pages/NotFound"; // Halaman NotFound untuk rute tidak dikenal
+import { ToastContainer } from "react-toastify"; // Import ToastContainer
+import "react-toastify/dist/ReactToastify.css"; // Import CSS toast
 
 const App = () => {
   return (
     <Router>
+      {/* Letakkan ToastContainer di sini */}
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss={false}
+        draggable={false}
+        pauseOnHover
+        limit={1}
+      />
+
       <Routes>
         <Route path="/login" element={<Login />} /> {/* Halaman Login */}
         <Route path="/register" element={<Register />} /> {/* Halaman Register */}

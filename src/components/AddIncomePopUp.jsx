@@ -3,7 +3,7 @@ import { BsUpload } from "react-icons/bs";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; 
+import "react-toastify/dist/ReactToastify.css";
 
 const AddIncomePopup = ({ isOpen, onClose }) => {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -40,7 +40,7 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
   // Fungsi untuk membatasi panjang nama file
   const formatFileName = (name, maxLength = 20) => {
     if (name.length > maxLength) {
-      const ext = name.split('.').pop(); // Dapatkan ekstensi file
+      const ext = name.split(".").pop(); // Dapatkan ekstensi file
       const shortName = `${name.slice(0, 8)}...${name.slice(-8)}`;
       return `${shortName}.${ext}`;
     }
@@ -85,7 +85,6 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 overlay">
-      <ToastContainer /> {/* Tempat untuk menampilkan toast notifications */}
       <div
         className={`bg-white p-8 rounded-lg shadow-lg transform transition-transform duration-300 ease-in-out ${
           animatePopup ? "translate-y-0" : "-translate-y-full"
