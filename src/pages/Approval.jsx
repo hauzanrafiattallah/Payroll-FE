@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
-import TransactionPopup from "../components/TransactionPopup"; // Import komponen popup
+import TransactionPopup from "../components/TransactionPopup";
 import { PiHandWithdrawBold, PiHandDepositBold } from "react-icons/pi"; // Import icons
 import ReactLoading from "react-loading";
 import { toast } from "react-toastify";
