@@ -109,8 +109,12 @@ const Approval = () => {
 
   // Fungsi untuk menampilkan popup detail transaksi
   const handleTransactionClick = (transaction) => {
-    setSelectedTransaction(transaction); // Simpan transaksi yang dipilih
-    setIsTransactionPopupOpen(true); // Buka TransactionPopup
+    if (transaction && transaction.id) {
+      setSelectedTransaction(transaction); // Simpan transaksi yang dipilih
+      setIsTransactionPopupOpen(true); // Buka TransactionPopup
+    } else {
+      toast.error("Transaksi tidak valid");
+    }
   };
 
   return (
@@ -225,7 +229,7 @@ const Approval = () => {
         <TransactionPopup
           isOpen={isTransactionPopupOpen}
           onClose={() => setIsTransactionPopupOpen(false)}
-          transaction={selectedTransaction} // Kirim detail transaksi ke TransactionPopup
+          transactionId={selectedTransaction.id} // Kirim ID transaksi ke TransactionPopup
         />
       )}
 

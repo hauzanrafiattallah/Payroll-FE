@@ -58,64 +58,79 @@ const TransactionPopup = ({ isOpen, onClose, transactionId }) => {
         {/* Loading State */}
         {loading ? (
           <div className="text-center">Loading...</div>
-        ) : (
+        ) : transaction ? (
           <div className="space-y-4 sm:space-y-5">
+            {/* Status */}
+            <div className="flex justify-between">
+              <span className="font-semibold text-gray-600">Status</span>
+              <span className="text-gray-800">{transaction.status}</span>
+            </div>
             {/* No Kegiatan */}
             <div className="flex justify-between">
               <span className="font-semibold text-gray-600">No Kegiatan</span>
-              <span className="text-gray-800">{transaction.id}</span>
+              <span className="text-gray-800">{transaction.id || "N/A"}</span>
             </div>
             {/* Kegiatan */}
             <div className="flex justify-between">
               <span className="font-semibold text-gray-600">Kegiatan</span>
-              <span className="text-gray-800">{transaction.activity_name}</span>
+              <span className="text-gray-800">{transaction.activity_name || "N/A"}</span>
             </div>
             {/* Tanggal */}
             <div className="flex justify-between">
               <span className="font-semibold text-gray-600">Tanggal</span>
-              <span>{new Date(transaction.created_at).toLocaleDateString("id-ID")}</span>
+              <span>
+                {transaction.created_at
+                  ? new Date(transaction.created_at).toLocaleDateString("id-ID")
+                  : "N/A"}
+              </span>
             </div>
             {/* Pemasukan */}
             <div className="flex justify-between">
               <span className="font-semibold text-gray-600">Pemasukan</span>
               <span className="text-gray-800">
-                Rp. {transaction.amount.toLocaleString("id-ID")}
+                Rp. {transaction.amount ? transaction.amount.toLocaleString("id-ID") : 0}
               </span>
             </div>
             {/* Pajak */}
             <div className="flex justify-between">
               <span className="font-semibold text-gray-600">Pajak</span>
               <span className="text-gray-800">
-                Rp. {transaction.tax_amount.toLocaleString("id-ID")}
+                Rp. {transaction.tax_amount ? transaction.tax_amount.toLocaleString("id-ID") : 0}
               </span>
             </div>
             {/* Upload */}
-            <div className="flex items-center justify-between">
-              <span className="font-semibold text-gray-600">Upload</span>
-              <a
-                href={`${baseURL}${transaction.document_evidence}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center hover:underline"
-              >
-                <FaFileAlt className="mr-2" />{" "}
-                {`Laporan.${transaction.document_evidence.split('.').pop()}`}
-              </a>
-            </div>
+            {transaction.document_evidence && (
+              <div className="flex items-center justify-between">
+                <span className="font-semibold text-gray-600">Upload</span>
+                <a
+                  href={`${baseURL}${transaction.document_evidence}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center hover:underline"
+                >
+                  <FaFileAlt className="mr-2" />{" "}
+                  {`Laporan.${transaction.document_evidence.split('.').pop()}`}
+                </a>
+              </div>
+            )}
             {/* Evidence */}
-            <div className="flex items-center justify-between">
-              <span className="font-semibold text-gray-600">Evidence</span>
-              <a
-                href={`${baseURL}${transaction.image_evidence}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center hover:underline"
-              >
-                <FaFileAlt className="mr-2" />{" "}
-                {`Bukti.${transaction.image_evidence.split('.').pop()}`}
-              </a>
-            </div>
+            {transaction.image_evidence && (
+              <div className="flex items-center justify-between">
+                <span className="font-semibold text-gray-600">Evidence</span>
+                <a
+                  href={`${baseURL}${transaction.image_evidence}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center hover:underline"
+                >
+                  <FaFileAlt className="mr-2" />{" "}
+                  {`Bukti.${transaction.image_evidence.split('.').pop()}`}
+                </a>
+              </div>
+            )}
           </div>
+        ) : (
+          <div className="text-center">Data not available.</div>
         )}
 
         {/* Tombol Close */}
