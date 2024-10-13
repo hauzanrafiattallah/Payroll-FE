@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
-import { FaFileExcel, FaCalendarAlt } from "react-icons/fa";
+import { FaFileExcel, FaFilePdf, FaCalendarAlt } from "react-icons/fa";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { toast } from "react-toastify";
@@ -15,17 +15,29 @@ const Export = () => {
   const [loading, setLoading] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [file, setFile] = useState(null);
+  const [exportType, setExportType] = useState("xlsx"); // Format default: Excel (.xlsx)
   const [showDatePicker, setShowDatePicker] = useState(false); // Untuk menampilkan date picker
   const datePickerRef = useRef(null); // Ref untuk date picker
   const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
 
   // Fungsi untuk menangani pengiriman form
   const handleFormSubmit = async () => {
-    if (!file || !startDate || !endDate) {
+    // Debugging tanggal
+    console.log("Start Date:", startDate);
+    console.log("End Date:", endDate);
+
+    // Gunakan format tanggal tanpa konversi UTC
+    const formattedStartDate = format(startDate, "yyyy-MM-dd");
+    const formattedEndDate = format(endDate, "yyyy-MM-dd");
+
+    console.log("Formatted Start Date:", formattedStartDate);
+    console.log("Formatted End Date:", formattedEndDate);
+
+    if (!startDate || !endDate) {
+      console.error("Tanggal belum dipilih.");
       if (!toast.isActive("toast-error")) {
         toast.dismiss();
-        toast.error("Harap pilih file Excel dan rentang tanggal!", {
+        toast.error("Harap pilih rentang tanggal!", {
           toastId: "toast-error",
         });
       }
@@ -34,38 +46,46 @@ const Export = () => {
 
     setLoading(true);
 
-    const formData = new FormData();
-    formData.append("file", file); // Masukkan file yang di-upload
-    formData.append("startDate", startDate.toISOString().split("T")[0]); // Format start date jadi YYYY-MM-DD
-    formData.append("endDate", endDate.toISOString().split("T")[0]); // Format end date jadi YYYY-MM-DD
-
     try {
-      await axios.get(
-        `${import.meta.env.VITE_API_URL}/export?type=excel&startDate=${
-          startDate.toISOString().split("T")[0]
-        }&endDate=${endDate.toISOString().split("T")[0]}`,
+      // Debugging request URL
+      console.log(`API Request URL: ${import.meta.env.VITE_API_URL}/export?type=${exportType}&startDate=${formattedStartDate}&endDate=${formattedEndDate}`);
+
+      // Mengirim permintaan untuk mengunduh file
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/export?type=${exportType}&startDate=${formattedStartDate}&endDate=${formattedEndDate}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
             "Content-Type": "application/json",
           },
+          responseType: "blob", // Response akan dalam bentuk blob untuk file
         }
       );
 
+      // Pengecekan ukuran file untuk memastikan konten
+      console.log("Response size:", response.data.size);
+
+      // Membuat link untuk mengunduh file
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute(
+        "download",
+        `export_${format(startDate, "yyyyMMdd")}_${format(endDate, "yyyyMMdd")}.${exportType}`
+      );
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+
       toast.dismiss();
       toast.success("Data berhasil diexport!", { toastId: "toast-success" });
-
-      // Clear file dan date range setelah sukses
-      setFile(null);
-      setStartDate(null);
-      setEndDate(null);
 
       setLoading(false);
     } catch (error) {
       if (!toast.isActive("toast-error")) {
         toast.dismiss();
         console.error("Error exporting data:", error);
-        toast.error("Gagal mengirim data, silakan coba lagi.", {
+        toast.error("Gagal mengekspor data, silakan coba lagi.", {
           toastId: "toast-error",
         });
       }
@@ -73,17 +93,9 @@ const Export = () => {
     }
   };
 
-  // Fungsi untuk memicu klik pada input file yang disembunyikan
-  const triggerFileUpload = () => {
-    document.getElementById("fileUpload").click();
-  };
-
   // Fungsi untuk menampilkan nama file yang dipotong jika terlalu panjang
-  const getDisplayFileName = (fileName) => {
-    if (fileName.length > 15) {
-      return fileName.slice(0, 10) + "..." + fileName.slice(-5);
-    }
-    return fileName;
+  const getDisplayFileName = () => {
+    return exportType === "xlsx" ? "Excel (.Xlsx)" : "PDF (.Pdf)";
   };
 
   // Fungsi untuk menampilkan date range dalam format yang singkat
@@ -128,29 +140,44 @@ const Export = () => {
           {/* Container untuk Export Options */}
           <div className="p-6 bg-white rounded-lg shadow-lg md:p-8">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 relative">
-              {/* Upload Excel */}
-              <div
-                className="flex items-center justify-between p-4 border rounded-lg cursor-pointer md:p-6"
-                onClick={triggerFileUpload}
-              >
+              {/* Pilihan Format Export */}
+              <div className="flex items-center justify-between p-4 border rounded-lg cursor-pointer md:p-6">
                 <div className="flex items-center">
-                  <FaFileExcel className="mr-4 text-2xl text-gray-500" />
+                  {exportType === "xlsx" ? (
+                    <FaFileExcel className="mr-4 text-2xl text-gray-500" />
+                  ) : (
+                    <FaFilePdf className="mr-4 text-2xl text-gray-500" />
+                  )}
                   <div className="truncate max-w-[200px]">
                     <p className="text-gray-500">Export As</p>
                     <h2 className="text-lg font-bold md:text-xl">
-                      {file ? getDisplayFileName(file.name) : "Excel (.Xlsx)"}
+                      {getDisplayFileName()}
                     </h2>
                   </div>
                 </div>
-                <div className="text-4xl md:text-6xl">&rsaquo;</div>
+                <div className="flex items-center space-x-4">
+                  <button
+                    className={`${
+                      exportType === "xlsx"
+                        ? "bg-green-500 text-white"
+                        : "bg-gray-200 text-gray-500"
+                    } px-4 py-2 rounded-md`}
+                    onClick={() => setExportType("xlsx")}
+                  >
+                    Excel
+                  </button>
+                  <button
+                    className={`${
+                      exportType === "pdf"
+                        ? "bg-red-500 text-white"
+                        : "bg-gray-200 text-gray-500"
+                    } px-4 py-2 rounded-md`}
+                    onClick={() => setExportType("pdf")}
+                  >
+                    PDF
+                  </button>
+                </div>
               </div>
-              <input
-                type="file"
-                id="fileUpload"
-                className="hidden"
-                accept=".xlsx" // Hanya menerima file dengan format .xlsx
-                onChange={(e) => setFile(e.target.files[0])}
-              />
 
               {/* Date Range Picker */}
               <div
@@ -181,7 +208,10 @@ const Export = () => {
                     </label>
                     <DatePicker
                       selected={startDate}
-                      onChange={(date) => setStartDate(date)}
+                      onChange={(date) => {
+                        console.log("Selected Start Date:", date); // Debug tanggal
+                        setStartDate(date);
+                      }}
                       className="block w-full p-2 mt-1 border border-gray-300 rounded-lg shadow-sm"
                       placeholderText="Pilih Tanggal Mulai"
                     />
@@ -192,7 +222,10 @@ const Export = () => {
                     </label>
                     <DatePicker
                       selected={endDate}
-                      onChange={(date) => setEndDate(date)}
+                      onChange={(date) => {
+                        console.log("Selected End Date:", date); // Debug tanggal
+                        setEndDate(date);
+                      }}
                       className="block w-full p-2 mt-1 border border-gray-300 rounded-lg shadow-sm"
                       placeholderText="Pilih Tanggal Akhir"
                     />
