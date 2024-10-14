@@ -200,7 +200,7 @@ const Profile = () => {
                     <div className="relative">
                       <input
                         type={showConfirmPassword ? "text" : "password"}
-                        placeholder="Reenter your new password"
+                        placeholder="Confirm your new password"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
