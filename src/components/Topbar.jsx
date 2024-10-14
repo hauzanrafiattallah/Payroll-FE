@@ -61,7 +61,7 @@ const Topbar = () => {
         </div>
 
         {/* Dua tombol untuk Add Expenses dan Add Income */}
-        <div className="flex items-center space-x-2 sm:space-x-4 lg:space-x-6">
+        <div className="flex items-center justify-between w-full lg:w-auto">
           <div className="flex space-x-1 sm:space-x-2 lg:space-x-4">
             {/* Tombol Add Expenses */}
             <button
