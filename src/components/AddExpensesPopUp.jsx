@@ -152,6 +152,7 @@ const AddExpensesPopup = ({ isOpen, onClose }) => {
               required
             />
             {showDatePicker && (
+              <div className="absolute z-50 mt-2 bg-white shadow-lg">
               <DatePicker
                 selected={selectedDate}
                 onChange={(date) => {
@@ -161,6 +162,7 @@ const AddExpensesPopup = ({ isOpen, onClose }) => {
                 onClickOutside={() => setShowDatePicker(false)}
                 inline
               />
+              </div>
             )}
           </div>
 

@@ -152,15 +152,17 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
               required
             />
             {showDatePicker && (
-              <DatePicker
-                selected={selectedDate}
-                onChange={(date) => {
-                  setSelectedDate(date);
-                  setShowDatePicker(false);
-                }}
-                onClickOutside={() => setShowDatePicker(false)}
-                inline
-              />
+              <div className="absolute z-50 mt-2 bg-white shadow-lg">
+                <DatePicker
+                  selected={selectedDate}
+                  onChange={(date) => {
+                    setSelectedDate(date);
+                    setShowDatePicker(false);
+                  }}
+                  onClickOutside={() => setShowDatePicker(false)}
+                  inline
+                />
+              </div>
             )}
           </div>
 
