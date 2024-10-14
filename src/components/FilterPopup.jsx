@@ -101,7 +101,9 @@ const FilterPopup = ({ isOpen, onClose, applyFilter }) => {
                 placeholder="Start Date"
               />
             </div>
-            <span className="mx-2 mr-4 mb-3 text-gray-600">TO</span>
+            <span className="mx-2 mr-4 lg:mb-2 md:mb-2 mb-3 text-gray-600">
+              TO
+            </span>
             <div className="relative w-full sm:w-1/2">
               <input
                 type="date"

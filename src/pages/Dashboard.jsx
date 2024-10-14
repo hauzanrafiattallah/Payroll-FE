@@ -5,12 +5,13 @@ import Topbar from "../components/Topbar";
 import { FaSlidersH } from "react-icons/fa";
 import FilterPopup from "../components/FilterPopup";
 import TransaksiPopup from "../components/TransaksiPopUp";
-import ReactLoading from "react-loading";
+  import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css"; 
 
 const Dashboard = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [isTransactionPopupOpen, setIsTransactionPopupOpen] = useState(false); // State untuk popup transaksi
-  const [selectedTransactionId, setSelectedTransactionId] = useState(null); // State untuk menyimpan ID transaksi yang dipilih
+  const [isTransactionPopupOpen, setIsTransactionPopupOpen] = useState(false);
+  const [selectedTransactionId, setSelectedTransactionId] = useState(null);
   const [filter, setFilter] = useState({
     type: "All",
     startDate: "",
@@ -40,7 +41,7 @@ const Dashboard = () => {
     } else if (filter.type === "All" && section === "balance") {
       return "bg-[#B4252A] text-white";
     } else {
-      return "bg-white text-black"; // Default color
+      return "bg-white text-black";
     }
   };
 
@@ -48,22 +49,13 @@ const Dashboard = () => {
     const fetchDashboardData = async () => {
       setLoading(true);
       try {
-        // Log parameter yang dikirim ke API
-        console.log("Sending request with params:", {
-          transaction_type: filter.type === "All" ? "" : filter.type,
-          start_date: filter.startDate, // Rentang waktu lebih luas
-          end_date: filter.endDate, // Rentang waktu lebih luas
-          page: currentPage,
-          limit: 10,
-        });
-
         const response = await axios.get(
           `${import.meta.env.VITE_API_URL}/dashboard`,
           {
             params: {
               transaction_type: filter.type === "All" ? "" : filter.type,
-              start_date: filter.startDate, // Rentang waktu lebih luas
-              end_date: filter.endDate, // Rentang waktu lebih luas
+              start_date: filter.startDate,
+              end_date: filter.endDate,
               page: currentPage,
               limit: 10,
             },
@@ -85,10 +77,6 @@ const Dashboard = () => {
         setLastPage(response.data.data.transactionList.last_page);
         setNextPageUrl(response.data.data.transactionList.next_page_url);
         setPrevPageUrl(response.data.data.transactionList.prev_page_url);
-
-        // Log response dari API untuk memastikan jumlah data
-        console.log("API Response: ", response.data);
-
         setLoading(false);
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
@@ -100,24 +88,19 @@ const Dashboard = () => {
   }, [filter, currentPage, authToken]);
 
   const handlePageChange = (newPage) => {
-    console.log("Page change requested: ", newPage);
     if (newPage >= 1 && newPage <= lastPage) {
       setCurrentPage(newPage);
     }
   };
 
   const handleTransactionClick = (transactionId) => {
-    setSelectedTransactionId(transactionId); // Set ID transaksi yang dipilih
-    setIsTransactionPopupOpen(true); // Tampilkan popup
+    setSelectedTransactionId(transactionId);
+    setIsTransactionPopupOpen(true);
   };
 
   const renderPagination = () => {
     const pageNumbers = [];
     const maxPagesToShow = 2;
-
-    console.log("Rendering pagination...");
-    console.log("Next Page URL: ", nextPageUrl);
-    console.log("Prev Page URL: ", prevPageUrl);
 
     if (currentPage > maxPagesToShow + 1) {
       pageNumbers.push(
@@ -179,14 +162,33 @@ const Dashboard = () => {
           </h1>
 
           {loading ? (
-            <div className="flex items-center justify-center min-h-screen">
-              <ReactLoading
-                type="spin"
-                color="#B4252A"
-                height={50}
-                width={50}
-              />
-            </div>
+            <>
+              <div className="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="p-6 rounded-lg shadow-lg">
+                  <Skeleton height={50} width={150} />
+                  <Skeleton height={30} width={`80%`} />
+                </div>
+                <div className="p-6 rounded-lg shadow-lg">
+                  <Skeleton height={50} width={150} />
+                  <Skeleton height={30} width={`80%`} />
+                </div>
+                <div className="p-6 rounded-lg shadow-lg">
+                  <Skeleton height={50} width={150} />
+                  <Skeleton height={30} width={`80%`} />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between mb-4">
+                <h1 className="mb-6 text-2xl font-bold text-center lg:text-left">
+                  Transaction List
+                </h1>
+                <Skeleton height={35} width={100} />
+              </div>
+
+              <div className="p-6 mb-6 overflow-x-auto bg-white rounded-lg shadow-lg">
+                <Skeleton height={40} count={5} />
+              </div>
+            </>
           ) : (
             <>
               <div className="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -251,7 +253,7 @@ const Dashboard = () => {
                       <tr
                         key={index}
                         className="border-b cursor-pointer hover:bg-gray-100"
-                        onClick={() => handleTransactionClick(item.id)} // Saat baris diklik, tampilkan popup
+                        onClick={() => handleTransactionClick(item.id)}
                       >
                         <td className="px-4 py-2 text-center">
                           {item.activity_name || "Unknown"}
@@ -318,12 +320,11 @@ const Dashboard = () => {
         applyFilter={setFilter}
       />
 
-      {/* Tambahkan komponen TransactionPopup */}
       {selectedTransactionId && (
         <TransaksiPopup
           isOpen={isTransactionPopupOpen}
           onClose={() => setIsTransactionPopupOpen(false)}
-          transactionId={selectedTransactionId} // Kirim ID transaksi yang dipilih
+          transactionId={selectedTransactionId}
         />
       )}
     </>

@@ -2,13 +2,12 @@ import React, { useState, useEffect } from "react";
 import {
   FaTh,
   FaClipboardList,
-  FaSignOutAlt,
   FaUpload,
   FaBars,
 } from "react-icons/fa";
 import { PiHandWithdrawBold, PiHandDepositBold } from "react-icons/pi";
 import { AiOutlineFileDone } from "react-icons/ai";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -16,7 +15,6 @@ import ReactLoading from "react-loading"; // Import ReactLoading
 
 const Sidebar = () => {
   const location = useLocation();
-  const navigate = useNavigate(); // Untuk mengarahkan pengguna setelah logout
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false); // State for loading
   const [role, setRole] = useState(localStorage.getItem("role")); // Ambil role dari localStorage jika ada
@@ -54,38 +52,6 @@ const Sidebar = () => {
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
-  };
-
-  const handleLogout = async () => {
-    setLoading(true); // Start loading spinner
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/logout`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-
-      if (response.status === 200 || response.data.success) {
-        localStorage.removeItem("isAuthenticated");
-        localStorage.removeItem("token");
-        localStorage.removeItem("role");
-        toast.success("Logout berhasil!");
-        setTimeout(() => {
-          navigate("/login"); // Arahkan ke halaman login setelah logout berhasil
-        }, 1000);
-      } else {
-        toast.error("Logout gagal, coba lagi.");
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Terjadi kesalahan saat logout.");
-    } finally {
-      setLoading(false); // Stop loading spinner
-    }
   };
 
   return (
@@ -200,15 +166,6 @@ const Sidebar = () => {
             </Link>
           )}
         </ul>
-
-        {/* Tombol Log Out */}
-        <div
-          onClick={handleLogout}
-          className="flex justify-center items-center text-[#B4252A] p-2 hover:bg-gray-100 rounded-lg cursor-pointer transition-colors duration-200"
-        >
-          <FaSignOutAlt className="mr-3 text-lg" />
-          <span>Log Out</span>
-        </div>
 
         {/* Copyright */}
         <div className="mt-4 text-xs text-center text-gray-500">

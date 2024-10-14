@@ -3,6 +3,8 @@ import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import ReactLoading from "react-loading"; // Tambahkan ReactLoading untuk indikator loading
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css'; // Optional: untuk styling default skeleton
 
 const Income = () => {
   const [incomeData, setIncomeData] = useState([]); // State untuk menyimpan data income
@@ -62,7 +64,6 @@ const Income = () => {
     }
   };
 
-  // Fungsi untuk menampilkan pagination dengan format tertentu
   // Fungsi untuk menampilkan pagination dengan format tertentu
   const renderPagination = () => {
     const pageNumbers = [];
@@ -135,13 +136,67 @@ const Income = () => {
 
           {/* Loading State */}
           {loading ? (
-            <div className="flex items-center justify-center min-h-screen">
-              <ReactLoading
-                type="spin"
-                color="#B4252A"
-                height={50}
-                width={50}
-              />
+            <div className="p-6 overflow-x-auto bg-white rounded-lg shadow-lg">
+              <table className="min-w-full text-left border-collapse table-auto">
+                <thead>
+                  <tr className="border-b">
+                    <th className="px-4 py-2 text-center">
+                      <Skeleton width={100} height={20} />
+                    </th>
+                    <th className="px-4 py-2 text-center">
+                      <Skeleton width={100} height={20} />
+                    </th>
+                    <th className="px-4 py-2 text-center">
+                      <Skeleton width={100} height={20} />
+                    </th>
+                    <th className="px-4 py-2 text-center">
+                      <Skeleton width={100} height={20} />
+                    </th>
+                    <th className="px-4 py-2 text-center">
+                      <Skeleton width={100} height={20} />
+                    </th>
+                    <th className="px-4 py-2 text-center">
+                      <Skeleton width={100} height={20} />
+                    </th>
+                    <th className="px-4 py-2 text-center">
+                      <Skeleton width={100} height={20} />
+                    </th>
+                    <th className="px-4 py-2 text-center">
+                      <Skeleton width={100} height={20} />
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Array.from({ length: 5 }).map((_, index) => (
+                    <tr key={index} className="border-b">
+                      <td className="px-4 py-2 text-center">
+                        <Skeleton width={50} height={20} />
+                      </td>
+                      <td className="px-4 py-2 text-center">
+                        <Skeleton width={100} height={20} />
+                      </td>
+                      <td className="px-4 py-2 text-center">
+                        <Skeleton width={100} height={20} />
+                      </td>
+                      <td className="px-4 py-2 text-center">
+                        <Skeleton width={100} height={20} />
+                      </td>
+                      <td className="px-4 py-2 text-center">
+                        <Skeleton width={100} height={20} />
+                      </td>
+                      <td className="px-4 py-2 text-center">
+                        <Skeleton width={100} height={20} />
+                      </td>
+                      <td className="px-4 py-2 text-center">
+                        <Skeleton width={100} height={20} />
+                      </td>
+                      <td className="px-4 py-2 text-center">
+                        <Skeleton width={100} height={20} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           ) : (
             <>

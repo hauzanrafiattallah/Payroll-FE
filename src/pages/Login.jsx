@@ -30,7 +30,15 @@ const Login = () => {
       return;
     }
 
-    setLoading(true);
+    // Inisialisasi timer untuk menampilkan loading spinner jika login lebih dari 1 detik
+    let timer = null;
+
+    setLoading(false); // Pastikan loading spinner tidak langsung muncul
+
+    // Set timeout untuk memulai spinner jika lebih dari 1 detik
+    timer = setTimeout(() => {
+      setLoading(true);
+    }, 1000);
 
     try {
       const response = await axios.post(
@@ -41,7 +49,10 @@ const Login = () => {
         }
       );
 
-      setLoading(false);
+      // Clear timeout jika berhasil sebelum 1 detik
+      clearTimeout(timer);
+
+      setLoading(false); // Stop loading spinner jika request selesai
 
       console.log(response.data);
 
@@ -70,7 +81,8 @@ const Login = () => {
         );
       }
     } catch (error) {
-      setLoading(false);
+      clearTimeout(timer); // Clear timeout jika ada error
+      setLoading(false); // Stop loading spinner jika request gagal
       console.error(error.response);
 
       if (error.response && error.response.data) {
@@ -94,7 +106,7 @@ const Login = () => {
     <>
       {/* Loading di tengah halaman */}
       {loading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-20 ">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-20">
           <ReactLoading type="spin" color="#B4252A" height={50} width={50} />
         </div>
       )}

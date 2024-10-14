@@ -6,6 +6,7 @@ import AddExpensesPopUp from "./AddExpensesPopUp";
 import { Link, useNavigate } from "react-router-dom"; // Import Link dan useNavigate dari react-router-dom
 import axios from "axios";
 import { toast } from "react-toastify";
+import ReactLoading from "react-loading"; // Import ReactLoading
 
 const Topbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -47,8 +48,14 @@ const Topbar = () => {
   }, [authToken]);
 
   const handleLogout = async () => {
-    setLoading(true); // Mulai loading spinner
+    let timer = null;
+
     try {
+      // Mulai timeout untuk menampilkan spinner jika logout memakan waktu lebih dari 1 detik
+      timer = setTimeout(() => {
+        setLoading(true);
+      }, 1000);
+
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/logout`,
         {},
@@ -74,12 +81,21 @@ const Topbar = () => {
       console.error(error);
       toast.error("Terjadi kesalahan saat logout.");
     } finally {
-      setLoading(false); // Stop loading spinner
+      // Hentikan loading spinner dan batalkan timeout jika jaringan bagus
+      clearTimeout(timer);
+      setLoading(false);
     }
   };
 
   return (
     <>
+      {/* Loading di tengah halaman jika timeout tercapai */}
+      {loading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-20">
+          <ReactLoading type="spin" color="#B4252A" height={50} width={50} />
+        </div>
+      )}
+
       <div className="flex items-center justify-between p-4 w-full shadow-md fixed top-0 left-0 right-0 z-50 bg-white transition-all duration-300">
         {/* Logo hanya muncul di layar desktop/tablet */}
         <div className="items-center hidden ml-4 cursor-pointer lg:flex md:flex lg:ml-14">
