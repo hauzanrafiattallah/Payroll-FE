@@ -65,18 +65,18 @@ const Topbar = () => {
           <div className="flex space-x-1 sm:space-x-2 lg:space-x-4">
             {/* Tombol Add Expenses */}
             <button
-              className="flex items-center bg-[#F3DCDC] text-[#B4252A] font-bold text-[10px] sm:text-xs lg:text-base py-3 sm:py-2 lg:py-3 px-1 sm:px-3 lg:px-6 rounded-md hover:bg-[#e4c3c3] cursor-pointer"
+              className="flex items-center bg-[#F3DCDC] text-[#B4252A] font-bold text-[10px] sm:text-xs lg:text-base py-3 sm:py-2 lg:py-3 px-2 sm:px-3 lg:px-4 rounded-md hover:bg-[#e4c3c3] cursor-pointer"
               onClick={() => setIsAddExpensesOpen(true)}
             >
-              <PiHandDepositBold className="mr-1 text-sm sm:mr-2 lg:mr-2 sm:text-lg" />
+              <PiHandDepositBold className="mr-1 text-lg sm:mr-2 lg:mr-2 sm:text-lg" />
               <span>Add Expenses</span>
             </button>
             {/* Tombol Add Income */}
             <button
               onClick={() => setIsAddIncomeOpen(true)}
-              className="flex items-center bg-[#B4252A] text-white font-bold text-[10px] sm:text-xs lg:text-base py-1 sm:py-2 lg:py-3 px-1 sm:px-3 lg:px-6 rounded-md hover:bg-[#8E1F22] cursor-pointer"
+              className="flex items-center bg-[#B4252A] text-white font-bold text-[10px] sm:text-xs lg:text-base py-3 sm:py-2 lg:py-3 px-3 sm:px-3 lg:px-6 rounded-md hover:bg-[#8E1F22] cursor-pointer"
             >
-              <PiHandWithdrawBold className="mr-1 text-sm sm:mr-2 lg:mr-2 sm:text-lg" />
+              <PiHandWithdrawBold className="mr-1 text-lg sm:mr-2 lg:mr-2 sm:text-lg" />
               <span>Add Income</span>
             </button>
           </div>
