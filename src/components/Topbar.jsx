@@ -199,14 +199,18 @@ const Topbar = () => {
                 >
                   Back
                 </button>
-                <button
-                  className={`px-6 py-2 text-white bg-[#B4252A] rounded-md hover:bg-[#8E1F22] w-32 flex items-center justify-center ${
-                    loading ? "opacity-50 cursor-not-allowed" : ""
-                  }`} // Tambah efek disable dan loading spinner
-                  onClick={handleLogout}
-                  disabled={loading} // Disable tombol saat loading
-                >
-                  {loading ? ( // Jika loading tampilkan spinner
+                <div className="relative">
+                  <button
+                    className={`px-6 py-2 text-white bg-[#B4252A] rounded-md hover:bg-[#8E1F22] w-32 flex items-center justify-center ${
+                      loading ? "opacity-50 cursor-not-allowed" : ""
+                    }`} // Tambah efek disable dan loading spinner
+                    onClick={handleLogout}
+                    disabled={loading} // Disable tombol saat loading
+                  >
+                    Confirm
+                  </button>
+
+                  {loading && ( // Jika loading, tampilkan spinner di luar tombol
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-10">
                       <ReactLoading
                         type="spin"
@@ -215,10 +219,8 @@ const Topbar = () => {
                         width={50}
                       />
                     </div>
-                  ) : (
-                    "Confirm"
                   )}
-                </button>
+                </div>
               </div>
             </div>
           </div>
