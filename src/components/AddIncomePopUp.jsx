@@ -118,7 +118,8 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
       <div
         className={`bg-white p-8 rounded-lg shadow-lg transform transition-transform duration-300 ease-in-out ${
           animatePopup ? "translate-y-0" : "-translate-y-full"
-        } relative z-10 w-[90%] max-w-2xl mx-auto`}
+        } relative z-10 w-[90%] max-w-2xl mx-auto 
+        max-h-[90vh] overflow-y-auto sm:max-h-[75vh]`} // Tambahkan pengaturan tinggi
       >
         <h2 className="mb-4 text-lg font-semibold text-center">Add Income</h2>
 
