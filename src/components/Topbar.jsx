@@ -151,7 +151,7 @@ const Topbar = () => {
           )}
 
           {/* Tombol User */}
-          <div className="relative dropdown-button">
+          <div className="relative dropdown-button ml-auto">
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               className="flex items-center text-gray-700 bg-white rounded-full focus:outline-none"
