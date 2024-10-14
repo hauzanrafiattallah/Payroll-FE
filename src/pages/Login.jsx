@@ -21,7 +21,7 @@ const Login = () => {
   const handleLogin = async () => {
     const trimmedEmail = email.trim();
     const trimmedPassword = password.trim();
-
+  
     if (!trimmedEmail || !trimmedPassword) {
       toast.error("Email dan password tidak boleh kosong!", {
         position: "top-center",
@@ -29,17 +29,9 @@ const Login = () => {
       });
       return;
     }
-
-    // Inisialisasi timer untuk menampilkan loading spinner jika login lebih dari 1 detik
-    let timer = null;
-
-    setLoading(false); // Pastikan loading spinner tidak langsung muncul
-
-    // Set timeout untuk memulai spinner jika lebih dari 1 detik
-    timer = setTimeout(() => {
-      setLoading(true);
-    }, 1000);
-
+  
+    setLoading(true); // Tampilkan loading spinner segera
+  
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/login`,
@@ -48,24 +40,21 @@ const Login = () => {
           password: trimmedPassword,
         }
       );
-
-      // Clear timeout jika berhasil sebelum 1 detik
-      clearTimeout(timer);
-
-      setLoading(false); // Stop loading spinner jika request selesai
-
+  
+      setLoading(false); // Hentikan loading spinner setelah request selesai
+  
       console.log(response.data);
-
+  
       if (response.data.status) {
         // Simpan token dan status login ke localStorage
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("isAuthenticated", "true");
-
+  
         toast.success("Login berhasil!", {
           position: "top-center",
           autoClose: 2000,
         });
-
+  
         // Navigasi setelah login sukses
         setTimeout(() => {
           navigate("/");
@@ -81,14 +70,12 @@ const Login = () => {
         );
       }
     } catch (error) {
-      clearTimeout(timer); // Clear timeout jika ada error
-      setLoading(false); // Stop loading spinner jika request gagal
+      setLoading(false); // Hentikan loading spinner jika terjadi error
       console.error(error.response);
-
+  
       if (error.response && error.response.data) {
         const errorMessage =
-          error.response.data.message ||
-          "Terjadi kesalahan, silakan coba lagi.";
+          error.response.data.message || "Terjadi kesalahan, silakan coba lagi.";
         toast.error(errorMessage, {
           position: "top-center",
           autoClose: 2000,
@@ -101,12 +88,13 @@ const Login = () => {
       }
     }
   };
+  
 
   return (
     <>
       {/* Loading di tengah halaman */}
       {loading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-20">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-10">
           <ReactLoading type="spin" color="#B4252A" height={50} width={50} />
         </div>
       )}

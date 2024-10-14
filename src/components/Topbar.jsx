@@ -54,14 +54,10 @@ const Topbar = () => {
   }, [authToken]);
 
   const handleLogout = async () => {
-    let timer = null;
-
     try {
-      // Mulai timeout untuk menampilkan spinner jika logout memakan waktu lebih dari 1 detik
-      timer = setTimeout(() => {
-        setLoading(true);
-      }, 1000);
-
+      // Tampilkan loading spinner segera
+      setLoading(true);
+  
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/logout`,
         {},
@@ -71,7 +67,7 @@ const Topbar = () => {
           },
         }
       );
-
+  
       if (response.status === 200 || response.data.success) {
         localStorage.removeItem("isAuthenticated");
         localStorage.removeItem("token");
@@ -87,17 +83,17 @@ const Topbar = () => {
       console.error(error);
       toast.error("Terjadi kesalahan saat logout.");
     } finally {
-      // Hentikan loading spinner dan batalkan timeout jika jaringan bagus
-      clearTimeout(timer);
+      // Hentikan loading spinner setelah proses selesai
       setLoading(false);
     }
   };
+  
 
   return (
     <>
       {/* Loading di tengah halaman jika timeout tercapai */}
       {loading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-20">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-10">
           <ReactLoading type="spin" color="#B4252A" height={50} width={50} />
         </div>
       )}
