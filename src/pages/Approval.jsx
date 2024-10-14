@@ -7,6 +7,8 @@ import { PiHandWithdrawBold, PiHandDepositBold } from "react-icons/pi"; // Impor
 import ReactLoading from "react-loading";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const Approval = () => {
   const [selectedTransaction, setSelectedTransaction] = useState(null);
@@ -131,13 +133,38 @@ const Approval = () => {
 
           {/* Loading State */}
           {loading ? (
-            <div className="flex items-center justify-center min-h-screen">
-              <ReactLoading
-                type="spin"
-                color="#B4252A"
-                height={50}
-                width={50}
-              />
+            <div className="space-y-4">
+              {/* Skeleton untuk judul */}
+              <div className="space-y-4">
+                {Array.from({ length: 6 }).map((_, index) => (
+                  <div
+                    key={index}
+                    className="flex flex-col justify-between p-4 transition-all duration-200 bg-white border rounded-lg shadow-sm md:flex-row"
+                  >
+                    <div className="flex flex-col items-start justify-between w-full mb-4 md:flex-row md:items-center md:mb-0">
+                      <div className="flex items-center space-x-4">
+                        <Skeleton height={24} width={24} /> {/* Icon */}
+                        <div className="flex flex-col">
+                          <Skeleton height={20} width={100} />{" "}
+                          {/* Activity Name */}
+                          <Skeleton height={20} width={100} /> {/* Date */}
+                          <Skeleton height={20} width={100} /> {/* Amount */}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-center w-full space-x-4 md:w-auto">
+                      <Skeleton height={30} width={100} className="w-full" />{" "}
+                      {/* Decline Button */}
+                      <Skeleton
+                        height={30}
+                        width={100}
+                        className="w-full"
+                      />{" "}
+                      {/* Approve Button */}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           ) : (
             <div className="space-y-4">
