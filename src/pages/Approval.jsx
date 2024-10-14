@@ -266,7 +266,7 @@ const Approval = () => {
           className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30"
           onClick={handleOutsideClick} // Close on outside click
         >
-          <div className="w-full max-w-sm p-8 bg-white rounded-lg shadow-lg sm:max-w-sm md:max-w-md">
+          <div className="w-[90%] max-w-[400px] p-8 bg-white rounded-lg shadow-lg">
             <h2 className="mb-8 text-xl font-semibold text-center">
               {actionType === "Approve"
                 ? "Approve Confirmation"
