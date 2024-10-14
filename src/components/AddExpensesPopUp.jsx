@@ -3,7 +3,7 @@ import { BsUpload } from "react-icons/bs";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const AddExpensesPopup = ({ isOpen, onClose }) => {
@@ -16,7 +16,7 @@ const AddExpensesPopup = ({ isOpen, onClose }) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [animatePopup, setAnimatePopup] = useState(false);
 
-  const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
+  const authToken = localStorage.getItem("token"); // token dari localStorage
 
   useEffect(() => {
     const handleOutsideClick = (e) => {

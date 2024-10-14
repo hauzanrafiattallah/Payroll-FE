@@ -17,7 +17,7 @@ import "react-toastify/dist/ReactToastify.css"; // Import CSS toast
 const App = () => {
   return (
     <Router>
-      {/* Letakkan ToastContainer di sini */}
+      {/* ToastContainer*/}
       <ToastContainer
         position="top-center"
         autoClose={3000}
@@ -29,11 +29,13 @@ const App = () => {
         draggable={false}
         pauseOnHover
         limit={1}
+        toastClassName="text-center"
       />
 
       <Routes>
         <Route path="/login" element={<Login />} /> {/* Halaman Login */}
-        <Route path="/register" element={<Register />} /> {/* Halaman Register */}
+        <Route path="/register" element={<Register />} />{" "}
+        {/* Halaman Register */}
         <Route
           path="/"
           element={
@@ -99,7 +101,8 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        <Route path="*" element={<NotFound />} /> {/* Halaman jika rute tidak ditemukan */}
+        <Route path="*" element={<NotFound />} />{" "}
+        {/* Halaman jika rute tidak ditemukan */}
       </Routes>
     </Router>
   );
