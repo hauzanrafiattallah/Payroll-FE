@@ -3,6 +3,7 @@ import { BsUpload } from "react-icons/bs";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ReactLoading from "react-loading";
 
 const AddIncomePopup = ({ isOpen, onClose }) => {
   const [selectedDate, setSelectedDate] = useState("");
@@ -12,6 +13,7 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
   const [documentEvidence, setDocumentEvidence] = useState(null);
   const [imageEvidence, setImageEvidence] = useState(null);
   const [animatePopup, setAnimatePopup] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
 
@@ -84,6 +86,7 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
     formData.append("transaction_date", selectedDate); // Menggunakan tanggal dari input HTML
 
     try {
+      setIsLoading(true);
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/finance`,
         formData,
@@ -103,6 +106,8 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
       toast.error(
         "Gagal mengirim data, pastikan semua field terisi dengan benar."
       );
+    } finally {
+      setIsLoading(false); // Nonaktifkan loading state setelah submit selesai
     }
   };
 
@@ -222,11 +227,19 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
             <button
               type="submit"
               className="px-6 py-2 text-white bg-[#B4252A] rounded-md hover:bg-[#8E1F22] transition-colors"
+              disabled={isLoading}
             >
               Save
             </button>
           </div>
         </form>
+
+        {/* Tambahkan overlay loading */}
+        {isLoading && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-10">
+            <ReactLoading type="spin" color="#B4252A" height={50} width={50} />
+          </div>
+        )}
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import { BsUpload } from "react-icons/bs";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ReactLoading from "react-loading"; // Tambahkan ini untuk import ReactLoading
 
 const AddExpensesPopup = ({ isOpen, onClose }) => {
   const [selectedDate, setSelectedDate] = useState("");
@@ -12,6 +13,7 @@ const AddExpensesPopup = ({ isOpen, onClose }) => {
   const [documentEvidence, setDocumentEvidence] = useState(null);
   const [imageEvidence, setImageEvidence] = useState(null);
   const [animatePopup, setAnimatePopup] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // State untuk mengelola status loading
 
   const authToken = localStorage.getItem("token"); // token dari localStorage
 
@@ -37,7 +39,6 @@ const AddExpensesPopup = ({ isOpen, onClose }) => {
     setTimeout(onClose, 200);
   };
 
-  // Fungsi untuk membatasi panjang nama file
   const formatFileName = (name, maxLength = 20) => {
     if (name.length > maxLength) {
       const ext = name.split(".").pop(); // Dapatkan ekstensi file
@@ -50,7 +51,6 @@ const AddExpensesPopup = ({ isOpen, onClose }) => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
-    // Validasi form
     if (
       !activityName ||
       !selectedDate ||
@@ -63,7 +63,6 @@ const AddExpensesPopup = ({ isOpen, onClose }) => {
       return;
     }
 
-    // Validasi tipe file documentEvidence (harus PDF atau XLSX)
     const allowedFileTypes = [
       "application/pdf",
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -73,40 +72,41 @@ const AddExpensesPopup = ({ isOpen, onClose }) => {
       return;
     }
 
-    // Buat FormData untuk mengirim file bersama dengan field lainnya
     const formData = new FormData();
     formData.append("activity_name", activityName);
-    formData.append("transaction_type", "expense"); // Ubah sesuai kebutuhan "income" atau "expense"
+    formData.append("transaction_type", "expense");
     formData.append("amount", amount);
     formData.append("tax_amount", taxAmount);
     formData.append("document_evidence", documentEvidence);
     formData.append("image_evidence", imageEvidence);
-    formData.append("transaction_date", selectedDate); // Menggunakan tanggal dari input HTML
+    formData.append("transaction_date", selectedDate);
 
     try {
+      setIsLoading(true); // Aktifkan loading state
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/finance`,
         formData,
         {
           headers: {
             Accept: "application/json",
-            Authorization: `Bearer ${authToken}`, // Gunakan token dari localStorage
+            Authorization: `Bearer ${authToken}`,
             "Content-Type": "multipart/form-data",
           },
         }
       );
 
-      toast.success("Data berhasil disimpan!"); // Tampilkan pesan sukses
-      closePopup(); // Tutup popup setelah submit berhasil
+      toast.success("Data berhasil disimpan!");
+      closePopup();
     } catch (error) {
       console.error("Error submitting form data:", error.response || error);
       toast.error(
         "Gagal mengirim data, pastikan semua field terisi dengan benar."
       );
+    } finally {
+      setIsLoading(false); // Nonaktifkan loading state setelah submit selesai
     }
   };
 
-  // Fungsi untuk memicu klik pada input file yang disembunyikan
   const triggerFileUpload = (id) => {
     document.getElementById(id).click();
   };
@@ -119,7 +119,7 @@ const AddExpensesPopup = ({ isOpen, onClose }) => {
         className={`bg-white p-8 rounded-lg shadow-lg transform transition-transform duration-300 ease-in-out ${
           animatePopup ? "translate-y-0" : "-translate-y-full"
         } relative z-10 w-[90%] max-w-2xl mx-auto 
-    max-h-[90vh] overflow-y-auto sm:max-h-[75vh]`} // Gunakan max-h dan overflow-y-auto
+    max-h-[90vh] overflow-y-auto sm:max-h-[75vh]`}
       >
         <h2 className="mb-4 text-lg font-semibold text-center">Add Expenses</h2>
 
@@ -181,7 +181,7 @@ const AddExpensesPopup = ({ isOpen, onClose }) => {
               <input
                 type="file"
                 id="documentEvidence"
-                accept=".pdf, .xlsx" // Menerima file PDF dan EXCEL
+                accept=".pdf, .xlsx"
                 className="hidden"
                 onChange={(e) => setDocumentEvidence(e.target.files[0])}
                 required
@@ -203,7 +203,7 @@ const AddExpensesPopup = ({ isOpen, onClose }) => {
               <input
                 type="file"
                 id="imageEvidence"
-                accept="image/png, image/jpeg" // PNG/JPG untuk bukti
+                accept="image/png, image/jpeg"
                 className="hidden"
                 onChange={(e) => setImageEvidence(e.target.files[0])}
                 required
@@ -214,7 +214,7 @@ const AddExpensesPopup = ({ isOpen, onClose }) => {
           <div className="flex justify-end mt-6 space-x-4">
             <button
               type="button"
-              className="px-6 py-2 text-red-600 transition-colors bg-red-100 rounded-md hover:bg-red-200"
+              className="px-6 py-2 text-red-600 transition-colors bg-red-100 rounded-md hover:bg-red-200 "
               onClick={closePopup}
             >
               Cancel
@@ -222,11 +222,19 @@ const AddExpensesPopup = ({ isOpen, onClose }) => {
             <button
               type="submit"
               className="px-6 py-2 text-white bg-[#B4252A] rounded-md hover:bg-[#8E1F22] transition-colors"
+              disabled={isLoading} // Nonaktifkan tombol saat loading
             >
               Save
             </button>
           </div>
         </form>
+
+        {/* Tambahkan overlay loading */}
+        {isLoading && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-10">
+            <ReactLoading type="spin" color="#B4252A" height={50} width={50} />
+          </div>
+        )}
       </div>
     </div>
   );
