@@ -136,7 +136,7 @@ const Approval = () => {
             <div className="space-y-4">
               {/* Skeleton untuk judul */}
               <div className="space-y-4">
-                {Array.from({ length: 6 }).map((_, index) => (
+                {Array.from({ length: 5 }).map((_, index) => (
                   <div
                     key={index}
                     className="flex flex-col justify-between p-4 transition-all duration-200 bg-white border rounded-lg shadow-sm md:flex-row"
