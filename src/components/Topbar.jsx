@@ -14,6 +14,7 @@ const Topbar = () => {
   const [isAddExpensesOpen, setIsAddExpensesOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [loading, setLoading] = useState(false); // State untuk loading spinner
+  const [isLogoutPopupOpen, setIsLogoutPopupOpen] = useState(false); // State untuk popup logout
   const [userData, setUserData] = useState(() => {
     const savedUserData = localStorage.getItem("userData");
     return savedUserData ? JSON.parse(savedUserData) : null;
@@ -27,29 +28,28 @@ const Topbar = () => {
       if (isDropdownOpen && !event.target.closest(".dropdown-button")) {
         setIsDropdownOpen(false); // Tutup dropdown jika klik di luar dropdown
       }
+
+      if (isLogoutPopupOpen && !event.target.closest(".popup-content")) {
+        setIsLogoutPopupOpen(false); // Tutup popup jika klik di luar popup
+      }
     };
-  
-    // Pasang event listener saat dropdown terbuka
-    if (isDropdownOpen) {
+
+    if (isDropdownOpen || isLogoutPopupOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     } else {
       document.removeEventListener("mousedown", handleClickOutside);
     }
-  
-    // Cleanup event listener saat komponen di-unmount atau dropdown ditutup
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isDropdownOpen]);
-  
+  }, [isDropdownOpen, isLogoutPopupOpen]);
 
-  // Fungsi untuk mendapatkan nama depan
   const getFirstName = (name) => {
     if (!name) return "User"; // Fallback ke "User" jika nama tidak ada
     return name.split(" ")[0]; // Ambil nama pertama sebelum spasi
   };
 
-  // Fetch data user saat komponen pertama kali dirender
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -62,7 +62,7 @@ const Topbar = () => {
             },
           }
         );
-        setUserData(response.data); // Simpan data user ke state
+        setUserData(response.data);
         localStorage.setItem("userData", JSON.stringify(response.data)); // Simpan ke localStorage
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -76,9 +76,8 @@ const Topbar = () => {
 
   const handleLogout = async () => {
     try {
-      // Tampilkan loading spinner segera
-      setLoading(true);
-  
+      setLoading(true); // Tampilkan loading spinner
+
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/logout`,
         {},
@@ -88,14 +87,14 @@ const Topbar = () => {
           },
         }
       );
-  
+
       if (response.status === 200 || response.data.success) {
         localStorage.removeItem("isAuthenticated");
         localStorage.removeItem("token");
         localStorage.removeItem("role");
         toast.success("Logout berhasil!");
         setTimeout(() => {
-          navigate("/login"); // Arahkan ke halaman login setelah logout berhasil
+          navigate("/login");
         }, 1000);
       } else {
         toast.error("Logout gagal, coba lagi.");
@@ -104,15 +103,12 @@ const Topbar = () => {
       console.error(error);
       toast.error("Terjadi kesalahan saat logout.");
     } finally {
-      // Hentikan loading spinner setelah proses selesai
       setLoading(false);
     }
   };
-  
 
   return (
     <>
-      {/* Loading di tengah halaman jika timeout tercapai */}
       {loading && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-10">
           <ReactLoading type="spin" color="#B4252A" height={50} width={50} />
@@ -120,7 +116,6 @@ const Topbar = () => {
       )}
 
       <div className="flex items-center justify-between p-4 w-full shadow-md fixed top-0 left-0 right-0 z-50 bg-white transition-all duration-300">
-        {/* Logo hanya muncul di layar desktop/tablet */}
         <div className="items-center hidden ml-4 cursor-pointer lg:flex md:flex lg:ml-14">
           <img
             src="/header2.png"
@@ -129,7 +124,6 @@ const Topbar = () => {
           />
         </div>
 
-        {/* Dua tombol untuk Add Expenses dan Add Income */}
         <div className="flex items-center justify-between w-full lg:w-auto md:w-auto">
           {userData?.role !== "superAdmin" && (
             <div className="flex space-x-1 sm:space-x-2 lg:space-x-4">
@@ -150,13 +144,11 @@ const Topbar = () => {
             </div>
           )}
 
-          {/* Tombol User */}
           <div className="relative dropdown-button ml-auto">
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               className="flex items-center text-gray-700 bg-white rounded-full focus:outline-none"
             >
-              {/* Tampilkan nama depan dari state */}
               <span className="ml-5 mr-3 font-medium text-lg">
                 {getFirstName(userData?.name)}
               </span>
@@ -167,7 +159,6 @@ const Topbar = () => {
               />
             </button>
 
-            {/* Dropdown */}
             {isDropdownOpen && (
               <div className="absolute right-0 w-40 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg">
                 <Link
@@ -178,7 +169,7 @@ const Topbar = () => {
                 </Link>
                 <div className="border-t border-gray-200"></div>
                 <div
-                  onClick={handleLogout}
+                  onClick={() => setIsLogoutPopupOpen(true)} // Buka popup logout
                   className="flex items-center px-4 py-2 text-[#B4252A] cursor-pointer hover:bg-gray-100"
                 >
                   <FaSignOutAlt className="mr-2 text-lg" />
@@ -190,13 +181,55 @@ const Topbar = () => {
         </div>
       </div>
 
-      {/* Popup untuk Add Income */}
+      {isLogoutPopupOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg popup-content w-[90%] max-w-md">
+            <div className="flex flex-col items-center space-y-4">
+              <img src="/door.gif" alt="Logout" className="w-48 h-48" />
+              <p className="text-lg font-semibold text-center">
+                Apakah anda yakin untuk Log Out?
+              </p>
+              <div className="flex justify-center space-x-4">
+                <button
+                  className={`px-6 py-2 text-red-600 bg-red-100 rounded-md hover:bg-red-200 w-32 ${
+                    loading ? "opacity-50 cursor-not-allowed" : ""
+                  }`} // Tambah efek disable jika loading
+                  onClick={() => setIsLogoutPopupOpen(false)} // Tutup popup
+                  disabled={loading} // Disable tombol saat loading
+                >
+                  Back
+                </button>
+                <button
+                  className={`px-6 py-2 text-white bg-[#B4252A] rounded-md hover:bg-[#8E1F22] w-32 flex items-center justify-center ${
+                    loading ? "opacity-50 cursor-not-allowed" : ""
+                  }`} // Tambah efek disable dan loading spinner
+                  onClick={handleLogout}
+                  disabled={loading} // Disable tombol saat loading
+                >
+                  {loading ? ( // Jika loading tampilkan spinner
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-10">
+                      <ReactLoading
+                        type="spin"
+                        color="#B4252A"
+                        height={50}
+                        width={50}
+                      />
+                    </div>
+                  ) : (
+                    "Confirm"
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <AddIncomePopUp
         isOpen={isAddIncomeOpen}
         onClose={() => setIsAddIncomeOpen(false)}
       />
 
-      {/* Popup untuk Add Expenses */}
       <AddExpensesPopUp
         isOpen={isAddExpensesOpen}
         onClose={() => setIsAddExpensesOpen(false)}
