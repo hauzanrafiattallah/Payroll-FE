@@ -25,7 +25,7 @@ const Export = () => {
   const handleFormSubmit = async () => {
     const formattedStartDate = format(startDate, "yyyy-MM-dd");
     const formattedEndDate = format(endDate, "yyyy-MM-dd");
-  
+
     if (!startDate || !endDate) {
       if (!toast.isActive("toast-error")) {
         toast.dismiss();
@@ -35,9 +35,9 @@ const Export = () => {
       }
       return;
     }
-  
+
     setLoading(true);
-  
+
     try {
       const response = await axios.get(
         `${
@@ -50,9 +50,9 @@ const Export = () => {
           responseType: "blob", // Agar menerima file sebagai blob
         }
       );
-  
+
       console.log(response.data.size); // Cek ukuran data yang diterima
-  
+
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
@@ -61,15 +61,15 @@ const Export = () => {
         `export_${format(startDate, "yyyyMMdd")}_${format(
           endDate,
           "yyyyMMdd"
-        )}.${exportType === 'excel' ? 'xlsx' : exportType}` // Penyesuaian ekstensi file
+        )}.${exportType === "excel" ? "xlsx" : exportType}` // Penyesuaian ekstensi file
       );
       document.body.appendChild(link);
       link.click();
       link.parentNode.removeChild(link);
-  
+
       toast.dismiss();
       toast.success("Data berhasil diexport!", { toastId: "toast-success" });
-  
+
       setLoading(false);
     } catch (error) {
       if (!toast.isActive("toast-error")) {
@@ -81,7 +81,6 @@ const Export = () => {
       setLoading(false);
     }
   };
-  
 
   const getDisplayDateRange = (start, end) => {
     if (start && end) {
@@ -129,7 +128,7 @@ const Export = () => {
 
           {/* Container untuk Export Options */}
           <div className="p-6 bg-white rounded-lg shadow-lg md:p-8">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 relative">
+            <div className="relative grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
               {/* Dropdown untuk pilihan Export Type */}
               <div
                 className="relative flex items-center justify-between p-4 border rounded-lg cursor-pointer md:p-6"
@@ -151,10 +150,10 @@ const Export = () => {
               {showExportTypeDropdown && (
                 <div
                   ref={exportTypeRef}
-                  className="absolute z-50 mt-32 bg-white border rounded-lg shadow-lg p-4 w-72 right-0 md:mr-64 md:left-0"
+                  className="absolute right-0 z-50 p-4 mt-32 bg-white border rounded-lg shadow-lg w-72 md:mr-64 md:left-0"
                 >
                   <div>
-                    <label className="block text-sm font-semibold mb-1">
+                    <label className="block mb-1 text-sm font-semibold">
                       Select Export Type
                     </label>
                     <select
@@ -192,10 +191,10 @@ const Export = () => {
               {showDatePicker && (
                 <div
                   ref={datePickerRef}
-                  className="absolute z-50 mt-32 bg-white border rounded-lg shadow-lg p-4 w-72 right-0 md:mr-64 md:right-0"
+                  className="absolute right-0 z-50 p-4 mt-32 bg-white border rounded-lg shadow-lg w-72 md:mr-64 md:right-0"
                 >
                   <div>
-                    <label className="block text-sm font-semibold mb-1">
+                    <label className="block mb-1 text-sm font-semibold">
                       Start Date
                     </label>
                     <DatePicker
@@ -208,7 +207,7 @@ const Export = () => {
                     />
                   </div>
                   <div className="mt-4">
-                    <label className="block text-sm font-semibold mb-1">
+                    <label className="block mb-1 text-sm font-semibold">
                       End Date
                     </label>
                     <DatePicker

@@ -103,7 +103,7 @@ const FilterPopup = ({ isOpen, onClose, applyFilter }) => {
                 placeholder="Start Date"
               />
             </div>
-            <span className="mx-2 text-gray-600 mr-4">To</span>
+            <span className="mx-2 mr-4 text-gray-600">To</span>
             <div className="relative w-full sm:w-1/2">
               <FaCalendarAlt className="absolute text-gray-400 left-3 top-3" />
               <input

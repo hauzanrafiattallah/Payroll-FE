@@ -134,7 +134,7 @@ const Expenses = () => {
 
           {/* Loading State */}
           {loading ? (
-            <div className="flex justify-center items-center min-h-screen">
+            <div className="flex items-center justify-center min-h-screen">
               <ReactLoading
                 type="spin"
                 color="#B4252A"

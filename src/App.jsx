@@ -34,7 +34,8 @@ const App = () => {
 
       <Routes>
         <Route path="/login" element={<Login />} /> {/* Halaman Login */}
-        <Route path="/register" element={<Register />} /> {/* Halaman Register */}
+        <Route path="/register" element={<Register />} />{" "}
+        {/* Halaman Register */}
         <Route
           path="/"
           element={
@@ -99,7 +100,8 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        <Route path="*" element={<NotFound />} />{/* Halaman jika rute tidak ditemukan */}
+        <Route path="*" element={<NotFound />} />
+        {/* Halaman jika rute tidak ditemukan */}
       </Routes>
     </Router>
   );

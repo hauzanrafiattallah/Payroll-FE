@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { FaFileAlt } from "react-icons/fa"; 
+import { FaFileAlt } from "react-icons/fa";
 import axios from "axios";
 
 const TransaksiPopup = ({ isOpen, onClose, transactionId }) => {
-  const [transaction, setTransaction] = useState(null); 
-  const [loading, setLoading] = useState(true); 
+  const [transaction, setTransaction] = useState(null);
+  const [loading, setLoading] = useState(true);
   const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
 
   // Base URL for accessing storage files
@@ -73,7 +73,9 @@ const TransaksiPopup = ({ isOpen, onClose, transactionId }) => {
             {/* Kegiatan */}
             <div className="flex justify-between">
               <span className="font-semibold text-gray-600">Kegiatan</span>
-              <span className="text-gray-800">{transaction.activity_name || "N/A"}</span>
+              <span className="text-gray-800">
+                {transaction.activity_name || "N/A"}
+              </span>
             </div>
             {/* Tanggal */}
             <div className="flex justify-between">
@@ -88,14 +90,20 @@ const TransaksiPopup = ({ isOpen, onClose, transactionId }) => {
             <div className="flex justify-between">
               <span className="font-semibold text-gray-600">Pemasukan</span>
               <span className="text-gray-800">
-                Rp. {transaction.amount ? transaction.amount.toLocaleString("id-ID") : 0}
+                Rp.{" "}
+                {transaction.amount
+                  ? transaction.amount.toLocaleString("id-ID")
+                  : 0}
               </span>
             </div>
             {/* Pajak */}
             <div className="flex justify-between">
               <span className="font-semibold text-gray-600">Pajak</span>
               <span className="text-gray-800">
-                Rp. {transaction.tax_amount ? transaction.tax_amount.toLocaleString("id-ID") : 0}
+                Rp.{" "}
+                {transaction.tax_amount
+                  ? transaction.tax_amount.toLocaleString("id-ID")
+                  : 0}
               </span>
             </div>
             {/* Upload */}
@@ -109,7 +117,7 @@ const TransaksiPopup = ({ isOpen, onClose, transactionId }) => {
                   className="flex items-center hover:underline"
                 >
                   <FaFileAlt className="mr-2" />{" "}
-                  {`Laporan.${transaction.document_evidence.split('.').pop()}`}
+                  {`Laporan.${transaction.document_evidence.split(".").pop()}`}
                 </a>
               </div>
             )}
@@ -124,7 +132,7 @@ const TransaksiPopup = ({ isOpen, onClose, transactionId }) => {
                   className="flex items-center hover:underline"
                 >
                   <FaFileAlt className="mr-2" />{" "}
-                  {`Bukti.${transaction.image_evidence.split('.').pop()}`}
+                  {`Bukti.${transaction.image_evidence.split(".").pop()}`}
                 </a>
               </div>
             )}
