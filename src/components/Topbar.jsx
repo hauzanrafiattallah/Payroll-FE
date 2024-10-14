@@ -22,6 +22,12 @@ const Topbar = () => {
   const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
   const navigate = useNavigate(); // Untuk navigasi ke halaman lain
 
+  // Fungsi untuk mendapatkan nama depan
+  const getFirstName = (name) => {
+    if (!name) return "User"; // Fallback ke "User" jika nama tidak ada
+    return name.split(" ")[0]; // Ambil nama pertama sebelum spasi
+  };
+
   // Fetch data user saat komponen pertama kali dirender
   useEffect(() => {
     const fetchUserData = async () => {
@@ -133,9 +139,9 @@ const Topbar = () => {
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               className="flex items-center text-gray-700 bg-white rounded-full focus:outline-none"
             >
-              {/* Tampilkan nama dari state atau fallback ke "User" */}
+              {/* Tampilkan nama depan dari state */}
               <span className="ml-5 mr-3 font-medium text-lg">
-                {userData?.name || "User"}
+                {getFirstName(userData?.name)}
               </span>
               <img
                 src="/image_placeholder.png"
