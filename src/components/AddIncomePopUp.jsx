@@ -3,7 +3,7 @@ import { BsUpload } from "react-icons/bs";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const AddIncomePopup = ({ isOpen, onClose }) => {
@@ -66,7 +66,7 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
       return;
     }
 
-    // Validasi tipe file documentEvidence (harus PDF atau XLSX)
+    // Validasi tipe file documentEvidence (harus PDF atau EXCEL)
     const allowedFileTypes = [
       "application/pdf",
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
