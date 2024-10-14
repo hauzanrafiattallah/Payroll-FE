@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { FaCalendarAlt } from "react-icons/fa";
 
 const FilterPopup = ({ isOpen, onClose, applyFilter }) => {
   const [filterType, setFilterType] = useState("All");
@@ -94,7 +93,6 @@ const FilterPopup = ({ isOpen, onClose, applyFilter }) => {
           <h3 className="mb-4 text-lg font-semibold">Date Range</h3>
           <div className="flex flex-col items-center justify-between mb-6 sm:flex-row">
             <div className="relative w-full mb-4 sm:w-1/2 sm:mr-2 sm:mb-0">
-              <FaCalendarAlt className="absolute text-gray-400 left-3 top-3" />
               <input
                 type="date"
                 value={startDate}
@@ -105,7 +103,6 @@ const FilterPopup = ({ isOpen, onClose, applyFilter }) => {
             </div>
             <span className="mx-2 mr-4 text-gray-600">To</span>
             <div className="relative w-full sm:w-1/2">
-              <FaCalendarAlt className="absolute text-gray-400 left-3 top-3" />
               <input
                 type="date"
                 value={endDate}

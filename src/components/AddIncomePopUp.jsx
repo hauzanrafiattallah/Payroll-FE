@@ -1,19 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { BsUpload } from "react-icons/bs";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const AddIncomePopup = ({ isOpen, onClose }) => {
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState("");
   const [activityName, setActivityName] = useState("");
   const [amount, setAmount] = useState("");
   const [taxAmount, setTaxAmount] = useState("");
   const [documentEvidence, setDocumentEvidence] = useState(null);
   const [imageEvidence, setImageEvidence] = useState(null);
-  const [showDatePicker, setShowDatePicker] = useState(false);
   const [animatePopup, setAnimatePopup] = useState(false);
 
   const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
@@ -84,10 +81,7 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
     formData.append("tax_amount", taxAmount);
     formData.append("document_evidence", documentEvidence);
     formData.append("image_evidence", imageEvidence);
-    formData.append(
-      "transaction_date",
-      selectedDate.toISOString().split("T")[0]
-    ); // Mengubah format tanggal jadi YYYY-MM-DD
+    formData.append("transaction_date", selectedDate); // Menggunakan tanggal dari input HTML
 
     try {
       const response = await axios.post(
@@ -141,29 +135,12 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
           <label className="block mb-2 font-semibold">Tanggal</label>
           <div className="relative">
             <input
-              type="text"
+              type="date"
               className="w-full p-2 mb-4 border border-gray-300 rounded-lg"
-              value={
-                selectedDate ? selectedDate.toLocaleDateString("id-ID") : ""
-              }
-              placeholder="DD/MM/YY"
-              onClick={() => setShowDatePicker(true)}
-              readOnly
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
               required
             />
-            {showDatePicker && (
-              <div className="absolute z-50 mt-2 bg-white shadow-lg">
-                <DatePicker
-                  selected={selectedDate}
-                  onChange={(date) => {
-                    setSelectedDate(date);
-                    setShowDatePicker(false);
-                  }}
-                  onClickOutside={() => setShowDatePicker(false)}
-                  inline
-                />
-              </div>
-            )}
           </div>
 
           <label className="block mb-2 font-semibold">Jumlah</label>
