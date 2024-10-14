@@ -143,7 +143,11 @@ const Profile = () => {
                 {/* Nama dan Jabatan */}
                 <div className="flex flex-col items-center mt-4 text-center lg:mt-0 lg:ml-6 lg:items-start lg:text-left">
                   <p className="mt-3 text-lg text-gray-600 lg:mt-20 sm:text-xl">
-                    {userData?.role || "Role"} {/* Jabatan dari API */}
+                    {userData?.role === "admin"
+                      ? "Keuangan"
+                      : userData?.role === "superAdmin"
+                      ? "Direktur"
+                      : userData?.role || "Role"}
                   </p>
 
                   <h2 className="mt-1 text-2xl font-bold sm:text-3xl">
