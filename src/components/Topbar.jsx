@@ -52,7 +52,7 @@ const Topbar = () => {
         }`}
       >
         {/* Logo hanya muncul di layar desktop/tablet */}
-        <div className="hidden lg:flex md:flex items-center ml-4 cursor-pointer lg:ml-14">
+        <div className="items-center hidden ml-4 cursor-pointer lg:flex md:flex lg:ml-14">
           <img
             src="/header2.png"
             alt="Logo"
@@ -68,16 +68,15 @@ const Topbar = () => {
               className="flex items-center bg-[#F3DCDC] text-[#B4252A] font-bold text-[10px] sm:text-xs lg:text-base py-1 sm:py-2 lg:py-3 px-1 sm:px-3 lg:px-6 rounded-md hover:bg-[#e4c3c3] cursor-pointer"
               onClick={() => setIsAddExpensesOpen(true)}
             >
-              <PiHandDepositBold className="mr-1 sm:mr-2 lg:mr-2 text-sm sm:text-lg" />
+              <PiHandDepositBold className="mr-1 text-sm sm:mr-2 lg:mr-2 sm:text-lg" />
               <span>Add Expenses</span>
             </button>
-
             {/* Tombol Add Income */}
             <button
               onClick={() => setIsAddIncomeOpen(true)}
               className="flex items-center bg-[#B4252A] text-white font-bold text-[10px] sm:text-xs lg:text-base py-1 sm:py-2 lg:py-3 px-1 sm:px-3 lg:px-6 rounded-md hover:bg-[#8E1F22] cursor-pointer"
             >
-              <PiHandWithdrawBold className="mr-1 sm:mr-2 lg:mr-2 text-sm sm:text-lg" />
+              <PiHandWithdrawBold className="mr-1 text-sm sm:mr-2 lg:mr-2 sm:text-lg" />
               <span>Add Income</span>
             </button>
           </div>
@@ -89,7 +88,7 @@ const Topbar = () => {
               className="flex items-center text-gray-700 bg-white rounded-full focus:outline-none"
             >
               {/* Tampilkan nama dari state atau fallback ke "User" */}
-              <span className="mr-2 ml-5 text-sm font-medium">
+              <span className="ml-5 mr-2 text-sm font-medium">
                 {userData?.name || "User"}
               </span>
               <img

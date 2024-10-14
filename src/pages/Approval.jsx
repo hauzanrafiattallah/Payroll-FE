@@ -9,12 +9,12 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Approval = () => {
-  const [selectedTransaction, setSelectedTransaction] = useState(null); // State untuk transaksi terpilih
-  const [isConfirmPopupOpen, setIsConfirmPopupOpen] = useState(false); // State untuk mengatur apakah confirm popup terbuka
-  const [actionType, setActionType] = useState(""); // State untuk menyimpan tipe aksi (approve atau decline)
-  const [approvalData, setApprovalData] = useState([]); // State untuk menyimpan data approval
-  const [loading, setLoading] = useState(true); // State untuk mengatur loading
-  const [isTransactionPopupOpen, setIsTransactionPopupOpen] = useState(false); // State untuk TransactionPopup
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const [isConfirmPopupOpen, setIsConfirmPopupOpen] = useState(false);
+  const [actionType, setActionType] = useState("");
+  const [approvalData, setApprovalData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [isTransactionPopupOpen, setIsTransactionPopupOpen] = useState(false);
 
   const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
 
@@ -131,7 +131,7 @@ const Approval = () => {
 
           {/* Loading State */}
           {loading ? (
-            <div className="flex justify-center items-center min-h-screen">
+            <div className="flex items-center justify-center min-h-screen">
               <ReactLoading
                 type="spin"
                 color="#B4252A"
@@ -146,13 +146,12 @@ const Approval = () => {
                   key={index}
                   className="flex flex-col justify-between p-4 transition-all duration-200 bg-white border rounded-lg shadow-sm cursor-pointer md:flex-row"
                   style={{
-                    boxShadow: "0 0 8px 2px rgba(0, 0, 0, 0.05)", // Default shadow
-                    transition: "box-shadow 0.3s ease-in-out", // Animasi saat hover
+                    boxShadow: "0 0 8px 2px rgba(0, 0, 0, 0.05)",
+                    transition: "box-shadow 0.3s ease-in-out",
                   }}
-                  onMouseEnter={
-                    (e) =>
-                      (e.currentTarget.style.boxShadow =
-                        "0 0 15px 3px rgba(180, 37, 42, 0.15)") // Shadow merah saat hover
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.boxShadow =
+                      "0 0 15px 3px rgba(180, 37, 42, 0.15)")
                   }
                   onMouseLeave={
                     (e) =>
@@ -237,16 +236,16 @@ const Approval = () => {
       {isConfirmPopupOpen && (
         <div
           id="confirm-popup-background"
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30"
           onClick={handleOutsideClick} // Close on outside click
         >
-          <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm sm:max-w-sm md:max-w-md">
-            <h2 className="text-xl font-semibold text-center mb-4">
+          <div className="w-full max-w-sm p-8 bg-white rounded-lg shadow-lg sm:max-w-sm md:max-w-md">
+            <h2 className="mb-4 text-xl font-semibold text-center">
               {actionType === "Approve"
                 ? "Approve Confirmation"
                 : "Decline Confirmation"}
             </h2>
-            <p className="text-gray-600 text-center mb-8">
+            <p className="mb-8 text-center text-gray-600">
               Apakah anda yakin {actionType.toLowerCase()} laporan keuangan ini?
             </p>
             <div className="flex justify-between">

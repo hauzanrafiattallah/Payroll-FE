@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { FaFileAlt } from "react-icons/fa"; // Ikon untuk upload dan evidence
+import { FaFileAlt } from "react-icons/fa"; 
 import axios from "axios";
 
 const TransaksiPopup = ({ isOpen, onClose, transactionId }) => {
-  const [transaction, setTransaction] = useState(null); // State untuk menyimpan data transaksi
-  const [loading, setLoading] = useState(true); // State untuk loading
+  const [transaction, setTransaction] = useState(null); 
+  const [loading, setLoading] = useState(true); 
   const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
 
   // Base URL for accessing storage files
