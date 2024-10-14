@@ -22,6 +22,27 @@ const Topbar = () => {
   const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
   const navigate = useNavigate(); // Untuk navigasi ke halaman lain
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isDropdownOpen && !event.target.closest(".dropdown-button")) {
+        setIsDropdownOpen(false); // Tutup dropdown jika klik di luar dropdown
+      }
+    };
+  
+    // Pasang event listener saat dropdown terbuka
+    if (isDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+  
+    // Cleanup event listener saat komponen di-unmount atau dropdown ditutup
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isDropdownOpen]);
+  
+
   // Fungsi untuk mendapatkan nama depan
   const getFirstName = (name) => {
     if (!name) return "User"; // Fallback ke "User" jika nama tidak ada
@@ -158,7 +179,7 @@ const Topbar = () => {
                 <div className="border-t border-gray-200"></div>
                 <div
                   onClick={handleLogout}
-                  className="flex items-center px-4 py-2 text-red-600 cursor-pointer hover:bg-gray-100"
+                  className="flex items-center px-4 py-2 text-[#B4252A] cursor-pointer hover:bg-gray-100"
                 >
                   <FaSignOutAlt className="mr-2 text-lg" />
                   Log Out
