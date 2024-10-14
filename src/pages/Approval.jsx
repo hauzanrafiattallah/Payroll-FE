@@ -240,12 +240,12 @@ const Approval = () => {
           onClick={handleOutsideClick} // Close on outside click
         >
           <div className="w-full max-w-sm p-8 bg-white rounded-lg shadow-lg sm:max-w-sm md:max-w-md">
-            <h2 className="mb-4 text-xl font-semibold text-center">
+            <h2 className="mb-8 text-xl font-semibold text-center">
               {actionType === "Approve"
                 ? "Approve Confirmation"
                 : "Decline Confirmation"}
             </h2>
-            <p className="mb-8 text-center text-gray-600">
+            <p className="mb-12 text-center text-gray-600">
               Apakah anda yakin {actionType.toLowerCase()} laporan keuangan ini?
             </p>
             <div className="flex justify-between">

@@ -5,8 +5,8 @@ import Topbar from "../components/Topbar";
 import { FaSlidersH } from "react-icons/fa";
 import FilterPopup from "../components/FilterPopup";
 import TransaksiPopup from "../components/TransaksiPopUp";
-  import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css"; 
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const Dashboard = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -269,8 +269,19 @@ const Dashboard = () => {
                           Rp. {item.amount.toLocaleString("id-ID") || 0}
                         </td>
                         <td className="px-4 py-2 text-center">
-                          {item.transaction_type || "N/A"}
+                          <span
+                            className={`font-semibold ${
+                              item.transaction_type === "income"
+                                ? "text-green-600" // Warna hijau untuk income
+                                : item.transaction_type === "expense"
+                                ? "text-red-600" // Warna merah untuk expense
+                                : "text-gray-600" // Warna default untuk N/A
+                            }`}
+                          >
+                            {item.transaction_type || "N/A"}
+                          </span>
                         </td>
+
                         <td className="px-4 py-2 text-center">
                           <span
                             className={`inline-block w-[100px] px-2 py-1 text-sm font-semibold rounded-md text-center ${
