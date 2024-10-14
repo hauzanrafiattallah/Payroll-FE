@@ -17,6 +17,7 @@ const Approval = () => {
   const [approvalData, setApprovalData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isTransactionPopupOpen, setIsTransactionPopupOpen] = useState(false);
+  const [isConfirming, setIsConfirming] = useState(false); // State untuk loading saat confirm
 
   const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
 
@@ -47,9 +48,6 @@ const Approval = () => {
   }, [authToken]);
 
   const handleConfirmClick = (type, transaction) => {
-    console.log("Action type:", type); // Logging action type (approve atau decline)
-    console.log("Selected transaction:", transaction); // Pastikan transaksi terpilih
-
     setSelectedTransaction(transaction); // Set data transaksi yang dipilih
     setActionType(type); // Set action type (approve atau decline)
     setIsConfirmPopupOpen(true); // Buka confirm popup
@@ -72,6 +70,7 @@ const Approval = () => {
     }`;
 
     try {
+      setIsConfirming(true); // Aktifkan loading saat confirm
       const response = await axios.post(
         endpoint,
         { status },
@@ -97,6 +96,8 @@ const Approval = () => {
       }
     } catch (error) {
       toast.error(`Gagal ${status} transaksi`);
+    } finally {
+      setIsConfirming(false); // Nonaktifkan loading setelah selesai
     }
 
     handleCloseConfirmPopup();
@@ -282,12 +283,26 @@ const Approval = () => {
               >
                 Cancel
               </button>
-              <button
-                className="w-32 h-10 px-4 py-2 text-white bg-[#B4252A] rounded-lg hover:bg-red-800 transition-colors duration-200"
-                onClick={handleAction} // Call handleAction saat confirm
-              >
-                Confirm
-              </button>
+              <div className="relative">
+                <button
+                  className="w-32 h-10 px-4 py-2 text-white bg-[#B4252A] rounded-lg hover:bg-red-800 transition-colors duration-200"
+                  onClick={handleAction}
+                  disabled={isConfirming} // Disable tombol saat loading
+                >
+                  Confirm
+                </button>
+
+                {isConfirming && (
+                  <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-10">
+                    <ReactLoading
+                      type="spin"
+                      color="#B4252A"
+                      height={50}
+                      width={50}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
