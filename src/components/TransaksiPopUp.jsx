@@ -7,8 +7,8 @@ const TransaksiPopup = ({ isOpen, onClose, transactionId }) => {
   const [loading, setLoading] = useState(true);
   const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
 
-  // Base URL for accessing storage files
-  const baseURL = "https://payroll.humicprototyping.com/storage/app/public/";
+  // Ambil base URL dari environment variable
+  const baseURL = import.meta.env.VITE_FILE_BASE_URL;
 
   // Fetch data transaksi dari API berdasarkan transactionId
   useEffect(() => {
