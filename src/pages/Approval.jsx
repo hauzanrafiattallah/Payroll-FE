@@ -167,7 +167,7 @@ const Approval = () => {
                       <div className="flex flex-col items-center justify-center text-center">
                         {item.transaction_type === "income" ? (
                           <PiHandWithdrawBold
-                            className="text-[#B4252A]"
+                            className="text-[#48B121]"
                             size={24}
                           />
                         ) : (
