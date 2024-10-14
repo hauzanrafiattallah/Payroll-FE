@@ -72,7 +72,7 @@ const AddExpensesPopup = ({ isOpen, onClose }) => {
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     ];
     if (documentEvidence && !allowedFileTypes.includes(documentEvidence.type)) {
-      toast.error("File keuangan harus dalam format PDF atau XLSX.");
+      toast.error("File keuangan harus dalam format PDF atau Excel.");
       return;
     }
 
@@ -96,7 +96,7 @@ const AddExpensesPopup = ({ isOpen, onClose }) => {
         {
           headers: {
             Accept: "application/json",
-            Authorization: `Bearer ${authToken}`, // Gunakan token yang sesuai
+            Authorization: `Bearer ${authToken}`, // Gunakan token dari localStorage
             "Content-Type": "multipart/form-data",
           },
         }
@@ -201,7 +201,7 @@ const AddExpensesPopup = ({ isOpen, onClose }) => {
               <input
                 type="file"
                 id="documentEvidence"
-                accept=".pdf, .xlsx" // Menerima file PDF dan XLSX
+                accept=".pdf, .xlsx" // Menerima file PDF dan EXCEL
                 className="hidden"
                 onChange={(e) => setDocumentEvidence(e.target.files[0])}
                 required
