@@ -99,14 +99,14 @@ const Profile = () => {
         <Sidebar />
 
         {/* Konten */}
-        <div className="w-full p-4 sm:p-8 mx-auto mt-2 lg:max-w-full lg:ml-72">
+        <div className="w-full p-4 mx-auto mt-2 sm:p-8 lg:max-w-full lg:ml-72">
           <h1 className="mb-6 text-2xl font-bold text-center lg:text-left">
             Profile
           </h1>
 
           {/* Loading State untuk fetch data user */}
           {loading ? (
-            <div className="flex justify-center items-center min-h-screen">
+            <div className="flex items-center justify-center min-h-screen">
               <ReactLoading
                 type="spin"
                 color="#B4252A"
@@ -127,26 +127,26 @@ const Profile = () => {
               </div>
 
               {/* Profile Info */}
-              <div className="relative flex flex-col items-center px-4 sm:px-8 -mt-16 lg:flex-row lg:justify-start lg:px-16">
+              <div className="relative flex flex-col items-center px-4 -mt-16 sm:px-8 lg:flex-row lg:justify-start lg:px-16">
                 <div className="relative flex items-center space-x-4 sm:space-x-6">
                   {/* Lingkaran background di belakang profile */}
-                  <div className="absolute inset-0 w-28 sm:w-40 h-28 sm:h-40 bg-white rounded-full -z-10" />
+                  <div className="absolute inset-0 bg-white rounded-full w-28 sm:w-40 h-28 sm:h-40 -z-10" />
 
                   {/* Gambar Profile */}
                   <img
                     src={userData?.profile_picture || "/image_placeholder.png"} // Gambar dari API atau placeholder
                     alt="Profile"
-                    className="relative z-10 border-4 border-white rounded-full w-20 h-20 sm:w-28 sm:h-28"
+                    className="relative z-10 w-20 h-20 border-4 border-white rounded-full sm:w-28 sm:h-28"
                   />
                 </div>
 
                 {/* Nama dan Jabatan */}
                 <div className="flex flex-col items-center mt-4 text-center lg:mt-0 lg:ml-6 lg:items-start lg:text-left">
-                  <p className="mt-3 lg:mt-20 text-lg sm:text-xl text-gray-600">
+                  <p className="mt-3 text-lg text-gray-600 lg:mt-20 sm:text-xl">
                     {userData?.role || "Role"} {/* Jabatan dari API */}
                   </p>
 
-                  <h2 className="mt-1 text-2xl sm:text-3xl font-bold">
+                  <h2 className="mt-1 text-2xl font-bold sm:text-3xl">
                     {userData?.name || "User"} {/* Nama dari API */}
                   </h2>
                 </div>
@@ -155,14 +155,14 @@ const Profile = () => {
               {/* Change Password Section */}
               <div className="p-4 sm:p-8 lg:px-16 lg:py-12">
                 {/* Garis Atas */}
-                <hr className="border-t-2 border-gray-300 mb-6" />
+                <hr className="mb-6 border-t-2 border-gray-300" />
 
                 {/* Title and Form */}
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between lg:space-x-4">
-                  <h3 className="text-xl font-semibold text-center lg:text-left whitespace-nowrap w-full lg:w-1/4 mb-4 lg:mb-0">
+                <div className="flex flex-col justify-between lg:flex-row lg:items-center lg:space-x-4">
+                  <h3 className="w-full mb-4 text-xl font-semibold text-center lg:text-left whitespace-nowrap lg:w-1/4 lg:mb-0">
                     Change Password
                   </h3>
-                  <div className="flex flex-col space-y-4 w-full lg:w-3/4">
+                  <div className="flex flex-col w-full space-y-4 lg:w-3/4">
                     <div className="relative">
                       <input
                         type={showCurrentPassword ? "text" : "password"}
@@ -218,7 +218,7 @@ const Profile = () => {
                 </div>
 
                 {/* Garis Bawah */}
-                <hr className="border-t-2 border-gray-300 mt-8" />
+                <hr className="mt-8 border-t-2 border-gray-300" />
 
                 {/* Bottom Buttons */}
                 <div className="flex justify-end mt-8 space-x-4">

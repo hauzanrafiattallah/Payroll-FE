@@ -8,11 +8,11 @@ import Export from "./pages/Export";
 import Income from "./pages/Income";
 import Expenses from "./pages/Expenses";
 import Approval from "./pages/Approval";
-import Profile from "./pages/Profile"; // Import halaman Profile
-import ProtectedRoute from "./components/ProtectedRoute"; // Import ProtectedRoute
-import NotFound from "./pages/NotFound"; // Halaman NotFound untuk rute tidak dikenal
-import { ToastContainer } from "react-toastify"; // Import ToastContainer
-import "react-toastify/dist/ReactToastify.css"; // Import CSS toast
+import Profile from "./pages/Profile";
+import ProtectedRoute from "./components/ProtectedRoute";
+import NotFound from "./pages/NotFound";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   return (
@@ -29,13 +29,12 @@ const App = () => {
         draggable={false}
         pauseOnHover
         limit={1}
-        toastClassName="text-center"
+        toastClassName="text-center mx-auto w-80"
       />
 
       <Routes>
         <Route path="/login" element={<Login />} /> {/* Halaman Login */}
-        <Route path="/register" element={<Register />} />{" "}
-        {/* Halaman Register */}
+        <Route path="/register" element={<Register />} /> {/* Halaman Register */}
         <Route
           path="/"
           element={
@@ -92,7 +91,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        {/* Tambahkan rute Profile */}
         <Route
           path="/profile"
           element={
@@ -101,8 +99,7 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        <Route path="*" element={<NotFound />} />{" "}
-        {/* Halaman jika rute tidak ditemukan */}
+        <Route path="*" element={<NotFound />} />{/* Halaman jika rute tidak ditemukan */}
       </Routes>
     </Router>
   );
