@@ -115,6 +115,7 @@ const Topbar = () => {
         </div>
       )}
 
+      {/* Logo Humic */}
       <div className="flex items-center justify-between p-4 w-full shadow-md fixed top-0 left-0 right-0 z-50 bg-white transition-all duration-300">
         <div className="items-center hidden ml-4 cursor-pointer lg:flex md:flex lg:ml-14">
           <img
