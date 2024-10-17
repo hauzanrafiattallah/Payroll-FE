@@ -374,16 +374,7 @@ const Profile = () => {
                   onClick={handleSave}
                   disabled={isSaving}
                 >
-                  {isSaving ? (
-                    <ReactLoading
-                      type="spin"
-                      color="#ffffff"
-                      height={20}
-                      width={20}
-                    />
-                  ) : (
-                    "Save"
-                  )}
+                  Save
                 </button>
               </div>
             </div>
