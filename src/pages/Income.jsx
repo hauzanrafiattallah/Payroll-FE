@@ -3,8 +3,8 @@ import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import ReactLoading from "react-loading"; // Tambahkan ReactLoading untuk indikator loading
-import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css'; // Optional: untuk styling default skeleton
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css"; // Optional: untuk styling default skeleton
 
 const Income = () => {
   const [incomeData, setIncomeData] = useState([]); // State untuk menyimpan data income
@@ -242,7 +242,9 @@ const Income = () => {
                           </td>
                           <td className="px-4 py-2 text-center whitespace-nowrap">
                             <a
-                              href={`https://payroll.humicprototyping.com/storage/app/public/${income.document_evidence}`}
+                              href={`${import.meta.env.VITE_FILE_BASE_URL}${
+                                expense.document_evidence
+                              }`}
                               target="_blank"
                               rel="noopener noreferrer"
                             >
@@ -254,7 +256,9 @@ const Income = () => {
                           </td>
                           <td className="px-4 py-2 text-center whitespace-nowrap">
                             <a
-                              href={`https://payroll.humicprototyping.com/storage/app/public/${income.image_evidence}`}
+                              href={`${import.meta.env.VITE_FILE_BASE_URL}${
+                                expense.image_evidence
+                              }`}
                               target="_blank"
                               rel="noopener noreferrer"
                             >
