@@ -243,7 +243,7 @@ const Income = () => {
                           <td className="px-4 py-2 text-center whitespace-nowrap">
                             <a
                               href={`${import.meta.env.VITE_FILE_BASE_URL}${
-                                expense.document_evidence
+                                income.document_evidence
                               }`}
                               target="_blank"
                               rel="noopener noreferrer"
@@ -257,7 +257,7 @@ const Income = () => {
                           <td className="px-4 py-2 text-center whitespace-nowrap">
                             <a
                               href={`${import.meta.env.VITE_FILE_BASE_URL}${
-                                expense.image_evidence
+                                income.image_evidence
                               }`}
                               target="_blank"
                               rel="noopener noreferrer"
