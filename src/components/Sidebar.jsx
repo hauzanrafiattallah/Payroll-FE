@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  FaTh,
-  FaClipboardList,
-  FaUpload,
-  FaBars,
-} from "react-icons/fa";
+import { FaTh, FaClipboardList, FaUpload, FaBars } from "react-icons/fa";
 import { PiHandWithdrawBold, PiHandDepositBold } from "react-icons/pi";
 import { AiOutlineFileDone } from "react-icons/ai";
 import { Link, useLocation } from "react-router-dom";
@@ -169,7 +164,7 @@ const Sidebar = () => {
 
         {/* Copyright */}
         <div className="mt-4 text-xs text-center text-gray-500">
-          <p>Copyright © 2024 HUMIC Engineering</p>
+          <p>Copyright © {new Date().getFullYear()} HUMIC Engineering</p>
         </div>
       </div>
     </>
