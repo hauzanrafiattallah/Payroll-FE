@@ -13,6 +13,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import NotFound from "./pages/NotFound";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import PlanningDetails from "./pages/PlanningDetails";
 
 const App = () => {
   return (
@@ -73,6 +74,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <Planning />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/planning-detail"
+          element={
+            <ProtectedRoute>
+              <PlanningDetails />
             </ProtectedRoute>
           }
         />

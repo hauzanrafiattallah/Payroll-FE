@@ -57,9 +57,9 @@ const Export = () => {
       link.href = url;
       link.setAttribute(
         "download",
-        `export_${format(startDate, "yyyyMMdd")}_${format(
+        `Laporan Keuangan ${format(startDate, "yyyy-MM-dd")} hingga ${format(
           endDate,
-          "yyyyMMdd"
+          "yyyy-MM-dd"
         )}.${exportType === "excel" ? "xlsx" : exportType}` // Penyesuaian ekstensi file
       );
       document.body.appendChild(link);
