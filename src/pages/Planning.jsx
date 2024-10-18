@@ -170,18 +170,21 @@ const Planning = () => {
                 <div className="flex items-center justify-end space-x-2 sm:mt-0">
                   {isEditMode ? (
                     <div className="flex space-x-2">
-                      <button className="bg-[#E4C3C3] text-[#B4252A] font-semibold py-2 px-4 rounded-lg hover:bg-[#cfa8a8]">
-                        <FaEdit />
+                      <button className="bg-[#E4C3C3] text-[#B4252A] font-semibold p-4 rounded-lg hover:bg-[#cfa8a8] w-12 h-12 flex items-center justify-center">
+                        <FaEdit size={20} />{" "}
+                        {/* Ubah ukuran ikon jika diperlukan */}
                       </button>
                       <button
-                        className="bg-[#B4252A] text-white font-semibold py-2 px-4 rounded-lg hover:bg-[#8E1F22]"
+                        className="bg-[#B4252A] text-white font-semibold p-4 rounded-lg hover:bg-[#8E1F22] w-12 h-12 flex items-center justify-center"
                         onClick={() => openDeleteModal(plan)}
                       >
-                        <FaTrash />
+                        <FaTrash size={20} />{" "}
+                        {/* Ubah ukuran ikon jika diperlukan */}
                       </button>
                     </div>
                   ) : (
                     <>
+                      {/* Icon Achieved & Amount */}
                       <div className="text-right mr-2">
                         <p
                           className={`text-sm font-bold ${
@@ -201,7 +204,7 @@ const Planning = () => {
                             : "bg-red-500"
                         }`}
                       >
-                        <FaBullseye className="text-white" />
+                        <FaBullseye className="text-white" size={20} />
                       </div>
                     </>
                   )}
