@@ -298,7 +298,7 @@ const Profile = () => {
                           <FiUpload className="w-10 h-10 text-gray-400" />
                           <span className="mt-2 text-gray-500">
                             {imageName
-                              ? `Selected file: ${imageName}`
+                              ? `${imageName}`
                               : "Change your Profile Picture (PNG/JPG)"}
                           </span>
                         </div>
