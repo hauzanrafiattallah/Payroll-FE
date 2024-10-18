@@ -6,14 +6,12 @@ const PlanningDetails = () => {
   return (
     <>
       <Topbar />
-      <div className="flex mt-20">
-        {/* Sidebar */}
+      <div className="flex flex-col mt-20 lg:flex-row">
         <Sidebar />
-        {/* Konten */}
-        <div className="w-full p-4 mx-auto mt-2 lg:max-w-full lg:ml-72">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold">Planning Details</h1>
-          </div>
+        <div className="w-full p-8 mx-auto mt-2 lg:max-w-full lg:ml-72">
+          <h1 className="mb-6 text-2xl font-bold text-center lg:text-left">
+            Planning Details
+          </h1>
 
           {/* Info Section */}
           <div className="bg-white p-8 rounded-lg shadow-lg">
