@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { PiHandDepositBold, PiHandWithdrawBold } from "react-icons/pi";
 import { FaSignOutAlt } from "react-icons/fa";
 import AddIncomePopUp from "./AddIncomePopUp";
@@ -15,6 +15,8 @@ const Topbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [loading, setLoading] = useState(false); // State untuk loading spinner
   const [isLogoutPopupOpen, setIsLogoutPopupOpen] = useState(false); // State untuk popup logout
+  const dropdownRef = useRef(null); // Tambahkan ref untuk dropdown
+
   const [userData, setUserData] = useState(() => {
     const savedUserData = localStorage.getItem("userData");
     return savedUserData ? JSON.parse(savedUserData) : null;
@@ -47,6 +49,23 @@ const Topbar = () => {
       fetchUserData(); // Panggil API untuk mendapatkan data pengguna terbaru
     }
   }, [authToken]);
+
+  // Deteksi klik di luar dropdown dan tutup dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false); // Tutup dropdown jika klik di luar elemen dropdown
+      }
+    };
+
+    // Tambahkan event listener untuk klik di luar dropdown
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      // Hapus event listener ketika komponen di-unmount
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const getFirstName = (name) => {
     if (!name) return "User"; // Fallback ke "User" jika nama tidak ada
@@ -144,7 +163,10 @@ const Topbar = () => {
             </button>
 
             {isDropdownOpen && (
-              <div className="absolute right-0 w-40 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg">
+              <div
+                className="absolute right-0 w-40 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg"
+                ref={dropdownRef}
+              >
                 <Link
                   to="/profile"
                   className="block px-4 py-2 text-gray-700 hover:bg-gray-100"

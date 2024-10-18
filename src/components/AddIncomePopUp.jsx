@@ -233,16 +233,16 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
             </button>
           </div>
         </form>
+      </div>
 
-        {/* Tambahkan overlay loading */}
-        {isLoading && (
+      {/* Tambahkan overlay loading */}
+      {isLoading && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-10">
             <ReactLoading type="spin" color="#B4252A" height={50} width={50} />
           </div>
         )}
-      </div>
     </div>
   );
 };
 
-export default AddIncomePopup;
+export default AddIncomePopup;s

@@ -3,7 +3,6 @@ import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import { FaCalendarAlt } from "react-icons/fa";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -23,8 +22,8 @@ const Export = () => {
   const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
 
   const handleFormSubmit = async () => {
-    const formattedStartDate = format(startDate, "yyyy-MM-dd");
-    const formattedEndDate = format(endDate, "yyyy-MM-dd");
+    const formattedStartDate = startDate;
+    const formattedEndDate = endDate;
 
     if (!startDate || !endDate) {
       if (!toast.isActive("toast-error")) {
@@ -84,8 +83,8 @@ const Export = () => {
 
   const getDisplayDateRange = (start, end) => {
     if (start && end) {
-      return `${format(start, "dd MMM", { locale: id })} - ${format(
-        end,
+      return `${format(new Date(start), "dd MMM", { locale: id })} - ${format(
+        new Date(end),
         "dd MMM yyyy",
         { locale: id }
       )}`;
@@ -197,27 +196,22 @@ const Export = () => {
                     <label className="block mb-1 text-sm font-semibold">
                       Start Date
                     </label>
-                    <DatePicker
-                      selected={startDate}
-                      onChange={(date) => {
-                        setStartDate(date);
-                      }}
+                    <input
+                      type="date"
+                      value={startDate || ""}
+                      onChange={(e) => setStartDate(e.target.value)}
                       className="block w-full p-2 mt-1 border border-gray-300 rounded-lg shadow-sm"
-                      placeholderText="Pilih Tanggal Mulai"
                     />
                   </div>
                   <div className="mt-4">
                     <label className="block mb-1 text-sm font-semibold">
                       End Date
                     </label>
-                    <DatePicker
-                      selected={endDate}
-                      onChange={(date) => {
-                        setEndDate(date);
-                        setShowDatePicker(false);
-                      }}
+                    <input
+                      type="date"
+                      value={endDate || ""}
+                      onChange={(e) => setEndDate(e.target.value)}
                       className="block w-full p-2 mt-1 border border-gray-300 rounded-lg shadow-sm"
-                      placeholderText="Pilih Tanggal Akhir"
                     />
                   </div>
                 </div>
@@ -228,24 +222,22 @@ const Export = () => {
                 <button
                   className="bg-[#B4252A] hover:bg-[#8E1F22] text-white font-bold py-2 md:py-3 px-8 md:px-16 rounded-md mt-6 md:mt-9"
                   onClick={handleFormSubmit}
-                  disabled={loading}
+                  disabled={loading} // Disable button saat loading
                 >
-                  {loading ? (
-                    <ReactLoading
-                      type="spin"
-                      color="#fff"
-                      height={20}
-                      width={20}
-                    />
-                  ) : (
-                    "Export"
-                  )}
+                  Export
                 </button>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Tambahkan overlay loading */}
+      {loading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-10">
+          <ReactLoading type="spin" color="#B4252A" height={50} width={50} />
+        </div>
+      )}
     </>
   );
 };
