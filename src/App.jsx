@@ -78,7 +78,7 @@ const App = () => {
           }
         />
         <Route
-          path="/planning-detail"
+          path="/planning/:id"
           element={
             <ProtectedRoute>
               <PlanningDetails />

@@ -1,58 +1,52 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaEdit, FaPlus, FaBullseye, FaTrash } from "react-icons/fa";
+import { useNavigate } from "react-router-dom"; // Import useNavigate untuk navigasi
+import axios from "axios"; 
+import Skeleton from "react-loading-skeleton"; // Import react-loading-skeleton
+import "react-loading-skeleton/dist/skeleton.css"; // Tambahkan CSS skeleton
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import PlanPopUp from "../components/PlanPopUp";
 
-const plans = [
-  {
-    id: 1,
-    date: "15",
-    month: "Oct",
-    title: "Plan For Conference A",
-    description:
-      "Ini Adalah Deskripsi Dari Rencana Yang Ingin Dilakukan Kedepannya Jadi Gini..",
-    amount: "Rp.100.000.000",
-    achieved: "100%",
-    achievedStatus: "green",
-    statusColor: "green",
-  },
-  {
-    id: 2,
-    date: "16",
-    month: "Oct",
-    title: "Plan For Conference B",
-    description:
-      "Ini Adalah Deskripsi Dari Rencana Yang Ingin Dilakukan Kedepannya Jadi Gini..",
-    amount: "Rp.300.000.000",
-    achieved: "33%",
-    achievedStatus: "red",
-    statusColor: "red",
-  },
-  {
-    id: 3,
-    date: "17",
-    month: "Oct",
-    title: "Plan For Conference C",
-    description:
-      "Ini Adalah Deskripsi Dari Rencana Yang Ingin Dilakukan Kedepannya Jadi Gini..",
-    amount: "Rp.500.000.000",
-    achieved: "20%",
-    achievedStatus: "red",
-    statusColor: "red",
-  },
-];
-
 const Planning = () => {
-  // State untuk switch mode edit
+  const [plans, setPlans] = useState([]); // State untuk menyimpan data plans dari API
+  const [currentBalance, setCurrentBalance] = useState(0); // State untuk saldo saat ini
+  const [isLoading, setIsLoading] = useState(true); // State untuk loading skeleton
   const [isEditMode, setIsEditMode] = useState(false);
-
-  // State untuk membuka modal delete
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
-
-  // State untuk membuka modal tambah rencana baru
   const [isPlanPopUpOpen, setIsPlanPopUpOpen] = useState(false);
+  
+  const navigate = useNavigate(); // Deklarasikan useNavigate untuk navigasi
+
+  // Fungsi untuk fetching data dari API
+  const fetchPlans = async () => {
+    const token = localStorage.getItem("token"); // Mengambil token dari localStorage
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/plannings?page=1`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.data.status) {
+        setPlans(response.data.data.data); // Mengambil data plans dari API
+        setCurrentBalance(response.data.current_balance); // Mengambil current balance
+      }
+    } catch (error) {
+      console.error("Error fetching plans:", error);
+    } finally {
+      setIsLoading(false); // Set loading menjadi false setelah fetching selesai
+    }
+  };
+
+  // Fetch data ketika komponen pertama kali dirender
+  useEffect(() => {
+    fetchPlans();
+  }, []);
 
   // Fungsi untuk switch mode edit
   const toggleEditMode = () => {
@@ -81,6 +75,11 @@ const Planning = () => {
     setIsPlanPopUpOpen(false);
   };
 
+  // Fungsi untuk navigasi ke halaman detail ketika card di-klik
+  const handleNavigateToDetail = (id) => {
+    navigate(`/planning/${id}`); // Navigasi ke halaman detail berdasarkan ID
+  };
+
   return (
     <>
       <Topbar />
@@ -93,8 +92,8 @@ const Planning = () => {
 
           {/* Current Balance dan Action Buttons */}
           <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
-            <span className="text-xl text-center sm:text-center font-semibold text-red-500 mb-4 sm:mb-0">
-              Current Balance: Rp.100.000.000
+            <span className="text-xl text-center sm:text-cen font-semibold text-red-500 mb-4 sm:mb-0">
+              {isLoading ? <Skeleton width={150} /> : `Current Balance: Rp.${currentBalance.toLocaleString()}`}
             </span>
 
             {/* Action buttons */}
@@ -130,97 +129,82 @@ const Planning = () => {
 
           {/* Plan List */}
           <div className="space-y-4">
-            {plans.map((plan) => (
-              <div
-                key={plan.id}
-                className="flex flex-col sm:flex-row justify-between p-4 sm:p-6 transition-all duration-200 bg-white border rounded-lg shadow-sm cursor-pointer"
-                style={{
-                  boxShadow: "0 0 8px 2px rgba(0, 0, 0, 0.05)",
-                  transition: "box-shadow 0.3s ease-in-out",
-                }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.boxShadow =
-                    "0 0 15px 3px rgba(180, 37, 42, 0.15)")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.boxShadow =
-                    "0 0 8px 2px rgba(0, 0, 0, 0.05)")
-                }
-              >
-                {/* Date Section */}
-                <div className="flex items-start mb-4 space-x-4 sm:mb-0">
-                  <div className="flex items-center">
-                    <div className="flex flex-col items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded-lg">
-                      <div className="text-lg font-semibold text-gray-500">
-                        {plan.month}
-                      </div>
-                      <div className="text-xl sm:text-2xl font-bold text-gray-900">
-                        {plan.date}
+            {isLoading
+              ? [1, 2, 3].map((_, index) => (
+                  <div
+                    key={index}
+                    className="flex flex-col sm:flex-row justify-between p-4 sm:p-6 transition-all duration-200 bg-white border rounded-lg shadow-sm cursor-pointer"
+                  >
+                    <div className="flex items-start mb-4 space-x-4 sm:mb-0">
+                      <Skeleton width={50} height={50} />
+                      <div className="ml-4 flex flex-col justify-center">
+                        <Skeleton width={200} height={20} />
+                        <Skeleton width={300} height={15} />
                       </div>
                     </div>
-                  </div>
-
-                  {/* Plan Details */}
-                  <div className="ml-4 flex flex-col justify-center">
-                    <div className="flex items-center mb-1">
-                      <span
-                        className={`w-3 h-3 rounded-full mr-2 ${
-                          plan.achievedStatus === "green"
-                            ? "bg-green-500"
-                            : "bg-red-500"
-                        }`}
-                      ></span>
-                      <h3 className="text-lg font-bold">{plan.title}</h3>
+                    <div className="flex items-center justify-end space-x-2 sm:mt-0">
+                      <Skeleton width={80} height={30} />
                     </div>
-                    <p className="text-sm text-gray-600">{plan.description}</p>
                   </div>
-                </div>
+                ))
+              : plans.map((plan) => (
+                  <div
+                    key={plan.id}
+                    className="flex flex-col sm:flex-row justify-between p-4 sm:p-6 transition-all duration-200 bg-white border rounded-lg shadow-sm cursor-pointer"
+                    style={{
+                      boxShadow: "0 0 8px 2px rgba(0, 0, 0, 0.05)",
+                      transition: "box-shadow 0.3s ease-in-out",
+                    }}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.boxShadow =
+                        "0 0 15px 3px rgba(180, 37, 42, 0.15)")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.boxShadow =
+                        "0 0 8px 2px rgba(0, 0, 0, 0.05)")
+                    }
+                    onClick={() => handleNavigateToDetail(plan.id)}
+                  >
+                    {/* Date Section */}
+                    <div className="flex items-start mb-4 space-x-4 sm:mb-0">
+                      <div className="flex items-center">
+                        <div className="flex flex-col items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded-lg">
+                          <div className="text-lg font-semibold text-gray-500">
+                            {new Date(plan.deadline).toLocaleString("default", {
+                              month: "short",
+                            })}
+                          </div>
+                          <div className="text-xl sm:text-2xl font-bold text-gray-900">
+                            {new Date(plan.deadline).getDate()}
+                          </div>
+                        </div>
+                      </div>
 
-                {/* Achieved & Amount + Target Icon */}
-                <div className="flex items-center justify-end space-x-2 sm:mt-0">
-                  {isEditMode ? (
-                    <div className="flex space-x-2">
-                      <button className="bg-[#E4C3C3] text-[#B4252A] font-semibold p-4 rounded-lg hover:bg-[#cfa8a8] w-12 h-12 flex items-center justify-center">
-                        <FaEdit size={20} />{" "}
-                        {/* Ubah ukuran ikon jika diperlukan */}
-                      </button>
-                      <button
-                        className="bg-[#B4252A] text-white font-semibold p-4 rounded-lg hover:bg-[#8E1F22] w-12 h-12 flex items-center justify-center"
-                        onClick={() => openDeleteModal(plan)}
-                      >
-                        <FaTrash size={20} />{" "}
-                        {/* Ubah ukuran ikon jika diperlukan */}
-                      </button>
-                    </div>
-                  ) : (
-                    <>
-                      {/* Icon Achieved & Amount */}
-                      <div className="text-right mr-2">
+                      {/* Plan Details */}
+                      <div className="ml-4 flex flex-col justify-center">
+                        <div className="flex items-center mb-1">
+                          <h3 className="text-lg font-bold">{plan.title}</h3>
+                        </div>
                         <p
-                          className={`text-sm font-bold ${
-                            plan.achievedStatus === "green"
-                              ? "text-green-500"
-                              : "text-red-500"
-                          }`}
-                        >
-                          {plan.achieved}% Achieved
-                        </p>
-                        <p className="text-lg font-semibold">{plan.amount}</p>
+                          className="text-sm text-gray-600"
+                          dangerouslySetInnerHTML={{ __html: plan.content }} // Tampilkan konten rich text
+                        />
                       </div>
-                      <div
-                        className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center ${
-                          plan.achievedStatus === "green"
-                            ? "bg-green-500"
-                            : "bg-red-500"
-                        }`}
-                      >
+                    </div>
+
+                    {/* Achieved & Amount + Target Icon */}
+                    <div className="flex items-center justify-end space-x-2 sm:mt-0">
+                      <div className="text-right mr-2">
+                        <p className="text-lg font-semibold">
+                          Rp.{plan.target_amount.toLocaleString()}
+                        </p>
+                      </div>
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center bg-red-500">
                         <FaBullseye className="text-white" size={20} />
                       </div>
-                    </>
-                  )}
-                </div>
-              </div>
-            ))}
+                    </div>
+                  </div>
+                ))}
           </div>
         </div>
       </div>
