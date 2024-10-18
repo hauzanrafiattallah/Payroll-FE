@@ -246,4 +246,4 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
 };
 
 export default AddIncomePopup;
-s;
+
