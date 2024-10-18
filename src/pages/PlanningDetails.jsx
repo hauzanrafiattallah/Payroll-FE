@@ -17,27 +17,36 @@ const PlanningDetails = () => {
 
           {/* Info Section */}
           <div className="bg-white p-8 rounded-lg shadow-lg">
-            <div className="grid grid-cols-2 gap-y-4 gap-x-8">
+            {/* Pada versi mobile, grid kolom akan berubah menjadi 1 kolom */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8">
               {/* Kolom Kiri: Label */}
-              <div className="text-left"> {/* Posisi tetap di kiri, tidak perlu text-right */}
+              <div className="text-center sm:text-left">
+                {" "}
+                {/* Posisi tetap di kiri */}
                 <p className="text-gray-500 font-semibold">Kegiatan</p>
               </div>
-              {/* Kolom Kanan: Konten */}
-              <div>
+              {/* Kolom Kanan: Konten di kanan */}
+              <div className="text-center sm:text-right">
+                {" "}
+                {/* Tambahkan class text-right di sini */}
                 <h2 className="text-lg font-bold">Planning For Conference A</h2>
               </div>
 
-              <div className="text-left">
+              <div className="text-center sm:text-left">
                 <p className="text-gray-500 font-semibold">Deadline</p>
               </div>
-              <div>
+              <div className="text-center sm:text-right">
+                {" "}
+                {/* Tambahkan class text-right di sini */}
                 <h2 className="text-lg font-bold">03 Okt 2024</h2>
               </div>
 
-              <div className="text-left">
+              <div className="text-center sm:text-left">
                 <p className="text-gray-500 font-semibold">Target</p>
               </div>
-              <div>
+              <div className="text-center sm:text-right">
+                {" "}
+                {/* Tambahkan class text-right di sini */}
                 <h2 className="text-lg font-bold">
                   Rp.100.000.000 / Rp.100.000.000
                 </h2>
