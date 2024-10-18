@@ -1,27 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { FaEdit, FaPlus, FaBullseye, FaTrash } from "react-icons/fa";
-import { useNavigate } from "react-router-dom"; // Import useNavigate untuk navigasi
-import axios from "axios"; 
-import Skeleton from "react-loading-skeleton"; // Import react-loading-skeleton
-import "react-loading-skeleton/dist/skeleton.css"; // Tambahkan CSS skeleton
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import PlanPopUp from "../components/PlanPopUp";
+import PlanPopUpEdit from "../components/PlanPopUpEdit";
+import { toast } from "react-toastify";
 
 const Planning = () => {
-  const [plans, setPlans] = useState([]); // State untuk menyimpan data plans dari API
-  const [currentBalance, setCurrentBalance] = useState(0); // State untuk saldo saat ini
-  const [isLoading, setIsLoading] = useState(true); // State untuk loading skeleton
+  const [plans, setPlans] = useState([]);
+  const [currentBalance, setCurrentBalance] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   const [isEditMode, setIsEditMode] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [isPlanPopUpOpen, setIsPlanPopUpOpen] = useState(false);
-  
-  const navigate = useNavigate(); // Deklarasikan useNavigate untuk navigasi
+  const [isPlanPopUpEditOpen, setIsPlanPopUpEditOpen] = useState(false);
 
-  // Fungsi untuk fetching data dari API
+  const navigate = useNavigate();
+
+  // Fetch data from the API
   const fetchPlans = async () => {
-    const token = localStorage.getItem("token"); // Mengambil token dari localStorage
+    const token = localStorage.getItem("token");
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/plannings?page=1`,
@@ -31,53 +34,78 @@ const Planning = () => {
           },
         }
       );
-
       if (response.data.status) {
-        setPlans(response.data.data.data); // Mengambil data plans dari API
-        setCurrentBalance(response.data.current_balance); // Mengambil current balance
+        setPlans(response.data.data.data);
+        setCurrentBalance(response.data.current_balance);
       }
     } catch (error) {
       console.error("Error fetching plans:", error);
     } finally {
-      setIsLoading(false); // Set loading menjadi false setelah fetching selesai
+      setIsLoading(false);
     }
   };
 
-  // Fetch data ketika komponen pertama kali dirender
   useEffect(() => {
     fetchPlans();
   }, []);
 
-  // Fungsi untuk switch mode edit
+  // Toggle Edit Mode
   const toggleEditMode = () => {
     setIsEditMode(!isEditMode);
   };
 
-  // Fungsi untuk membuka modal delete
+  // Open delete modal
   const openDeleteModal = (plan) => {
     setSelectedPlan(plan);
     setIsDeleteModalOpen(true);
   };
 
-  // Fungsi untuk menutup modal delete
   const closeDeleteModal = () => {
     setIsDeleteModalOpen(false);
     setSelectedPlan(null);
   };
 
-  // Fungsi untuk membuka modal New Plan
-  const openNewPlanModal = () => {
-    setIsPlanPopUpOpen(true);
+  // Confirm delete
+  const confirmDelete = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_API_URL}/planning/${selectedPlan.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success("Rencana berhasil dihapus.");
+      fetchPlans(); // Refresh the plan list after deletion
+      closeDeleteModal();
+    } catch (error) {
+      toast.error("Gagal menghapus rencana.");
+      console.error("Error deleting plan:", error);
+    }
   };
 
-  // Fungsi untuk menutup modal New Plan
+  // Close modal for adding new plan
   const closeNewPlanModal = () => {
     setIsPlanPopUpOpen(false);
   };
 
-  // Fungsi untuk navigasi ke halaman detail ketika card di-klik
+  // Open edit modal for a specific plan
+  const openPlanEditModal = (plan) => {
+    setSelectedPlan(plan); // Set the plan to edit
+    setIsPlanPopUpEditOpen(true); // Open the edit modal
+  };
+
+  // Close the edit modal
+  const closePlanEditModal = () => {
+    setIsPlanPopUpEditOpen(false);
+    setSelectedPlan(null);
+  };
+
+  // Navigate to the detail page of a plan
   const handleNavigateToDetail = (id) => {
-    navigate(`/planning/${id}`); // Navigasi ke halaman detail berdasarkan ID
+    navigate(`/planning/${id}`);
   };
 
   return (
@@ -90,10 +118,14 @@ const Planning = () => {
             {isEditMode ? "Edit Planning" : "Planning"}
           </h1>
 
-          {/* Current Balance dan Action Buttons */}
+          {/* Current Balance and Action Buttons */}
           <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
             <span className="text-xl text-center sm:text-cen font-semibold text-red-500 mb-4 sm:mb-0">
-              {isLoading ? <Skeleton width={150} /> : `Current Balance: Rp.${currentBalance.toLocaleString()}`}
+              {isLoading ? (
+                <Skeleton width={150} />
+              ) : (
+                `Current Balance: Rp.${currentBalance.toLocaleString()}`
+              )}
             </span>
 
             {/* Action buttons */}
@@ -104,9 +136,6 @@ const Planning = () => {
                   onClick={toggleEditMode}
                 >
                   Close
-                </button>
-                <button className="bg-[#B4252A] text-white font-semibold py-2 px-4 sm:px-6 rounded-lg hover:bg-[#8E1F22] w-full sm:w-auto">
-                  Save
                 </button>
               </div>
             ) : (
@@ -119,7 +148,7 @@ const Planning = () => {
                 </button>
                 <button
                   className="flex items-center justify-center bg-[#B4252A] text-white font-semibold py-2 px-4 sm:px-6 rounded-lg hover:bg-[#8E1F22] w-full sm:w-auto"
-                  onClick={openNewPlanModal} // Buka modal
+                  onClick={() => setIsPlanPopUpOpen(true)} // Open modal to create new plan
                 >
                   <FaPlus className="mr-2" /> New Plan
                 </button>
@@ -163,9 +192,8 @@ const Planning = () => {
                       (e.currentTarget.style.boxShadow =
                         "0 0 8px 2px rgba(0, 0, 0, 0.05)")
                     }
-                    onClick={() => handleNavigateToDetail(plan.id)}
+                    onClick={() => handleNavigateToDetail(plan.id)} // Navigate to detail when clicking the card
                   >
-                    {/* Date Section */}
                     <div className="flex items-start mb-4 space-x-4 sm:mb-0">
                       <div className="flex items-center">
                         <div className="flex flex-col items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded-lg">
@@ -180,28 +208,52 @@ const Planning = () => {
                         </div>
                       </div>
 
-                      {/* Plan Details */}
                       <div className="ml-4 flex flex-col justify-center">
                         <div className="flex items-center mb-1">
                           <h3 className="text-lg font-bold">{plan.title}</h3>
                         </div>
                         <p
                           className="text-sm text-gray-600"
-                          dangerouslySetInnerHTML={{ __html: plan.content }} // Tampilkan konten rich text
+                          dangerouslySetInnerHTML={{ __html: plan.content }}
                         />
                       </div>
                     </div>
 
                     {/* Achieved & Amount + Target Icon */}
                     <div className="flex items-center justify-end space-x-2 sm:mt-0">
-                      <div className="text-right mr-2">
-                        <p className="text-lg font-semibold">
-                          Rp.{plan.target_amount.toLocaleString()}
-                        </p>
-                      </div>
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center bg-red-500">
-                        <FaBullseye className="text-white" size={20} />
-                      </div>
+                      {isEditMode ? (
+                        <div className="flex space-x-2">
+                          <button
+                            className="bg-[#E4C3C3] text-[#B4252A] font-semibold p-4 rounded-lg hover:bg-[#cfa8a8] w-12 h-12 flex items-center justify-center"
+                            onClick={(e) => {
+                              e.stopPropagation(); // Prevent navigation to detail page
+                              openPlanEditModal(plan); // Open edit modal
+                            }}
+                          >
+                            <FaEdit size={20} />
+                          </button>
+                          <button
+                            className="bg-[#B4252A] text-white font-semibold p-4 rounded-lg hover:bg-[#8E1F22] w-12 h-12 flex items-center justify-center"
+                            onClick={(e) => {
+                              e.stopPropagation(); // Prevent navigation to detail page
+                              openDeleteModal(plan); // Open delete modal
+                            }}
+                          >
+                            <FaTrash size={20} />
+                          </button>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="text-right mr-2">
+                            <p className="text-lg font-semibold">
+                              Rp.{plan.target_amount.toLocaleString()}
+                            </p>
+                          </div>
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center bg-red-500">
+                            <FaBullseye className="text-white" size={20} />
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -212,6 +264,15 @@ const Planning = () => {
       {/* Pop-up Modal for adding new plan */}
       {isPlanPopUpOpen && (
         <PlanPopUp isOpen={isPlanPopUpOpen} onClose={closeNewPlanModal} />
+      )}
+
+      {/* Pop-up Modal for editing plan */}
+      {isPlanPopUpEditOpen && (
+        <PlanPopUpEdit
+          isOpen={isPlanPopUpEditOpen}
+          onClose={closePlanEditModal}
+          planId={selectedPlan?.id} // Pass the selected plan ID to edit
+        />
       )}
 
       {/* Modal for delete confirmation */}
