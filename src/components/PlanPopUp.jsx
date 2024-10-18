@@ -1,9 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css'; // Import style untuk ReactQuill
+import 'react-quill/dist/quill.snow.css';
+import axios from 'axios'; // Mengimpor axios untuk fetching data
+import ReactLoading from 'react-loading'; // Menggunakan ReactLoading untuk spinner
+import { toast } from 'react-toastify'; // Menggunakan toast untuk notifikasi
 
 const PlanPopUp = ({ isOpen, onClose }) => {
+  const [title, setTitle] = useState('');
+  const [deadline, setDeadline] = useState('');
+  const [targetAmount, setTargetAmount] = useState('');
   const [editorContent, setEditorContent] = useState('');
+  const [isLoading, setIsLoading] = useState(false); // State untuk loading
   const [animatePopup, setAnimatePopup] = useState(false);
 
   useEffect(() => {
@@ -28,9 +35,40 @@ const PlanPopUp = ({ isOpen, onClose }) => {
     setTimeout(onClose, 200); // Tunggu animasi sebelum benar-benar menutup
   };
 
-  const handleSave = () => {
-    console.log('Plan Saved:', editorContent);
-    onClose(); // Tutup pop-up setelah menyimpan
+  const handleSave = async () => {
+    setIsLoading(true); // Set loading true saat proses mulai
+    const token = localStorage.getItem('token'); // Mengambil token dari localStorage
+
+    const newPlanData = {
+      title: title,
+      deadline: deadline,
+      target_amount: parseInt(targetAmount), // Pastikan target amount dalam bentuk angka
+      content: editorContent, // Mengirimkan konten yang disimpan di ReactQuill
+    };
+
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/planning`, newPlanData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.data.status) {
+        toast.success('Rencana berhasil dibuat!'); // Pesan sukses dalam bahasa Indonesia
+        console.log('Plan Created:', response.data.planning);
+        setIsLoading(false); // Set loading false setelah proses selesai
+        onClose(); // Tutup pop-up setelah menyimpan
+      } else {
+        toast.error('Gagal membuat rencana.'); // Pesan gagal dalam bahasa Indonesia
+        console.error('Failed to create plan:', response.data.message);
+        setIsLoading(false); // Set loading false setelah proses selesai
+      }
+    } catch (error) {
+      toast.error('Terjadi kesalahan saat membuat rencana. Silakan coba lagi.'); // Pesan error dalam bahasa Indonesia
+      console.error('Error creating plan:', error);
+      setIsLoading(false); // Set loading false setelah proses selesai
+    }
   };
 
   return (
@@ -41,11 +79,15 @@ const PlanPopUp = ({ isOpen, onClose }) => {
             className={`bg-white p-8 rounded-lg shadow-lg transform transition-transform duration-300 ease-in-out 
             ${animatePopup ? 'translate-y-0' : '-translate-y-full'} relative z-10 w-full max-w-md md:max-w-lg lg:max-w-xl mx-4 max-h-[90vh] overflow-y-auto`} // Membatasi tinggi popup dan menambahkan scroll
           >
-            <h2 className="text-lg font-bold mb-4 text-center">Add A New Plan</h2>
+            <h2 className="text-lg font-bold mb-4 text-center">Tambah Rencana Baru</h2>
+            
+            {/* Form */}
             <div className="mb-4">
               <label className="block text-gray-700 font-semibold mb-2">Nama Kegiatan</label>
               <input
                 type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)} // Mengambil input dari user
                 placeholder="Masukkan nama kegiatan..."
                 className="w-full border border-gray-300 p-2 rounded-lg"
               />
@@ -54,14 +96,17 @@ const PlanPopUp = ({ isOpen, onClose }) => {
               <label className="block text-gray-700 font-semibold mb-2">Deadline</label>
               <input
                 type="date"
-                placeholder="Masukkan Tanggal Deadline..."
+                value={deadline}
+                onChange={(e) => setDeadline(e.target.value)} // Mengambil input deadline
                 className="w-full border border-gray-300 p-2 rounded-lg"
               />
             </div>
             <div className="mb-4">
               <label className="block text-gray-700 font-semibold mb-2">Target</label>
               <input
-                type="text"
+                type="number"
+                value={targetAmount}
+                onChange={(e) => setTargetAmount(e.target.value)} // Mengambil input target amount
                 placeholder="Masukkan target permintaan/penggunaan..."
                 className="w-full border border-gray-300 p-2 rounded-lg"
               />
@@ -70,26 +115,36 @@ const PlanPopUp = ({ isOpen, onClose }) => {
               <label className="block text-gray-700 font-semibold mb-2">Deskripsi</label>
               <ReactQuill
                 value={editorContent}
-                onChange={setEditorContent}
+                onChange={setEditorContent} // Mengambil input dari ReactQuill (konten rich text)
                 className="bg-white rounded-lg"
                 placeholder="Masukkan Deskripsi..."
               />
             </div>
+
             <div className="flex justify-between">
               <button
                 className="bg-[#E4C3C3] text-[#B4252A] font-semibold py-2 px-6 rounded-lg hover:bg-[#cfa8a8]"
                 onClick={closePopup}
+                disabled={isLoading} // Nonaktifkan tombol jika loading
               >
-                Cancel
+                Batal
               </button>
               <button
                 className="bg-[#B4252A] text-white font-semibold py-2 px-6 rounded-lg hover:bg-[#8E1F22]"
                 onClick={handleSave}
+                disabled={isLoading} // Nonaktifkan tombol jika loading
               >
-                Save
+                Simpan
               </button>
             </div>
           </div>
+
+          {/* overlay loading */}
+          {isLoading && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-10">
+              <ReactLoading type="spin" color="#B4252A" height={50} width={50} />
+            </div>
+          )}
         </div>
       )}
     </>
