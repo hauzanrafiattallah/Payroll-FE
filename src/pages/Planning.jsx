@@ -93,7 +93,7 @@ const Planning = () => {
 
           {/* Current Balance dan Action Buttons */}
           <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
-            <span className="text-xl font-semibold text-red-500 mb-4 sm:mb-0">
+            <span className="text-xl text-center sm:text-center font-semibold text-red-500 mb-4 sm:mb-0">
               Current Balance: Rp.100.000.000
             </span>
 
@@ -226,7 +226,9 @@ const Planning = () => {
       </div>
 
       {/* Pop-up Modal for adding new plan */}
-      {isPlanPopUpOpen && <PlanPopUp isOpen={isPlanPopUpOpen} onClose={closeNewPlanModal} />}
+      {isPlanPopUpOpen && (
+        <PlanPopUp isOpen={isPlanPopUpOpen} onClose={closeNewPlanModal} />
+      )}
 
       {/* Modal for delete confirmation */}
       {isDeleteModalOpen && (
