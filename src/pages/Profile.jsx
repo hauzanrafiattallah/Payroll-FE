@@ -3,9 +3,9 @@ import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import ReactLoading from "react-loading";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
-import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import icon untuk mata
-import { toast } from "react-toastify"; // Import toast dari react-toastify
+import { useNavigate } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { toast } from "react-toastify";
 import { FiUpload } from "react-icons/fi";
 
 const Profile = () => {
@@ -23,7 +23,11 @@ const Profile = () => {
   const [isProfileChanged, setIsProfileChanged] = useState(false); // State untuk perubahan profil
   const [isPasswordChanged, setIsPasswordChanged] = useState(false); // State untuk perubahan password
   const [isLoading, setIsLoading] = useState(false); // State untuk loading UI
+  const [imageName, setImageName] = useState(""); // State untuk menyimpan nama file gambar yang diunggah
   const navigate = useNavigate(); // Inisialisasi useNavigate
+
+  // Tambahkan URL dasar dari API untuk gambar
+  const baseImageUrl = import.meta.env.VITE_FILE_BASE_URL;
 
   // Ambil token dari localStorage
   const authToken = localStorage.getItem("token");
@@ -42,6 +46,7 @@ const Profile = () => {
           }
         );
         setUserData(response.data); // Simpan data user ke state
+        setProfileName(response.data.name); // Set nama yang sudah ada
         setLoading(false); // Set loading ke false setelah data diambil
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -97,9 +102,13 @@ const Profile = () => {
   // Fungsi untuk meng-handle perubahan profile
   const handleProfileUpdate = async () => {
     const formData = new FormData();
-    formData.append("name", profileName); // Tambahkan nama ke formData
+
+    // Jika profileName tidak diubah, kirim nama dari userData
+    formData.append("name", profileName || userData.name);
+
+    // Jika ada perubahan gambar, tambahkan gambar ke formData
     if (profileImage) {
-      formData.append("image", profileImage); // Tambahkan gambar ke formData jika ada
+      formData.append("image", profileImage);
     }
 
     setIsLoading(true); // Tampilkan loading UI
@@ -118,23 +127,39 @@ const Profile = () => {
       );
 
       if (response.status === 200) {
-        setIsProfileChanged(false); // Reset perubahan setelah sukses
-        toast.success("Profile updated successfully!");
+        setIsProfileChanged(false); // Set ulang perubahan setelah berhasil
 
-        // Reset field nama setelah update berhasil
-        setProfileName("");
-
-        // Perbarui data pengguna, termasuk gambar profil
+        // Update state data user
         setUserData({
           ...userData,
-          name: profileName,
-          profile_picture:
-            response.data.profile_picture || userData.profile_picture,
+          name: profileName || userData.name,
+          image: response.data.image || userData.image, // Menggunakan image dari response
         });
+
+        if (profileImage && profileName !== userData.name) {
+          toast.success("Profile image and name updated successfully!");
+        } else if (profileImage) {
+          toast.success(`Image ${profileImage.name} uploaded successfully!`);
+        } else if (profileName !== userData.name) {
+          toast.success("Profile name updated successfully!");
+        }
+
+        setProfileImage(null); // Reset gambar
+        setImageName(""); // Kosongkan nama file gambar
+        setProfileName(userData.name); // Kembalikan nama profil ke yang asli
       }
     } catch (error) {
-      console.error("Error updating profile:", error);
-      toast.error("Failed to update profile. Please try again.");
+      console.error("Error updating profile image:", error);
+      if (error.response && error.response.data) {
+        console.error("Validation errors:", error.response.data);
+        toast.error(
+          `Failed to update image: ${
+            error.response.data.message || "Unknown error"
+          }`
+        );
+      } else {
+        toast.error("Failed to update image. Please try again.");
+      }
     } finally {
       setIsLoading(false); // Sembunyikan loading UI setelah selesai
     }
@@ -142,11 +167,12 @@ const Profile = () => {
 
   // Fungsi untuk memicu klik pada input file yang disembunyikan
   const handleProfileImageUpload = (e) => {
-    setProfileImage(e.target.files[0]);
-    setIsProfileChanged(true); // Set perubahan profil saat gambar diubah
+    const file = e.target.files[0];
+    setProfileImage(file);
+    setImageName(file?.name || "");
+    setIsProfileChanged(true);
   };
 
-  // Fungsi untuk handle simpan perubahan baik untuk password maupun profile
   const handleSave = () => {
     if (isProfileChanged) {
       handleProfileUpdate();
@@ -156,13 +182,11 @@ const Profile = () => {
     }
   };
 
-  // Fungsi untuk mendeteksi perubahan pada profil
   const handleProfileNameChange = (e) => {
     setProfileName(e.target.value);
-    setIsProfileChanged(true); // Set perubahan profil saat nama diubah
+    setIsProfileChanged(true);
   };
 
-  // Fungsi untuk mendeteksi perubahan pada password
   const handlePasswordChange = (field, value) => {
     if (field === "currentPassword") {
       setCurrentPassword(value);
@@ -172,7 +196,6 @@ const Profile = () => {
       setConfirmPassword(value);
     }
 
-    // Jika ada perubahan pada salah satu field password
     if (currentPassword || newPassword || confirmPassword) {
       setIsPasswordChanged(true);
     }
@@ -214,7 +237,11 @@ const Profile = () => {
                 <div className="relative flex items-center space-x-4 sm:space-x-6">
                   <div className="absolute inset-0 bg-white rounded-full w-28 sm:w-40 h-28 sm:h-40 -z-10" />
                   <img
-                    src={userData?.profile_picture || "/image_placeholder.png"}
+                    src={
+                      userData?.image
+                        ? `${baseImageUrl}${userData.image}` // Menggunakan image dari backend
+                        : "/image_placeholder.png"
+                    }
                     alt="Profile"
                     className="relative z-10 w-20 h-20 border-4 border-white rounded-full sm:w-28 sm:h-28"
                   />
@@ -246,9 +273,9 @@ const Profile = () => {
                     <div className="relative">
                       <input
                         type="text"
-                        placeholder="Change your Name" // Placeholder sesuai gambar
+                        placeholder="Change your Name"
                         value={profileName}
-                        onChange={handleProfileNameChange} // Deteksi perubahan
+                        onChange={handleProfileNameChange}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                       />
                     </div>
@@ -268,10 +295,13 @@ const Profile = () => {
                           className="hidden"
                           id="profileImageUpload"
                         />
+
                         <div className="flex flex-col items-center">
                           <FiUpload className="w-10 h-10 text-gray-400" />
                           <span className="mt-2 text-gray-500">
-                            Change your Profile Picture (PNG/JPG)
+                            {imageName
+                              ? `Selected file: ${imageName}`
+                              : "Change your Profile Picture (PNG/JPG)"}
                           </span>
                         </div>
                       </div>
@@ -283,8 +313,7 @@ const Profile = () => {
 
               {/* Change Password Section */}
               <div className="p-4 sm:p-8 lg:px-16 lg:py-12">
-                <hr className="mb-6 border-t-2 border-gray-300" />{" "}
-                {/* Garis di atas */}
+                <hr className="mb-6 border-t-2 border-gray-300" />
                 <div className="flex flex-col justify-between lg:flex-row lg:items-center lg:space-x-4">
                   <h3 className="w-full mb-4 text-xl font-semibold text-center lg:text-left whitespace-nowrap lg:w-1/4 lg:mb-0">
                     Change Password
@@ -355,14 +384,11 @@ const Profile = () => {
                     </div>
                   </div>
                 </div>
-                <hr className="mt-8 border-t-2 border-gray-300" />{" "}
-                {/* Garis di bawah */}
+                <hr className="mt-8 border-t-2 border-gray-300" />
               </div>
 
               {/* Tombol Cancel dan Save */}
               <div className="flex justify-end mt-4 space-x-4 p-4">
-                {" "}
-                {/* Ganti mt-8 menjadi mt-4 atau lebih kecil */}
                 <button
                   className="px-6 py-2 font-semibold text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100"
                   onClick={() => navigate(-1)} // Kembali ke halaman sebelumnya
