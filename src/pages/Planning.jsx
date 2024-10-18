@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FaEdit, FaPlus, FaBullseye, FaTrash } from "react-icons/fa";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
+import PlanPopUp from "../components/PlanPopUp";
 
 const plans = [
   {
@@ -50,6 +51,9 @@ const Planning = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
 
+  // State untuk membuka modal tambah rencana baru
+  const [isPlanPopUpOpen, setIsPlanPopUpOpen] = useState(false);
+
   // Fungsi untuk switch mode edit
   const toggleEditMode = () => {
     setIsEditMode(!isEditMode);
@@ -67,11 +71,14 @@ const Planning = () => {
     setSelectedPlan(null);
   };
 
-  // Fungsi untuk konfirmasi penghapusan
-  const confirmDelete = () => {
-    console.log("Plan deleted:", selectedPlan);
-    // Logika penghapusan bisa ditambahkan di sini
-    closeDeleteModal();
+  // Fungsi untuk membuka modal New Plan
+  const openNewPlanModal = () => {
+    setIsPlanPopUpOpen(true);
+  };
+
+  // Fungsi untuk menutup modal New Plan
+  const closeNewPlanModal = () => {
+    setIsPlanPopUpOpen(false);
   };
 
   return (
@@ -111,7 +118,10 @@ const Planning = () => {
                 >
                   <FaEdit className="mr-2" /> Edit
                 </button>
-                <button className="flex items-center justify-center bg-[#B4252A] text-white font-semibold py-2 px-4 sm:px-6 rounded-lg hover:bg-[#8E1F22] w-full sm:w-auto">
+                <button
+                  className="flex items-center justify-center bg-[#B4252A] text-white font-semibold py-2 px-4 sm:px-6 rounded-lg hover:bg-[#8E1F22] w-full sm:w-auto"
+                  onClick={openNewPlanModal} // Buka modal
+                >
                   <FaPlus className="mr-2" /> New Plan
                 </button>
               </div>
@@ -214,6 +224,9 @@ const Planning = () => {
           </div>
         </div>
       </div>
+
+      {/* Pop-up Modal for adding new plan */}
+      {isPlanPopUpOpen && <PlanPopUp isOpen={isPlanPopUpOpen} onClose={closeNewPlanModal} />}
 
       {/* Modal for delete confirmation */}
       {isDeleteModalOpen && (

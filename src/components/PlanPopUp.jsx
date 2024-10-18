@@ -15,7 +15,7 @@ const PlanPopUp = ({ isOpen, onClose }) => {
     <>
       {isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md mx-4">
+          <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md md:max-w-lg lg:max-w-xl mx-4">
             <h2 className="text-lg font-bold mb-4 text-center">Add A New Plan</h2>
             <div className="mb-4">
               <label className="block text-gray-700 font-semibold mb-2">Nama Kegiatan</label>
