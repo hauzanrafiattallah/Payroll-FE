@@ -21,34 +21,8 @@ const Topbar = () => {
   });
 
   const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
+  const baseImageUrl = import.meta.env.VITE_FILE_BASE_URL; // Mengambil base URL untuk gambar dari .env
   const navigate = useNavigate(); // Untuk navigasi ke halaman lain
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (isDropdownOpen && !event.target.closest(".dropdown-button")) {
-        setIsDropdownOpen(false); // Tutup dropdown jika klik di luar dropdown
-      }
-
-      if (isLogoutPopupOpen && !event.target.closest(".popup-content")) {
-        setIsLogoutPopupOpen(false); // Tutup popup jika klik di luar popup
-      }
-    };
-
-    if (isDropdownOpen || isLogoutPopupOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isDropdownOpen, isLogoutPopupOpen]);
-
-  const getFirstName = (name) => {
-    if (!name) return "User"; // Fallback ke "User" jika nama tidak ada
-    return name.split(" ")[0]; // Ambil nama pertama sebelum spasi
-  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -73,6 +47,11 @@ const Topbar = () => {
       fetchUserData(); // Panggil API untuk mendapatkan data pengguna terbaru
     }
   }, [authToken]);
+
+  const getFirstName = (name) => {
+    if (!name) return "User"; // Fallback ke "User" jika nama tidak ada
+    return name.split(" ")[0]; // Ambil nama pertama sebelum spasi
+  };
 
   const handleLogout = async () => {
     try {
@@ -154,7 +133,11 @@ const Topbar = () => {
                 {getFirstName(userData?.name)}
               </span>
               <img
-                src="/image_placeholder.png"
+                src={
+                  userData?.image
+                    ? `${baseImageUrl}${userData.image}` // Gambar dari userData
+                    : "/image_placeholder.png"
+                }
                 alt="User"
                 className="w-12 h-12 rounded-full"
               />

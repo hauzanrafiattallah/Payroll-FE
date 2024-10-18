@@ -18,7 +18,7 @@ const Profile = () => {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false); // Untuk toggle visibility current password
   const [showNewPassword, setShowNewPassword] = useState(false); // Untuk toggle visibility new password
   const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Untuk toggle visibility confirm password
-  const [profileName, setProfileName] = useState(""); // State untuk nama profil
+  const [profileName, setProfileName] = useState(""); // State untuk nama profil (biarkan kosong untuk placeholder)
   const [profileImage, setProfileImage] = useState(null); // State untuk gambar profil
   const [isProfileChanged, setIsProfileChanged] = useState(false); // State untuk perubahan profil
   const [isPasswordChanged, setIsPasswordChanged] = useState(false); // State untuk perubahan password
@@ -46,7 +46,6 @@ const Profile = () => {
           }
         );
         setUserData(response.data); // Simpan data user ke state
-        setProfileName(response.data.name); // Set nama yang sudah ada
         setLoading(false); // Set loading ke false setelah data diambil
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -129,7 +128,7 @@ const Profile = () => {
       if (response.status === 200) {
         setIsProfileChanged(false); // Set ulang perubahan setelah berhasil
 
-        // Update state data user
+        // Update state data user dan gambar secara langsung
         setUserData({
           ...userData,
           name: profileName || userData.name,
@@ -137,16 +136,15 @@ const Profile = () => {
         });
 
         if (profileImage && profileName !== userData.name) {
-          toast.success("Profile image and name updated successfully!");
+          toast.success("Profile updated successfully!");
         } else if (profileImage) {
-          toast.success(`Image ${profileImage.name} uploaded successfully!`);
+          toast.success(`Image uploaded successfully!`);
         } else if (profileName !== userData.name) {
           toast.success("Profile name updated successfully!");
         }
 
         setProfileImage(null); // Reset gambar
         setImageName(""); // Kosongkan nama file gambar
-        setProfileName(userData.name); // Kembalikan nama profil ke yang asli
       }
     } catch (error) {
       console.error("Error updating profile image:", error);
@@ -274,7 +272,7 @@ const Profile = () => {
                       <input
                         type="text"
                         placeholder="Change your Name"
-                        value={profileName}
+                        value={profileName} // Kosongkan ini agar placeholder muncul
                         onChange={handleProfileNameChange}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                       />
