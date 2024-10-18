@@ -104,16 +104,16 @@ const PlanningDetails = () => {
                 className="text-gray-600 mb-6 text-justify"
                 dangerouslySetInnerHTML={{ __html: planning.content }} // Menampilkan deskripsi dari API (rich text)
               />
-              <div className="flex justify-center mb-4">
+              {/* <div className="flex justify-center mb-4">
                 <img
                   src="/planning.jpeg" // Ganti dengan path gambar yang sesuai
                   alt="Conference"
                   className="rounded-lg shadow-lg w-full max-w-md"
                 />
-              </div>
-              <p className="text-center text-gray-600 text-sm mb-4">
+              </div> */}
+              {/* <p className="text-center text-gray-600 text-sm mb-4">
                 Gambar 1.1
-              </p>
+              </p> */}
             </div>
 
             {/* Close Button */}
