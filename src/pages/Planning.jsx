@@ -193,6 +193,18 @@ const Planning = () => {
                     <div
                       key={plan.id}
                       className="flex flex-col sm:flex-row justify-between p-4 sm:p-6 transition-all duration-200 bg-white border rounded-lg shadow-sm cursor-pointer"
+                      style={{
+                        boxShadow: "0 0 8px 2px rgba(0, 0, 0, 0.05)",
+                        transition: "box-shadow 0.3s ease-in-out",
+                      }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.boxShadow =
+                          "0 0 15px 3px rgba(180, 37, 42, 0.15)")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.boxShadow =
+                          "0 0 8px 2px rgba(0, 0, 0, 0.05)")
+                      }
                       onClick={() => handleNavigateToDetail(plan.id)}
                     >
                       <div className="flex items-start mb-4 space-x-4 sm:mb-0">
