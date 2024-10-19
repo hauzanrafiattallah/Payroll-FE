@@ -211,7 +211,7 @@ const Planning = () => {
 
                       <div className="ml-4 flex flex-col justify-center">
                         <div className="flex items-center mb-1">
-                          <h3 className="text-lg font-bold">{plan.title}</h3>
+                          <h3 className="text-xl font-bold">{plan.title}</h3>
                         </div>
                         <div
                           className="text-gray-600 mb-6 text-justify"
