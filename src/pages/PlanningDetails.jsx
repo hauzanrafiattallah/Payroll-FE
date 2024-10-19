@@ -3,13 +3,14 @@ import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import { useParams, useNavigate } from "react-router-dom";
-import ReactLoading from "react-loading"; // Pastikan ini diimpor
+import ReactLoading from "react-loading"; // Import untuk spinner loading
+import '../App.css';
 
 const PlanningDetails = () => {
   const { id } = useParams(); // Mengambil ID dari parameter URL
   const [planning, setPlanning] = useState(null); // State untuk menyimpan data planning
   const [loading, setLoading] = useState(true); // State untuk loading
-  const navigate = useNavigate(); // Gunakan useNavigate untuk navigasi
+  const navigate = useNavigate(); // Untuk navigasi
 
   // Fungsi untuk fetching data dari API berdasarkan ID
   const fetchPlanningById = async () => {
@@ -25,17 +26,22 @@ const PlanningDetails = () => {
       );
       if (response.data.status) {
         setPlanning(response.data.data); // Set data planning dari API
-        setLoading(false); // Hentikan loading setelah data diambil
+      } else {
+        console.error("Error: No data found.");
       }
     } catch (error) {
       console.error("Error fetching planning details:", error);
-      setLoading(false);
+    } finally {
+      setLoading(false); // Menghentikan loading setelah data diambil
     }
   };
 
   useEffect(() => {
     fetchPlanningById(); // Fetch data ketika komponen pertama kali dirender
-  }, [id]);
+    if (planning) {
+      console.log("Content from backend:", planning.content);
+    }
+  }, [id,planning]); // Fetch data ketika ID berubah`
 
   if (loading) {
     return (
@@ -46,7 +52,13 @@ const PlanningDetails = () => {
   }
 
   if (!planning) {
-    return <div>No planning data found.</div>;
+    return (
+      <div className="text-center py-8">
+        <h2 className="text-lg font-bold text-red-500">
+          No planning data found.
+        </h2>
+      </div>
+    );
   }
 
   return (
@@ -67,7 +79,7 @@ const PlanningDetails = () => {
               <div className="text-center sm:text-left">
                 <p className="text-gray-500 font-semibold">Kegiatan</p>
               </div>
-              {/* Kolom Kanan: Konten di kanan */}
+              {/* Kolom Kanan: Konten */}
               <div className="text-center sm:text-right">
                 <h2 className="text-lg font-bold">{planning.title}</h2>
               </div>
@@ -90,7 +102,7 @@ const PlanningDetails = () => {
               </div>
               <div className="text-center sm:text-right">
                 <h2 className="text-lg font-bold">
-                  Rp.{planning.target_amount.toLocaleString()}
+                  Rp.{planning.target_amount.toLocaleString("id-ID")}
                 </h2>
               </div>
             </div>
@@ -100,20 +112,10 @@ const PlanningDetails = () => {
               <h3 className="text-center text-lg font-bold mb-4">
                 {planning.title}
               </h3>
-              <p
-                className="text-gray-600 mb-6 text-justify"
+              <div
+                className="text-gray-600 mb-6 text-justify rich-text-content"
                 dangerouslySetInnerHTML={{ __html: planning.content }} // Menampilkan deskripsi dari API (rich text)
               />
-              {/* <div className="flex justify-center mb-4">
-                <img
-                  src="/planning.jpeg" // Ganti dengan path gambar yang sesuai
-                  alt="Conference"
-                  className="rounded-lg shadow-lg w-full max-w-md"
-                />
-              </div> */}
-              {/* <p className="text-center text-gray-600 text-sm mb-4">
-                Gambar 1.1
-              </p> */}
             </div>
 
             {/* Close Button */}
