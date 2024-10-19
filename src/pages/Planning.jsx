@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react"; // Pastikan useState dan useEffect diimpor
 import { FaEdit, FaPlus, FaBullseye, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -22,6 +22,7 @@ const Planning = () => {
   const [isPlanPopUpEditOpen, setIsPlanPopUpEditOpen] = useState(false);
 
   const navigate = useNavigate();
+  const userData = JSON.parse(localStorage.getItem("userData")); // Ambil userData dari localStorage
 
   // Fetch data from the API
   const fetchPlans = async () => {
@@ -129,32 +130,36 @@ const Planning = () => {
               )}
             </span>
 
-            {/* Action buttons */}
-            {isEditMode ? (
-              <div className="flex space-x-2 sm:space-x-4 w-full sm:w-auto">
-                <button
-                  className="bg-[#E4C3C3] text-[#B4252A] font-semibold py-2 px-4 sm:px-6 rounded-lg hover:bg-[#cfa8a8] w-full sm:w-auto"
-                  onClick={toggleEditMode}
-                >
-                  Close
-                </button>
-              </div>
-            ) : (
-              <div className="flex space-x-2 sm:space-x-4 w-full sm:w-auto">
-                <button
-                  className="flex items-center justify-center bg-[#E4C3C3] text-[#B4252A] font-semibold py-2 px-4 sm:px-6 rounded-lg hover:bg-[#cfa8a8] w-full sm:w-auto"
-                  onClick={toggleEditMode}
-                >
-                  <FaEdit className="mr-2" /> Edit
-                </button>
-                <button
-                  className="flex items-center justify-center bg-[#B4252A] text-white font-semibold py-2 px-4 sm:px-6 rounded-lg hover:bg-[#8E1F22] w-full sm:w-auto"
-                  onClick={() => setIsPlanPopUpOpen(true)} // Open modal to create new plan
-                >
-                  <FaPlus className="mr-2" /> New Plan
-                </button>
-              </div>
-            )}
+            {/* Kondisi untuk hanya menampilkan tombol jika user bukan superAdmin */}
+            {!userData || userData.role !== "superAdmin" ? (
+              <>
+                {isEditMode ? (
+                  <div className="flex space-x-2 sm:space-x-4 w-full sm:w-auto">
+                    <button
+                      className="bg-[#E4C3C3] text-[#B4252A] font-semibold py-2 px-4 sm:px-6 rounded-lg hover:bg-[#cfa8a8] w-full sm:w-auto"
+                      onClick={toggleEditMode}
+                    >
+                      Close
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex space-x-2 sm:space-x-4 w-full sm:w-auto">
+                    <button
+                      className="flex items-center justify-center bg-[#E4C3C3] text-[#B4252A] font-semibold py-2 px-4 sm:px-6 rounded-lg hover:bg-[#cfa8a8] w-full sm:w-auto"
+                      onClick={toggleEditMode}
+                    >
+                      <FaEdit className="mr-2" /> Edit
+                    </button>
+                    <button
+                      className="flex items-center justify-center bg-[#B4252A] text-white font-semibold py-2 px-4 sm:px-6 rounded-lg hover:bg-[#8E1F22] w-full sm:w-auto"
+                      onClick={() => setIsPlanPopUpOpen(true)} // Open modal to create new plan
+                    >
+                      <FaPlus className="mr-2" /> New Plan
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : null}
           </div>
 
           {/* Plan List */}
@@ -188,22 +193,9 @@ const Planning = () => {
                     <div
                       key={plan.id}
                       className="flex flex-col sm:flex-row justify-between p-4 sm:p-6 transition-all duration-200 bg-white border rounded-lg shadow-sm cursor-pointer"
-                      style={{
-                        boxShadow: "0 0 8px 2px rgba(0, 0, 0, 0.05)",
-                        transition: "box-shadow 0.3s ease-in-out",
-                      }}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.boxShadow =
-                          "0 0 15px 3px rgba(180, 37, 42, 0.15)")
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.boxShadow =
-                          "0 0 8px 2px rgba(0, 0, 0, 0.05)")
-                      }
-                      onClick={() => handleNavigateToDetail(plan.id)} // Navigate to detail when clicking the card
+                      onClick={() => handleNavigateToDetail(plan.id)}
                     >
                       <div className="flex items-start mb-4 space-x-4 sm:mb-0">
-                        {/* Date Icon */}
                         <div className="flex items-center">
                           <div className="flex flex-col items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded-lg">
                             <div className="text-lg font-semibold text-gray-500">
@@ -222,7 +214,6 @@ const Planning = () => {
 
                         <div className="ml-4 flex flex-col justify-center">
                           <div className="flex items-center mb-1">
-                            {/* Indicator dot */}
                             <div
                               className={`w-3 h-3 rounded-full mr-2 ${
                                 isCompleted ? "bg-green-500" : "bg-red-500"
@@ -254,7 +245,7 @@ const Planning = () => {
                                 isCompleted ? "text-green-600" : "text-red-600"
                               }`}
                             >
-                              {percentage.toFixed(2)}% Achieved
+                              {percentage.toFixed()}% Achieved
                             </p>
                             <p className="text-lg font-semibold">
                               Rp.{plan.target_amount.toLocaleString()}
