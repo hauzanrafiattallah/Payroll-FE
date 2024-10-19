@@ -4,11 +4,12 @@ import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import { useParams, useNavigate } from "react-router-dom";
 import ReactLoading from "react-loading"; // Import untuk spinner loading
-import '../App.css';
+import "../App.css";
 
 const PlanningDetails = () => {
   const { id } = useParams(); // Mengambil ID dari parameter URL
   const [planning, setPlanning] = useState(null); // State untuk menyimpan data planning
+  const [currentBalance, setCurrentBalance] = useState(0); // State untuk balance
   const [loading, setLoading] = useState(true); // State untuk loading
   const navigate = useNavigate(); // Untuk navigasi
 
@@ -26,6 +27,7 @@ const PlanningDetails = () => {
       );
       if (response.data.status) {
         setPlanning(response.data.data); // Set data planning dari API
+        setCurrentBalance(response.data.current_balance); // Set current balance dari API
       } else {
         console.error("Error: No data found.");
       }
@@ -41,7 +43,7 @@ const PlanningDetails = () => {
     if (planning) {
       console.log("Content from backend:", planning.content);
     }
-  }, [id,planning]); // Fetch data ketika ID berubah`
+  }, [id, planning]); // Fetch data ketika ID berubah`
 
   if (loading) {
     return (
@@ -73,13 +75,10 @@ const PlanningDetails = () => {
 
           {/* Info Section */}
           <div className="bg-white p-8 rounded-lg shadow-lg">
-            {/* Pada versi mobile, grid kolom akan berubah menjadi 1 kolom */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8">
-              {/* Kolom Kiri: Label */}
               <div className="text-center sm:text-left">
                 <p className="text-gray-500 font-semibold">Kegiatan</p>
               </div>
-              {/* Kolom Kanan: Konten */}
               <div className="text-center sm:text-right">
                 <h2 className="text-lg font-bold">{planning.title}</h2>
               </div>
@@ -102,7 +101,8 @@ const PlanningDetails = () => {
               </div>
               <div className="text-center sm:text-right">
                 <h2 className="text-lg font-bold">
-                  Rp.{planning.target_amount.toLocaleString("id-ID")}
+                  Rp.{currentBalance.toLocaleString("id-ID")} / Rp.
+                  {planning.target_amount.toLocaleString("id-ID")}
                 </h2>
               </div>
             </div>
