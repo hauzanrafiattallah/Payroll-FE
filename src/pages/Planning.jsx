@@ -9,6 +9,7 @@ import Topbar from "../components/Topbar";
 import PlanPopUp from "../components/PlanPopUp";
 import PlanPopUpEdit from "../components/PlanPopUpEdit";
 import { toast } from "react-toastify";
+import '../App.css';
 
 const Planning = () => {
   const [plans, setPlans] = useState([]);
@@ -212,9 +213,9 @@ const Planning = () => {
                         <div className="flex items-center mb-1">
                           <h3 className="text-lg font-bold">{plan.title}</h3>
                         </div>
-                        <p
-                          className="text-sm text-gray-600"
-                          dangerouslySetInnerHTML={{ __html: plan.content }}
+                        <div
+                          className="text-gray-600 mb-6 text-justify rich-text-content"
+                          dangerouslySetInnerHTML={{ __html: plan.content }} // Menampilkan deskripsi dari API (rich text)
                         />
                       </div>
                     </div>
