@@ -222,10 +222,16 @@ const Planning = () => {
 
                         <div className="ml-4 flex flex-col justify-center">
                           <div className="flex items-center mb-1">
+                            {/* Indicator dot */}
+                            <div
+                              className={`w-3 h-3 rounded-full mr-2 ${
+                                isCompleted ? "bg-green-500" : "bg-red-500"
+                              }`}
+                            ></div>
                             <h3 className="text-xl font-bold">{plan.title}</h3>
                           </div>
                           <div
-                            className="text-gray-600 mb-6 text-justify"
+                            className="text-gray-600 mb-6 mt-3 text-justify"
                             style={{
                               display: "-webkit-box",
                               WebkitLineClamp: 3, // Batas maksimal baris
@@ -245,9 +251,7 @@ const Planning = () => {
                           <div className="text-right mr-2">
                             <p
                               className={`text-lg font-semibold ${
-                                isCompleted
-                                  ? "text-green-600"
-                                  : "text-red-600"
+                                isCompleted ? "text-green-600" : "text-red-600"
                               }`}
                             >
                               {percentage.toFixed(2)}% Achieved
