@@ -177,60 +177,97 @@ const Planning = () => {
                     </div>
                   </div>
                 ))
-              : plans.map((plan) => (
-                  <div
-                    key={plan.id}
-                    className="flex flex-col sm:flex-row justify-between p-4 sm:p-6 transition-all duration-200 bg-white border rounded-lg shadow-sm cursor-pointer"
-                    style={{
-                      boxShadow: "0 0 8px 2px rgba(0, 0, 0, 0.05)",
-                      transition: "box-shadow 0.3s ease-in-out",
-                    }}
-                    onMouseEnter={(e) =>
-                      (e.currentTarget.style.boxShadow =
-                        "0 0 15px 3px rgba(180, 37, 42, 0.15)")
-                    }
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.style.boxShadow =
-                        "0 0 8px 2px rgba(0, 0, 0, 0.05)")
-                    }
-                    onClick={() => handleNavigateToDetail(plan.id)} // Navigate to detail when clicking the card
-                  >
-                    <div className="flex items-start mb-4 space-x-4 sm:mb-0">
-                      <div className="flex items-center">
-                        <div className="flex flex-col items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded-lg">
-                          <div className="text-lg font-semibold text-gray-500">
-                            {new Date(plan.deadline).toLocaleString("default", {
-                              month: "short",
-                            })}
+              : plans.map((plan) => {
+                  const percentage = Math.min(
+                    (currentBalance / plan.target_amount) * 100,
+                    100
+                  );
+                  const isCompleted = percentage === 100;
+
+                  return (
+                    <div
+                      key={plan.id}
+                      className="flex flex-col sm:flex-row justify-between p-4 sm:p-6 transition-all duration-200 bg-white border rounded-lg shadow-sm cursor-pointer"
+                      style={{
+                        boxShadow: "0 0 8px 2px rgba(0, 0, 0, 0.05)",
+                        transition: "box-shadow 0.3s ease-in-out",
+                      }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.boxShadow =
+                          "0 0 15px 3px rgba(180, 37, 42, 0.15)")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.boxShadow =
+                          "0 0 8px 2px rgba(0, 0, 0, 0.05)")
+                      }
+                      onClick={() => handleNavigateToDetail(plan.id)} // Navigate to detail when clicking the card
+                    >
+                      <div className="flex items-start mb-4 space-x-4 sm:mb-0">
+                        {/* Date Icon */}
+                        <div className="flex items-center">
+                          <div className="flex flex-col items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded-lg">
+                            <div className="text-lg font-semibold text-gray-500">
+                              {new Date(plan.deadline).toLocaleString(
+                                "default",
+                                {
+                                  month: "short",
+                                }
+                              )}
+                            </div>
+                            <div className="text-xl sm:text-2xl font-bold text-gray-900">
+                              {new Date(plan.deadline).getDate()}
+                            </div>
                           </div>
-                          <div className="text-xl sm:text-2xl font-bold text-gray-900">
-                            {new Date(plan.deadline).getDate()}
+                        </div>
+
+                        <div className="ml-4 flex flex-col justify-center">
+                          <div className="flex items-center mb-1">
+                            <h3 className="text-xl font-bold">{plan.title}</h3>
                           </div>
+                          <div
+                            className="text-gray-600 mb-6 text-justify"
+                            style={{
+                              display: "-webkit-box",
+                              WebkitLineClamp: 3, // Batas maksimal baris
+                              WebkitBoxOrient: "vertical",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              maxHeight: "4.5em", // Sesuaikan tinggi dengan baris yang diinginkan
+                            }}
+                            dangerouslySetInnerHTML={{ __html: plan.content }} // Menampilkan deskripsi dari API (rich text)
+                          ></div>
                         </div>
                       </div>
 
-                      <div className="ml-4 flex flex-col justify-center">
-                        <div className="flex items-center mb-1">
-                          <h3 className="text-xl font-bold">{plan.title}</h3>
+                      {/* Achieved & Amount + Target Icon */}
+                      {!isEditMode && (
+                        <div className="flex items-center justify-end space-x-2 sm:mt-0">
+                          <div className="text-right mr-2">
+                            <p
+                              className={`text-lg font-semibold ${
+                                isCompleted
+                                  ? "text-green-600"
+                                  : "text-red-600"
+                              }`}
+                            >
+                              {percentage.toFixed(2)}% Achieved
+                            </p>
+                            <p className="text-lg font-semibold">
+                              Rp.{plan.target_amount.toLocaleString()}
+                            </p>
+                          </div>
+                          <div
+                            className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center ${
+                              isCompleted ? "bg-green-500" : "bg-red-500"
+                            }`}
+                          >
+                            <FaBullseye className="text-white" size={20} />
+                          </div>
                         </div>
-                        <div
-                          className="text-gray-600 mb-6 text-justify"
-                          style={{
-                            display: "-webkit-box",
-                            WebkitLineClamp: 3, // Batas maksimal baris
-                            WebkitBoxOrient: "vertical",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            maxHeight: "4.5em", // Sesuaikan tinggi dengan baris yang diinginkan
-                          }}
-                          dangerouslySetInnerHTML={{ __html: plan.content }} // Menampilkan deskripsi dari API (rich text)
-                        ></div>
-                      </div>
-                    </div>
+                      )}
 
-                    {/* Achieved & Amount + Target Icon */}
-                    <div className="flex items-center justify-end space-x-2 sm:mt-0">
-                      {isEditMode ? (
+                      {/* Edit & Delete Buttons */}
+                      {isEditMode && (
                         <div className="flex space-x-2">
                           <button
                             className="bg-[#E4C3C3] text-[#B4252A] font-semibold p-4 rounded-lg hover:bg-[#cfa8a8] w-12 h-12 flex items-center justify-center"
@@ -251,21 +288,10 @@ const Planning = () => {
                             <FaTrash size={20} />
                           </button>
                         </div>
-                      ) : (
-                        <>
-                          <div className="text-right mr-2">
-                            <p className="text-lg font-semibold">
-                              Rp.{plan.target_amount.toLocaleString()}
-                            </p>
-                          </div>
-                          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center bg-red-500">
-                            <FaBullseye className="text-white" size={20} />
-                          </div>
-                        </>
                       )}
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
           </div>
         </div>
       </div>
