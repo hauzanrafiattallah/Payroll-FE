@@ -9,7 +9,7 @@ import Topbar from "../components/Topbar";
 import PlanPopUp from "../components/PlanPopUp";
 import PlanPopUpEdit from "../components/PlanPopUpEdit";
 import { toast } from "react-toastify";
-import '../App.css';
+import "../App.css";
 
 const Planning = () => {
   const [plans, setPlans] = useState([]);
@@ -214,9 +214,17 @@ const Planning = () => {
                           <h3 className="text-lg font-bold">{plan.title}</h3>
                         </div>
                         <div
-                          className="text-gray-600 mb-6 text-justify rich-text-content"
+                          className="text-gray-600 mb-6 text-justify"
+                          style={{
+                            display: "-webkit-box",
+                            WebkitLineClamp: 3, // Batas maksimal baris
+                            WebkitBoxOrient: "vertical",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            maxHeight: "4.5em", // Sesuaikan tinggi dengan baris yang diinginkan
+                          }}
                           dangerouslySetInnerHTML={{ __html: plan.content }} // Menampilkan deskripsi dari API (rich text)
-                        />
+                        ></div>
                       </div>
                     </div>
 
