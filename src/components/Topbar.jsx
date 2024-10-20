@@ -118,7 +118,7 @@ const Topbar = () => {
         <div
           className={`items-center ${
             userData?.role === "superAdmin" ? "flex" : "hidden lg:flex md:flex"
-          } ml-2 sm:ml-4 cursor-pointer lg:ml-14`}
+          } ml-2 sm:ml-4 lg:ml-14`}
         >
           <img src="/header2.png" alt="Logo" className="mr-3 h-10  lg:h-12" />
         </div>
