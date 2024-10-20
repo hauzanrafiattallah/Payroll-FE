@@ -21,7 +21,7 @@ const Login = () => {
   const handleLogin = async () => {
     const trimmedEmail = email.trim();
     const trimmedPassword = password.trim();
-  
+
     if (!trimmedEmail || !trimmedPassword) {
       toast.error("Email dan password tidak boleh kosong!", {
         position: "top-center",
@@ -29,9 +29,9 @@ const Login = () => {
       });
       return;
     }
-  
+
     setLoading(true); // Tampilkan loading spinner segera
-  
+
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/login`,
@@ -40,21 +40,21 @@ const Login = () => {
           password: trimmedPassword,
         }
       );
-  
+
       setLoading(false); // Hentikan loading spinner setelah request selesai
-  
+
       console.log(response.data);
-  
+
       if (response.data.status) {
         // Simpan token dan status login ke localStorage
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("isAuthenticated", "true");
-  
+
         toast.success("Login berhasil!", {
           position: "top-center",
           autoClose: 2000,
         });
-  
+
         // Navigasi setelah login sukses
         setTimeout(() => {
           navigate("/");
@@ -72,10 +72,11 @@ const Login = () => {
     } catch (error) {
       setLoading(false); // Hentikan loading spinner jika terjadi error
       console.error(error.response);
-  
+
       if (error.response && error.response.data) {
         const errorMessage =
-          error.response.data.message || "Terjadi kesalahan, silakan coba lagi.";
+          error.response.data.message ||
+          "Terjadi kesalahan, silakan coba lagi.";
         toast.error(errorMessage, {
           position: "top-center",
           autoClose: 2000,
@@ -88,7 +89,6 @@ const Login = () => {
       }
     }
   };
-  
 
   return (
     <>
@@ -99,9 +99,9 @@ const Login = () => {
         </div>
       )}
 
-      <div className="flex items-center justify-center min-h-screen bg-white">
+      <div className="flex items-center justify-center min-h-screen bg-white relative">
         <div
-          className="bg-white p-6 md:p-8 lg:p-12 rounded-lg shadow-lg w-[90%] sm:w-[24rem] md:w-[28rem] relative"
+          className="bg-white p-6 md:p-8 lg:p-12 rounded-lg shadow-lg w-[90%] sm:w-[24rem] md:w-[28rem] relative z-10"
           style={{ boxShadow: "0 0 15px 3px rgba(180, 37, 42, 0.15)" }}
         >
           <div className="relative z-10 flex justify-center mb-8">
@@ -175,6 +175,11 @@ const Login = () => {
               </Link>
             </p>
           </div>
+        </div>
+
+        {/* Background Glow Effect */}
+        <div className="absolute inset-0 flex items-center justify-center z-0">
+          <div className="bg-red-300 rounded-full w-[450px] h-[450px] md:w-[650px] md:h-[650px] lg:w-[800px] lg:h-[800px] opacity-35 blur-[120px]"></div>
         </div>
       </div>
     </>

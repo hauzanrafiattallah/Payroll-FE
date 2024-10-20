@@ -170,7 +170,7 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
           <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
             <div className="w-full">
               <label className="block mb-2 font-semibold">
-                Upload File Keuangan
+                Upload
               </label>
               <div
                 className="h-32 p-4 text-center border border-gray-300 rounded-lg cursor-pointer"

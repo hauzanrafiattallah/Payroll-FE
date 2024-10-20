@@ -129,93 +129,101 @@ const Export = () => {
           <div className="p-6 bg-white rounded-lg shadow-lg md:p-8">
             <div className="relative grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
               {/* Dropdown untuk pilihan Export Type */}
-              <div
-                className="relative flex items-center justify-between p-4 border rounded-lg cursor-pointer md:p-6"
-                onClick={() =>
-                  setShowExportTypeDropdown(!showExportTypeDropdown)
-                }
-              >
-                <div className="flex items-center">
-                  <div className="truncate max-w-[200px]">
-                    <p className="text-gray-500">Export As</p>
-                    <h2 className="text-lg font-bold md:text-xl">
-                      {exportType === "excel" ? "Excel (.Xlsx)" : "PDF (.Pdf)"}
-                    </h2>
-                  </div>
-                </div>
-                <div className="text-4xl md:text-6xl">&rsaquo;</div>
-              </div>
-
-              {showExportTypeDropdown && (
+              {/* Dropdown untuk pilihan Export Type */}
+              <div className="relative">
                 <div
-                  ref={exportTypeRef}
-                  className="absolute right-0 z-50 p-4 mt-32 bg-white border rounded-lg shadow-lg w-72 md:mr-64 md:left-0"
+                  className="relative flex items-center justify-between p-4 border rounded-lg cursor-pointer md:p-6"
+                  onClick={() =>
+                    setShowExportTypeDropdown(!showExportTypeDropdown)
+                  }
                 >
-                  <div>
-                    <label className="block mb-1 text-sm font-semibold">
-                      Select Export Type
-                    </label>
-                    <select
-                      value={exportType}
-                      onChange={(e) => {
-                        setExportType(e.target.value);
-                        setShowExportTypeDropdown(false); // Tutup dropdown setelah tipe dipilih
-                      }}
-                      className="block w-full p-2 mt-1 border border-gray-300 rounded-lg shadow-sm"
-                    >
-                      <option value="excel">Excel (.Xlsx)</option>
-                      <option value="pdf">PDF (.Pdf)</option>
-                    </select>
+                  <div className="flex items-center">
+                    <div className="truncate max-w-[200px]">
+                      <p className="text-gray-500">Export As</p>
+                      <h2 className="text-lg font-bold md:text-xl">
+                        {exportType === "excel"
+                          ? "Excel (.Xlsx)"
+                          : "PDF (.Pdf)"}
+                      </h2>
+                    </div>
                   </div>
+                  <div className="text-4xl md:text-6xl">&rsaquo;</div>
                 </div>
-              )}
+
+                {showExportTypeDropdown && (
+                  <div
+                    ref={exportTypeRef}
+                    className="absolute top-full left-0 z-50 p-4 mt-2 bg-white border rounded-lg shadow-lg w-72" // Adjusted position
+                  >
+                    <div>
+                      <label className="block mb-1 text-sm font-semibold">
+                        Select Export Type
+                      </label>
+                      <select
+                        value={exportType}
+                        onChange={(e) => {
+                          setExportType(e.target.value);
+                          setShowExportTypeDropdown(false); // Tutup dropdown setelah tipe dipilih
+                        }}
+                        className="block w-full p-2 mt-1 border border-gray-300 rounded-lg shadow-sm"
+                      >
+                        <option value="excel">Excel (.Xlsx)</option>
+                        <option value="pdf">PDF (.Pdf)</option>
+                      </select>
+                    </div>
+                  </div>
+                )}
+              </div>
 
               {/* Date Range Picker */}
-              <div
-                className="relative flex items-center justify-between p-4 border rounded-lg cursor-pointer md:p-6"
-                onClick={() => setShowDatePicker(!showDatePicker)} // Toggle picker visibility
-              >
-                <div className="flex items-center">
-                  <FaCalendarAlt className="mr-4 text-2xl text-gray-500" />
-                  <div className="truncate max-w-[200px]">
-                    <p className="text-gray-500">Select Date Range</p>
-                    <h2 className="text-lg font-bold md:text-xl">
-                      {getDisplayDateRange(startDate, endDate)}
-                    </h2>
-                  </div>
-                </div>
-                <div className="text-4xl md:text-6xl">&rsaquo;</div>
-              </div>
-
-              {showDatePicker && (
+              <div className="relative">
                 <div
-                  ref={datePickerRef}
-                  className="absolute right-0 z-50 p-4 mt-32 bg-white border rounded-lg shadow-lg w-72 md:mr-64 md:right-0"
+                  className="relative flex items-center justify-between p-4 border rounded-lg cursor-pointer md:p-6"
+                  onClick={() => setShowDatePicker(!showDatePicker)} // Toggle picker visibility
                 >
-                  <div>
-                    <label className="block mb-1 text-sm font-semibold">
-                      Start Date
-                    </label>
-                    <input
-                      type="date"
-                      value={startDate || ""}
-                      onChange={(e) => setStartDate(e.target.value)}
-                      className="block w-full p-2 mt-1 border border-gray-300 rounded-lg shadow-sm"
-                    />
+                  <div className="flex items-center">
+                    <FaCalendarAlt className="mr-4 text-2xl text-gray-500" />
+                    <div className="truncate max-w-[200px]">
+                      <p className="text-gray-500">Select Date Range</p>
+                      <h2 className="text-lg font-bold md:text-xl">
+                        {getDisplayDateRange(startDate, endDate)}
+                      </h2>
+                    </div>
                   </div>
-                  <div className="mt-4">
-                    <label className="block mb-1 text-sm font-semibold">
-                      End Date
-                    </label>
-                    <input
-                      type="date"
-                      value={endDate || ""}
-                      onChange={(e) => setEndDate(e.target.value)}
-                      className="block w-full p-2 mt-1 border border-gray-300 rounded-lg shadow-sm"
-                    />
-                  </div>
+                  <div className="text-4xl md:text-6xl">&rsaquo;</div>
                 </div>
-              )}
+
+                {/* Date Picker Dropdown */}
+                {showDatePicker && (
+                  <div
+                    ref={datePickerRef}
+                    className="absolute top-full left-0 z-50 p-4 mt-2 bg-white border rounded-lg shadow-lg w-72" // Adjusted position
+                  >
+                    <div>
+                      <label className="block mb-1 text-sm font-semibold">
+                        Start Date
+                      </label>
+                      <input
+                        type="date"
+                        value={startDate || ""}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        className="block w-full p-2 mt-1 border border-gray-300 rounded-lg shadow-sm"
+                      />
+                    </div>
+                    <div className="mt-4">
+                      <label className="block mb-1 text-sm font-semibold">
+                        End Date
+                      </label>
+                      <input
+                        type="date"
+                        value={endDate || ""}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        className="block w-full p-2 mt-1 border border-gray-300 rounded-lg shadow-sm"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
 
               {/* Export Button */}
               <div className="flex justify-end col-span-1 md:col-span-2">

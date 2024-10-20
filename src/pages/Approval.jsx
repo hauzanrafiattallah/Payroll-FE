@@ -194,19 +194,26 @@ const Approval = () => {
                     <div className="flex items-center">
                       <div className="flex flex-col items-center justify-center text-center">
                         {item.transaction_type === "income" ? (
-                          <PiHandWithdrawBold
-                            className="text-[#48B121]"
-                            size={24}
-                          />
+                          <>
+                            <PiHandWithdrawBold
+                              className="text-[#48B121]"
+                              size={30}
+                            />
+                            <span className="mt-1 text-sm font-semibold text-[#48B121]">
+                              {item.transaction_type}
+                            </span>
+                          </>
                         ) : (
-                          <PiHandDepositBold
-                            className="text-[#B4252A]"
-                            size={24}
-                          />
+                          <>
+                            <PiHandDepositBold
+                              className="text-[#B4252A]"
+                              size={30}
+                            />
+                            <span className="mt-1 text-sm font-semibold text-[#B4252A]">
+                              {item.transaction_type}
+                            </span>
+                          </>
                         )}
-                        <span className="mt-1 text-sm font-semibold text-[#B4252A]">
-                          {item.transaction_type}
-                        </span>
                       </div>
                     </div>
                     {/* Transaction Details */}

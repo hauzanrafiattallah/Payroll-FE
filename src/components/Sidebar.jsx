@@ -80,7 +80,7 @@ const Sidebar = () => {
             <li
               className={`flex items-center rounded-lg p-2 transition-colors duration-200 ${
                 location.pathname === "/"
-                  ? "text-[#B4252A]"
+                  ? "bg-[#FDE8E8] text-[#B4252A]" // Background merah dan teks merah saat aktif
                   : "text-gray-700 hover:bg-gray-100 hover:text-[#B4252A]"
               }`}
             >
@@ -89,12 +89,11 @@ const Sidebar = () => {
             </li>
           </Link>
 
-          {/* Planning */}
           <Link to="/planning">
             <li
               className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
                 location.pathname === "/planning"
-                  ? "text-[#B4252A]"
+                  ? "bg-[#FDE8E8] text-[#B4252A]" // Background merah dan teks merah saat aktif
                   : "text-gray-700 hover:bg-gray-100 hover:text-[#B4252A]"
               }`}
             >
@@ -103,12 +102,11 @@ const Sidebar = () => {
             </li>
           </Link>
 
-          {/* Export */}
           <Link to="/export">
             <li
               className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
                 location.pathname === "/export"
-                  ? "text-[#B4252A]"
+                  ? "bg-[#FDE8E8] text-[#B4252A]" // Background merah dan teks merah saat aktif
                   : "text-gray-700 hover:bg-gray-100 hover:text-[#B4252A]"
               }`}
             >
@@ -117,12 +115,11 @@ const Sidebar = () => {
             </li>
           </Link>
 
-          {/* Income */}
           <Link to="/income">
             <li
               className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
                 location.pathname === "/income"
-                  ? "text-[#B4252A]"
+                  ? "bg-[#FDE8E8] text-[#B4252A]" // Background merah dan teks merah saat aktif
                   : "text-gray-700 hover:bg-gray-100 hover:text-[#B4252A]"
               }`}
             >
@@ -131,12 +128,11 @@ const Sidebar = () => {
             </li>
           </Link>
 
-          {/* Expenses */}
           <Link to="/expenses">
             <li
               className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
                 location.pathname === "/expenses"
-                  ? "text-[#B4252A]"
+                  ? "bg-[#FDE8E8] text-[#B4252A]" // Background merah dan teks merah saat aktif
                   : "text-gray-700 hover:bg-gray-100 hover:text-[#B4252A]"
               }`}
             >
@@ -145,13 +141,12 @@ const Sidebar = () => {
             </li>
           </Link>
 
-          {/* Approval hanya untuk superAdmin */}
           {role === "superAdmin" && (
             <Link to="/approval">
               <li
                 className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
                   location.pathname === "/approval"
-                    ? "text-[#B4252A]"
+                    ? "bg-[#FDE8E8] text-[#B4252A]" // Background merah dan teks merah saat aktif
                     : "text-gray-700 hover:bg-gray-100 hover:text-[#B4252A]"
                 }`}
               >

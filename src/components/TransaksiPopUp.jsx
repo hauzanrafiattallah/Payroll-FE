@@ -144,7 +144,7 @@ const TransaksiPopup = ({ isOpen, onClose, transactionId }) => {
         {/* Tombol Close */}
         <button
           onClick={onClose}
-          className="mt-20 w-full bg-[#B4252A] text-white font-semibold rounded-lg p-2 sm:p-3 hover:bg-red-800 transition-colors duration-300"
+          className="mt-16 w-full bg-[#B4252A] text-white font-semibold rounded-lg p-2 sm:p-3 hover:bg-red-800 transition-colors duration-300"
         >
           Close
         </button>

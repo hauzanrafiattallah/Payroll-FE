@@ -108,7 +108,7 @@ const PlanningDetails = () => {
             </div>
 
             {/* Details Card */}
-            <div className="mt-6 p-6 bg-gray-50 rounded-lg shadow-md">
+            <div className="mt-6 p-6 bg-white rounded-lg shadow-2xl">
               <h3 className="text-center text-3xl font-bold mb-4">
                 {planning.title}
               </h3>

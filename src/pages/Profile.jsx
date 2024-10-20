@@ -261,7 +261,7 @@ const Profile = () => {
 
               {/* Change Profile Section */}
               <div className="p-4 sm:p-8 lg:px-16 lg:py-12">
-                <hr className="mb-6 border-t-2 border-gray-300" />
+                <hr className="mb-10 border-t-2 border-gray-300" />
                 <div className="flex flex-col justify-between lg:flex-row lg:items-center lg:space-x-4">
                   <h3 className="w-full mb-4 text-xl font-semibold text-center lg:text-left whitespace-nowrap lg:w-1/4 lg:mb-0">
                     Change Profile
@@ -306,12 +306,11 @@ const Profile = () => {
                     </div>
                   </div>
                 </div>
-                <hr className="mt-8 border-t-2 border-gray-300" />
               </div>
 
               {/* Change Password Section */}
               <div className="p-4 sm:p-8 lg:px-16 lg:py-12">
-                <hr className="mb-6 border-t-2 border-gray-300" />
+                <hr className="mb-10 border-t-2 border-gray-300" />
                 <div className="flex flex-col justify-between lg:flex-row lg:items-center lg:space-x-4">
                   <h3 className="w-full mb-4 text-xl font-semibold text-center lg:text-left whitespace-nowrap lg:w-1/4 lg:mb-0">
                     Change Password
@@ -382,7 +381,7 @@ const Profile = () => {
                     </div>
                   </div>
                 </div>
-                <hr className="mt-8 border-t-2 border-gray-300" />
+                <hr className="mt-10 border-t-2 border-gray-300" />
               </div>
 
               {/* Tombol Cancel dan Save */}
