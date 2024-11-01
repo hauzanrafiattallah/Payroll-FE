@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaFileAlt } from "react-icons/fa";
 import axios from "axios";
 
-const TransaksiPopup = ({ isOpen, onClose, transactionId }) => {
+const TransactionPopup = ({ isOpen, onClose, transactionId }) => {
   const [transaction, setTransaction] = useState(null);
   const [loading, setLoading] = useState(true);
   const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
@@ -153,4 +153,4 @@ const TransaksiPopup = ({ isOpen, onClose, transactionId }) => {
   );
 };
 
-export default TransaksiPopup;
+export default TransactionPopup;

@@ -4,7 +4,7 @@ import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import { FaSlidersH } from "react-icons/fa";
 import FilterPopup from "../components/FilterPopup";
-import TransaksiPopup from "../components/TransaksiPopUp";
+import TransactionPopUp from "../components/TransactionPopUp";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
@@ -332,7 +332,7 @@ const Dashboard = () => {
       />
 
       {selectedTransactionId && (
-        <TransaksiPopup
+        <TransactionPopUp
           isOpen={isTransactionPopupOpen}
           onClose={() => setIsTransactionPopupOpen(false)}
           transactionId={selectedTransactionId}

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
-import TransaksiPopup from "../components/TransaksiPopUp";
+import TransactionPopUp from "../components/TransactionPopUp";
 import { PiHandWithdrawBold, PiHandDepositBold } from "react-icons/pi"; // Import icons
 import ReactLoading from "react-loading";
 import { toast } from "react-toastify";
@@ -260,7 +260,7 @@ const Approval = () => {
 
       {/* Transaction Popup */}
       {selectedTransaction && (
-        <TransaksiPopup
+        <TransactionPopUp
           isOpen={isTransactionPopupOpen}
           onClose={() => setIsTransactionPopupOpen(false)}
           transactionId={selectedTransaction.id} // Kirim ID transaksi ke TransactionPopup
