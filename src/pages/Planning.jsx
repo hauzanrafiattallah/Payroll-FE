@@ -167,7 +167,7 @@ const Planning = () => {
                         <h2 className="text-lg font-bold text-gray-800 mt-2">
                           {plan.title}
                         </h2>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-md text-gray-500">
                           <span className="text-[#B4252A] font-semibold">
                             Total Netto: Rp.
                             {plan.item_sum_netto_amount
