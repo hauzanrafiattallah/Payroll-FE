@@ -16,10 +16,7 @@ const Planning = () => {
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
-  const [nextPageUrl, setNextPageUrl] = useState(null);
-  const [prevPageUrl, setPrevPageUrl] = useState(null);
   const [loading, setLoading] = useState(true);
-  
 
   const fetchPlans = async (page = 1) => {
     const token = localStorage.getItem("token");
@@ -35,8 +32,6 @@ const Planning = () => {
         setPlans(response.data.data.data);
         setCurrentPage(response.data.data.current_page);
         setLastPage(response.data.data.last_page);
-        setNextPageUrl(response.data.data.next_page_url);
-        setPrevPageUrl(response.data.data.prev_page_url);
         setLoading(false);
       }
     } catch (error) {
