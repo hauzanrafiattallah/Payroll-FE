@@ -104,12 +104,12 @@ const Planning = () => {
 
   const getStatusClass = (status) => {
     switch (status) {
-      case "approved":
-        return "bg-green-100 text-green-600";
+      case "approve":
+        return "bg-[#48B12129] text-[#48B121]";
       case "pending":
-        return "bg-yellow-100 text-yellow-600";
-      case "denied":
-        return "bg-red-100 text-red-600";
+        return "bg-orange-100 text-orange-700";
+      case "decline":
+        return "bg-red-100 text-red-700";
       default:
         return "bg-gray-100 text-gray-600";
     }
@@ -127,10 +127,10 @@ const Planning = () => {
 
           <div className="flex justify-end items-center mb-6">
             <button
-              className="flex items-center justify-center bg-[#B4252A] text-white font-semibold py-2 px-6 rounded-lg hover:bg-[#8E1F22] shadow-md"
+              className="flex items-center justify-center bg-[#B4252A] text-white font-semibold py-2 px-4 rounded-lg hover:bg-[#8E1F22] shadow-md text-lg h-12 w-40"
               onClick={() => setIsPlanPopUpOpen(true)}
             >
-              <FaPlus className="mr-2" /> Tambah Rencana Baru
+              <FaPlus className="mr-2" /> New Plan
             </button>
           </div>
 
@@ -149,31 +149,35 @@ const Planning = () => {
                     key={plan.id}
                     className="p-6 bg-white border rounded-lg shadow-sm flex justify-between items-center hover:shadow-lg transition-shadow cursor-pointer"
                   >
-                    <div className="flex flex-col space-y-1">
-                      <span
-                        className={`px-3 py-1 text-sm font-semibold rounded-full ${getStatusClass(
-                          plan.status
-                        )}`}
-                      >
-                        {plan.status.charAt(0).toUpperCase() +
-                          plan.status.slice(1)}
-                      </span>
+                    <div className="flex flex-col space-y-2">
+                      {/* Status and Item Count */}
+                      <div className="flex items-center space-x-2">
+                        <span
+                          className={`px-3 py-1 text-sm font-semibold rounded-full ${getStatusClass(
+                            plan.status
+                          )}`}
+                        >
+                          {plan.status.charAt(0).toUpperCase() +
+                            plan.status.slice(1)}
+                        </span>
+                        <span className="px-3 py-1 text-sm font-semibold bg-gray-100 text-gray-600 rounded-full">
+                          {plan.item_count} Items
+                        </span>
+                      </div>
+
+                      {/* Title and Total Netto */}
                       <h2 className="text-xl font-bold text-gray-800 mt-2">
                         {plan.title}
                       </h2>
                       <p className="text-sm text-gray-500">
-                        Total Netto:{" "}
                         <span className="text-[#B4252A] font-semibold">
-                          Rp.
+                          Total Netto: Rp.
                           {plan.item_sum_netto_amount
                             ? parseInt(
                                 plan.item_sum_netto_amount
                               ).toLocaleString("id-ID")
                             : 0}
                         </span>
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        {plan.item_count} Item
                       </p>
                     </div>
 
