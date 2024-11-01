@@ -39,6 +39,8 @@ const Dashboard = () => {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
+  const [nextPageUrl, setNextPageUrl] = useState(null);
+  const [prevPageUrl, setPrevPageUrl] = useState(null);
   const [loading, setLoading] = useState(true);
   const authToken = localStorage.getItem("token");
 
@@ -87,6 +89,8 @@ const Dashboard = () => {
 
         setCurrentPage(response.data.data.transactionList.current_page);
         setLastPage(response.data.data.transactionList.last_page);
+        setNextPageUrl(response.data.data.transactionList.next_page_url);
+        setPrevPageUrl(response.data.data.transactionList.prev_page_url);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
@@ -341,7 +345,7 @@ const Dashboard = () => {
                   <button
                     className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
                     onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
+                    disabled={!prevPageUrl}
                   >
                     &lt;
                   </button>
@@ -349,12 +353,13 @@ const Dashboard = () => {
                   <button
                     className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
                     onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === lastPage}
+                    disabled={!nextPageUrl}
                   >
                     &gt;
                   </button>
                 </div>
               </div>
+
             </>
           )}
         </div>
