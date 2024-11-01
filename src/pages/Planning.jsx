@@ -149,37 +149,36 @@ const Planning = () => {
                     key={plan.id}
                     className="p-5 bg-white border rounded-lg shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center hover:shadow-lg transition-shadow cursor-pointer"
                   >
-                    <div className="flex flex-col space-y-2">
-                      <div className="flex items-center space-x-2">
-                        <span
-                          className={`px-3 py-1 text-xs font-semibold rounded-full ${getStatusClass(
-                            plan.status
-                          )}`}
-                        >
-                          {plan.status.charAt(0).toUpperCase() +
-                            plan.status.slice(1)}
-                        </span>
-                        <span className="px-3 py-1 text-xs font-semibold bg-gray-100 text-gray-600 rounded-full">
-                          {plan.item_count} Items
-                        </span>
+                    <div className="flex flex-col items-center md:items-start md:flex-row md:justify-between w-full">
+                      <div className="flex flex-col items-center md:items-start text-center md:text-left">
+                        <div className="flex items-center justify-center space-x-2 md:justify-start">
+                          <span
+                            className={`px-3 py-1 text-xs font-semibold rounded-full ${getStatusClass(
+                              plan.status
+                            )}`}
+                          >
+                            {plan.status.charAt(0).toUpperCase() +
+                              plan.status.slice(1)}
+                          </span>
+                          <span className="px-3 py-1 text-xs font-semibold bg-gray-100 text-gray-600 rounded-full">
+                            {plan.item_count} Items
+                          </span>
+                        </div>
+                        <h2 className="text-lg font-bold text-gray-800 mt-2">
+                          {plan.title}
+                        </h2>
+                        <p className="text-sm text-gray-500">
+                          <span className="text-[#B4252A] font-semibold">
+                            Total Netto: Rp.
+                            {plan.item_sum_netto_amount
+                              ? parseInt(
+                                  plan.item_sum_netto_amount
+                                ).toLocaleString("id-ID")
+                              : 0}
+                          </span>
+                        </p>
                       </div>
-
-                      <h2 className="text-lg font-bold text-gray-800 mt-2">
-                        {plan.title}
-                      </h2>
-                      <p className="text-sm text-gray-500">
-                        <span className="text-[#B4252A] font-semibold">
-                          Total Netto: Rp.
-                          {plan.item_sum_netto_amount
-                            ? parseInt(
-                                plan.item_sum_netto_amount
-                              ).toLocaleString("id-ID")
-                            : 0}
-                        </span>
-                      </p>
                     </div>
-
-                    {/* Center-align on mobile */}
                     <div className="flex space-x-4 mt-4 md:mt-0 justify-center w-full md:w-auto">
                       <div className="flex flex-col items-center text-center">
                         <span className="text-xs font-medium text-gray-700 mb-1">
