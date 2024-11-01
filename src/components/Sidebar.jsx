@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaTh, FaClipboardList, FaUpload, FaBars } from "react-icons/fa";
 import { PiHandWithdrawBold, PiHandDepositBold } from "react-icons/pi";
+import { MdTask } from "react-icons/md";
 import { AiOutlineFileDone } from "react-icons/ai";
 import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
@@ -110,7 +111,7 @@ const Sidebar = () => {
                   : "text-gray-700 hover:bg-gray-100 hover:text-[#B4252A]"
               }`}
             >
-              <FaClipboardList className="mr-3 text-lg" />
+              <MdTask className="mr-3 text-xl" />
               <span>Realization</span>
             </li>
           </Link>

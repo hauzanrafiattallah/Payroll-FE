@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { FaPlus } from "react-icons/fa";
 import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
@@ -103,11 +102,11 @@ const Realization = () => {
   const getStatusClass = (status) => {
     switch (status) {
       case "approve":
-        return "bg-green-100 text-green-600";
+        return "bg-[#48B12129] text-[#48B121]";
       case "pending":
-        return "bg-yellow-100 text-yellow-600";
-      case "denied":
-        return "bg-red-100 text-red-600";
+        return "bg-orange-100 text-orange-700";
+      case "decline":
+        return "bg-red-100 text-red-700";
       default:
         return "bg-gray-100 text-gray-600";
     }
@@ -123,86 +122,121 @@ const Realization = () => {
             Realization
           </h1>
 
-          <div className="flex justify-end items-center mb-6">
-            <button
-              className="flex items-center justify-center bg-[#B4252A] text-white font-semibold py-2 px-6 rounded-lg hover:bg-[#8E1F22] shadow-md"
-              onClick={() => setIsPlanPopUpOpen(true)}
-            >
-              <FaPlus className="mr-2" /> Tambah Rencana Baru
-            </button>
-          </div>
-
           <div className="space-y-4">
             {isLoading
-              ? [1, 2, 3].map((_, index) => (
+              ? Array.from({ length: 4 }).map((_, index) => (
                   <div
                     key={index}
-                    className="p-4 bg-white border rounded-lg shadow-sm"
+                    className="p-5 bg-white border rounded-lg shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center"
+                    style={{
+                      boxShadow: "0 0 8px 2px rgba(0, 0, 0, 0.05)",
+                    }}
                   >
-                    <Skeleton height={80} />
+                    <div className="flex flex-col items-center md:items-start md:flex-row md:justify-between w-full">
+                      <div className="flex flex-col items-center md:items-start text-center md:text-left space-y-2">
+                        <div className="flex items-center justify-center space-x-2 md:justify-start">
+                          <Skeleton width={80} height={24} />
+                          <Skeleton width={60} height={24} />
+                        </div>
+                        <Skeleton width={100} height={20} />
+                        <Skeleton width={150} height={20} />
+                      </div>
+                    </div>
+                    <div className="flex space-x-4 mt-4 md:mt-0 justify-center w-full md:w-auto">
+                      <div className="flex flex-col items-center text-center">
+                        <Skeleton width={50} height={15} />
+                        <div className="rounded-lg border border-gray-200 p-3 shadow-inner">
+                          <Skeleton width={30} height={20} />
+                          <Skeleton width={40} height={30} />
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col items-center text-center">
+                        <Skeleton width={50} height={15} />
+                        <div className="rounded-lg border border-gray-200 p-3 shadow-inner bg-gray-50">
+                          <Skeleton width={30} height={20} />
+                          <Skeleton width={40} height={30} />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 ))
               : realizations.map((realization) => (
                   <div
                     key={realization.id}
-                    className="p-6 bg-white border rounded-lg shadow-sm flex justify-between items-center hover:shadow-lg transition-shadow cursor-pointer"
+                    className="p-5 bg-white border rounded-lg shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center transition-shadow cursor-pointer transform hover:-translate-y-1"
+                    style={{
+                      boxShadow: "0 0 8px 2px rgba(0, 0, 0, 0.05)",
+                    }}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.boxShadow =
+                        "0 0 15px 5px rgba(180, 37, 42, 0.15)")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.boxShadow =
+                        "0 0 8px 2px rgba(0, 0, 0, 0.05)")
+                    }
                   >
-                    <div className="flex flex-col space-y-1">
-                      <span
-                        className={`px-3 py-1 text-sm font-semibold rounded-full ${getStatusClass(
-                          realization.status
-                        )}`}
-                      >
-                        {realization.status.charAt(0).toUpperCase() +
-                          realization.status.slice(1)}
-                      </span>
-                      <h2 className="text-xl font-bold text-gray-800 mt-2">
-                        {realization.title}
-                      </h2>
-                      <p className="text-sm text-gray-500">
-                        Total Netto:{" "}
-                        <span className="text-[#B4252A] font-semibold">
-                          Rp.
-                          {realization.item_sum_netto_amount
-                            ? parseInt(
-                                realization.item_sum_netto_amount
-                              ).toLocaleString("id-ID")
-                            : 0}
-                        </span>
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        {realization.item_count} Item
-                      </p>
+                    <div className="flex flex-col items-center md:items-start md:flex-row md:justify-between w-full">
+                      <div className="flex flex-col items-center md:items-start text-center md:text-left">
+                        <div className="flex items-center justify-center space-x-2 md:justify-start">
+                          <span
+                            className={`px-3 py-1 text-xs font-semibold rounded-full ${getStatusClass(
+                              realization.status
+                            )}`}
+                          >
+                            {realization.status.charAt(0).toUpperCase() +
+                              realization.status.slice(1)}
+                          </span>
+                          <span className="px-3 py-1 text-xs font-semibold bg-gray-100 text-gray-600 rounded-full">
+                            {realization.item_count} Items
+                          </span>
+                        </div>
+                        <h2 className="text-lg font-bold text-gray-800 mt-2">
+                          {realization.title}
+                        </h2>
+                        <p className="text-md text-gray-500">
+                          <span className="text-[#B4252A] font-semibold">
+                            Total Netto: Rp.
+                            {realization.item_sum_netto_amount
+                              ? parseInt(
+                                  realization.item_sum_netto_amount
+                                ).toLocaleString("id-ID")
+                              : 0}
+                          </span>
+                        </p>
+                      </div>
                     </div>
-                    <div className="flex items-center space-x-6">
-                      <div className="text-center">
-                        <span className="block text-xs text-gray-500">
-                          Mulai
+                    <div className="flex space-x-4 mt-4 md:mt-0 justify-center w-full md:w-auto">
+                      <div className="flex flex-col items-center text-center">
+                        <span className="text-xs font-medium text-gray-700 mb-1">
+                          Start
                         </span>
-                        <div className="bg-gray-100 px-4 py-3 rounded-lg shadow-inner">
-                          <span className="block text-base font-semibold">
+                        <div className="rounded-lg border border-gray-200 p-3 shadow-inner">
+                          <span className="block text-sm font-semibold text-gray-500">
                             {new Date(realization.start_date).toLocaleString(
                               "default",
                               { month: "short" }
                             )}
                           </span>
-                          <span className="block text-xl font-bold">
+                          <span className="block text-2xl font-bold bg-white px-3 py-1 rounded-md shadow">
                             {new Date(realization.start_date).getDate()}
                           </span>
                         </div>
                       </div>
-                      <div className="text-center">
-                        <span className="block text-xs text-gray-500">
-                          Selesai
+
+                      <div className="flex flex-col items-center text-center">
+                        <span className="text-xs font-medium text-gray-700 mb-1">
+                          End
                         </span>
-                        <div className="bg-gray-100 px-4 py-3 rounded-lg shadow-inner">
-                          <span className="block text-base font-semibold">
+                        <div className="rounded-lg border border-gray-200 p-3 shadow-inner bg-gray-50">
+                          <span className="block text-sm font-semibold text-gray-500">
                             {new Date(realization.end_date).toLocaleString(
                               "default",
                               { month: "short" }
                             )}
                           </span>
-                          <span className="block text-xl font-bold">
+                          <span className="block text-2xl font-bold bg-white px-3 py-1 rounded-md shadow">
                             {new Date(realization.end_date).getDate()}
                           </span>
                         </div>

@@ -136,18 +136,58 @@ const Planning = () => {
 
           <div className="space-y-4">
             {isLoading
-              ? [1, 2, 3].map((_, index) => (
+              ? Array.from({ length: 4 }).map((_, index) => (
                   <div
                     key={index}
-                    className="p-4 bg-white border rounded-lg shadow-sm"
+                    className="p-5 bg-white border rounded-lg shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center"
+                    style={{
+                      boxShadow: "0 0 8px 2px rgba(0, 0, 0, 0.05)",
+                    }}
                   >
-                    <Skeleton height={80} />
+                    <div className="flex flex-col items-center md:items-start md:flex-row md:justify-between w-full">
+                      <div className="flex flex-col items-center md:items-start text-center md:text-left space-y-2">
+                        <div className="flex items-center justify-center space-x-2 md:justify-start">
+                          <Skeleton width={80} height={24} />
+                          <Skeleton width={60} height={24} />
+                        </div>
+                        <Skeleton width={100} height={20} />
+                        <Skeleton width={150} height={20} />
+                      </div>
+                    </div>
+                    <div className="flex space-x-4 mt-4 md:mt-0 justify-center w-full md:w-auto">
+                      <div className="flex flex-col items-center text-center">
+                        <Skeleton width={50} height={15} />
+                        <div className="rounded-lg border border-gray-200 p-3 shadow-inner">
+                          <Skeleton width={30} height={20} />
+                          <Skeleton width={40} height={30} />
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col items-center text-center">
+                        <Skeleton width={50} height={15} />
+                        <div className="rounded-lg border border-gray-200 p-3 shadow-inner bg-gray-50">
+                          <Skeleton width={30} height={20} />
+                          <Skeleton width={40} height={30} />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 ))
               : plans.map((plan) => (
                   <div
                     key={plan.id}
-                    className="p-5 bg-white border rounded-lg shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center hover:shadow-lg transition-shadow cursor-pointer"
+                    className="p-5 bg-white border rounded-lg shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center transition-shadow cursor-pointer transform hover:-translate-y-1"
+                    style={{
+                      boxShadow: "0 0 8px 2px rgba(0, 0, 0, 0.05)",
+                    }}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.boxShadow =
+                        "0 0 15px 5px rgba(180, 37, 42, 0.15)")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.boxShadow =
+                        "0 0 8px 2px rgba(0, 0, 0, 0.05)")
+                    }
                   >
                     <div className="flex flex-col items-center md:items-start md:flex-row md:justify-between w-full">
                       <div className="flex flex-col items-center md:items-start text-center md:text-left">
