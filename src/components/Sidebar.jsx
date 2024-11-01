@@ -102,6 +102,19 @@ const Sidebar = () => {
             </li>
           </Link>
 
+          <Link to="/realization">
+            <li
+              className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
+                location.pathname === "/realization"
+                  ? "bg-[#FDE8E8] text-[#B4252A]" // Background merah dan teks merah saat aktif
+                  : "text-gray-700 hover:bg-gray-100 hover:text-[#B4252A]"
+              }`}
+            >
+              <FaClipboardList className="mr-3 text-lg" />
+              <span>Realization</span>
+            </li>
+          </Link>
+
           <Link to="/export">
             <li
               className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${

@@ -14,6 +14,7 @@ import NotFound from "./pages/NotFound";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PlanningDetails from "./pages/PlanningDetails";
+import Realization from "./pages/Realization";
 
 const App = () => {
   return (
@@ -74,6 +75,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <Planning />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/realization"
+          element={
+            <ProtectedRoute>
+              <Realization />
             </ProtectedRoute>
           }
         />
