@@ -127,7 +127,7 @@ const Planning = () => {
 
           <div className="flex justify-end items-center mb-6">
             <button
-              className="flex items-center justify-center bg-[#B4252A] text-white font-semibold py-2 px-4 rounded-lg hover:bg-[#8E1F22] shadow-md text-lg h-12 w-40"
+              className="flex items-center justify-center bg-[#B4252A] text-white font-semibold py-2 px-5 rounded-lg hover:bg-[#8E1F22] shadow-md text-base sm:text-sm md:text-base lg:text-lg h-10 w-36 sm:w-32 md:w-36 lg:w-40"
               onClick={() => setIsPlanPopUpOpen(true)}
             >
               <FaPlus className="mr-2" /> New Plan
@@ -147,26 +147,24 @@ const Planning = () => {
               : plans.map((plan) => (
                   <div
                     key={plan.id}
-                    className="p-6 bg-white border rounded-lg shadow-sm flex justify-between items-center hover:shadow-lg transition-shadow cursor-pointer"
+                    className="p-5 bg-white border rounded-lg shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center hover:shadow-lg transition-shadow cursor-pointer"
                   >
                     <div className="flex flex-col space-y-2">
-                      {/* Status and Item Count */}
                       <div className="flex items-center space-x-2">
                         <span
-                          className={`px-3 py-1 text-sm font-semibold rounded-full ${getStatusClass(
+                          className={`px-3 py-1 text-xs font-semibold rounded-full ${getStatusClass(
                             plan.status
                           )}`}
                         >
                           {plan.status.charAt(0).toUpperCase() +
                             plan.status.slice(1)}
                         </span>
-                        <span className="px-3 py-1 text-sm font-semibold bg-gray-100 text-gray-600 rounded-full">
+                        <span className="px-3 py-1 text-xs font-semibold bg-gray-100 text-gray-600 rounded-full">
                           {plan.item_count} Items
                         </span>
                       </div>
 
-                      {/* Title and Total Netto */}
-                      <h2 className="text-xl font-bold text-gray-800 mt-2">
+                      <h2 className="text-lg font-bold text-gray-800 mt-2">
                         {plan.title}
                       </h2>
                       <p className="text-sm text-gray-500">
@@ -181,37 +179,36 @@ const Planning = () => {
                       </p>
                     </div>
 
-                    <div className="flex items-center space-x-6">
-                      {/* Start Date */}
-                      <div className="text-center">
-                        <span className="block text-sm font-medium text-gray-700 mb-1">
+                    {/* Center-align on mobile */}
+                    <div className="flex space-x-4 mt-4 md:mt-0 justify-center w-full md:w-auto">
+                      <div className="flex flex-col items-center text-center">
+                        <span className="text-xs font-medium text-gray-700 mb-1">
                           Start
                         </span>
-                        <div className="rounded-lg border border-gray-200 p-4 shadow-inner">
-                          <span className="block text-lg font-semibold text-gray-500">
+                        <div className="rounded-lg border border-gray-200 p-3 shadow-inner">
+                          <span className="block text-sm font-semibold text-gray-500">
                             {new Date(plan.start_date).toLocaleString(
                               "default",
                               { month: "short" }
                             )}
                           </span>
-                          <span className="block text-3xl font-bold bg-white px-3 py-2 rounded-md shadow">
+                          <span className="block text-2xl font-bold bg-white px-3 py-1 rounded-md shadow">
                             {new Date(plan.start_date).getDate()}
                           </span>
                         </div>
                       </div>
 
-                      {/* End Date */}
-                      <div className="text-center">
-                        <span className="block text-sm font-medium text-gray-700 mb-1">
+                      <div className="flex flex-col items-center text-center">
+                        <span className="text-xs font-medium text-gray-700 mb-1">
                           End
                         </span>
-                        <div className="rounded-lg border border-gray-200 p-4 shadow-inner bg-gray-50">
-                          <span className="block text-lg font-semibold text-gray-500">
+                        <div className="rounded-lg border border-gray-200 p-3 shadow-inner bg-gray-50">
+                          <span className="block text-sm font-semibold text-gray-500">
                             {new Date(plan.end_date).toLocaleString("default", {
                               month: "short",
                             })}
                           </span>
-                          <span className="block text-3xl font-bold bg-white px-3 py-2 rounded-md shadow">
+                          <span className="block text-2xl font-bold bg-white px-3 py-1 rounded-md shadow">
                             {new Date(plan.end_date).getDate()}
                           </span>
                         </div>
