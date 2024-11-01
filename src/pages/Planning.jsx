@@ -176,34 +176,38 @@ const Planning = () => {
                         {plan.item_count} Item
                       </p>
                     </div>
+
                     <div className="flex items-center space-x-6">
+                      {/* Start Date */}
                       <div className="text-center">
-                        <span className="block text-xs text-gray-500">
-                          Mulai
+                        <span className="block text-sm font-medium text-gray-700 mb-1">
+                          Start
                         </span>
-                        <div className="bg-gray-100 px-4 py-3 rounded-lg shadow-inner">
-                          <span className="block text-base font-semibold">
+                        <div className="rounded-lg border border-gray-200 p-4 shadow-inner">
+                          <span className="block text-lg font-semibold text-gray-500">
                             {new Date(plan.start_date).toLocaleString(
                               "default",
                               { month: "short" }
                             )}
                           </span>
-                          <span className="block text-xl font-bold">
+                          <span className="block text-3xl font-bold bg-white px-3 py-2 rounded-md shadow">
                             {new Date(plan.start_date).getDate()}
                           </span>
                         </div>
                       </div>
+
+                      {/* End Date */}
                       <div className="text-center">
-                        <span className="block text-xs text-gray-500">
-                          Selesai
+                        <span className="block text-sm font-medium text-gray-700 mb-1">
+                          End
                         </span>
-                        <div className="bg-gray-100 px-4 py-3 rounded-lg shadow-inner">
-                          <span className="block text-base font-semibold">
+                        <div className="rounded-lg border border-gray-200 p-4 shadow-inner bg-gray-50">
+                          <span className="block text-lg font-semibold text-gray-500">
                             {new Date(plan.end_date).toLocaleString("default", {
                               month: "short",
                             })}
                           </span>
-                          <span className="block text-xl font-bold">
+                          <span className="block text-3xl font-bold bg-white px-3 py-2 rounded-md shadow">
                             {new Date(plan.end_date).getDate()}
                           </span>
                         </div>
