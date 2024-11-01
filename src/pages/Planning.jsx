@@ -23,7 +23,7 @@ const Planning = () => {
     setIsLoading(true);
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/planning?page=${page}`,
+        `${import.meta.env.VITE_API_URL}/planning?page=${page}&limit=5`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

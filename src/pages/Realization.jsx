@@ -9,38 +9,38 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
 const Realization = () => {
-  const [plans, setPlans] = useState([]);
+  const [realizations, setRealizations] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isPlanPopUpOpen, setIsPlanPopUpOpen] = useState(false);
   const [isPlanPopUpEditOpen, setIsPlanPopUpEditOpen] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState(null);
+  const [selectedRealization, setSelectedRealization] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
 
-  const fetchPlans = async (page = 1) => {
+  const fetchRealizations = async (page = 1) => {
     const token = localStorage.getItem("token");
     setIsLoading(true);
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/realization?page=${page}`,
+        `${import.meta.env.VITE_API_URL}/realization?page=${page}&limit=5`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
       if (response.data.status) {
-        setPlans(response.data.data.data);
+        setRealizations(response.data.data.data);
         setCurrentPage(response.data.data.current_page);
         setLastPage(response.data.data.last_page);
       }
     } catch (error) {
-      console.error("Error mengambil data rencana:", error);
+      console.error("Error fetching realization data:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchPlans(currentPage);
+    fetchRealizations(currentPage);
   }, [currentPage]);
 
   const renderPagination = () => {
@@ -142,36 +142,36 @@ const Realization = () => {
                     <Skeleton height={80} />
                   </div>
                 ))
-              : plans.map((plan) => (
+              : realizations.map((realization) => (
                   <div
-                    key={plan.id}
+                    key={realization.id}
                     className="p-6 bg-white border rounded-lg shadow-sm flex justify-between items-center hover:shadow-lg transition-shadow cursor-pointer"
                   >
                     <div className="flex flex-col space-y-1">
                       <span
                         className={`px-3 py-1 text-sm font-semibold rounded-full ${getStatusClass(
-                          plan.status
+                          realization.status
                         )}`}
                       >
-                        {plan.status.charAt(0).toUpperCase() +
-                          plan.status.slice(1)}
+                        {realization.status.charAt(0).toUpperCase() +
+                          realization.status.slice(1)}
                       </span>
                       <h2 className="text-xl font-bold text-gray-800 mt-2">
-                        {plan.title}
+                        {realization.title}
                       </h2>
                       <p className="text-sm text-gray-500">
                         Total Netto:{" "}
                         <span className="text-[#B4252A] font-semibold">
                           Rp.
-                          {plan.item_sum_netto_amount
+                          {realization.item_sum_netto_amount
                             ? parseInt(
-                                plan.item_sum_netto_amount
+                                realization.item_sum_netto_amount
                               ).toLocaleString("id-ID")
                             : 0}
                         </span>
                       </p>
                       <p className="text-sm text-gray-500">
-                        {plan.item_count} Item
+                        {realization.item_count} Item
                       </p>
                     </div>
                     <div className="flex items-center space-x-6">
@@ -181,13 +181,13 @@ const Realization = () => {
                         </span>
                         <div className="bg-gray-100 px-4 py-3 rounded-lg shadow-inner">
                           <span className="block text-base font-semibold">
-                            {new Date(plan.start_date).toLocaleString(
+                            {new Date(realization.start_date).toLocaleString(
                               "default",
                               { month: "short" }
                             )}
                           </span>
                           <span className="block text-xl font-bold">
-                            {new Date(plan.start_date).getDate()}
+                            {new Date(realization.start_date).getDate()}
                           </span>
                         </div>
                       </div>
@@ -197,12 +197,13 @@ const Realization = () => {
                         </span>
                         <div className="bg-gray-100 px-4 py-3 rounded-lg shadow-inner">
                           <span className="block text-base font-semibold">
-                            {new Date(plan.end_date).toLocaleString("default", {
-                              month: "short",
-                            })}
+                            {new Date(realization.end_date).toLocaleString(
+                              "default",
+                              { month: "short" }
+                            )}
                           </span>
                           <span className="block text-xl font-bold">
-                            {new Date(plan.end_date).getDate()}
+                            {new Date(realization.end_date).getDate()}
                           </span>
                         </div>
                       </div>
@@ -243,7 +244,7 @@ const Realization = () => {
         <PlanPopUpEdit
           isOpen={isPlanPopUpEditOpen}
           onClose={() => setIsPlanPopUpEditOpen(false)}
-          planId={selectedPlan?.id}
+          planId={selectedRealization?.id}
         />
       )}
     </>
