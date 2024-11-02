@@ -356,11 +356,15 @@ const Dashboard = () => {
                       dataKey="income"
                       fill="#AFE9B0"
                       radius={[4, 4, 0, 0]}
+                      shape={<Rectangle />}
+                      activeShape={<Rectangle fill="#B4252A4D" />}
                     />
                     <Bar
                       dataKey="expense"
                       fill="#FD898D"
                       radius={[4, 4, 0, 0]}
+                      shape={<Rectangle />}
+                      activeShape={<Rectangle fill="#B4252A4D" />}
                     />
                   </BarChart>
                 </ResponsiveContainer>
