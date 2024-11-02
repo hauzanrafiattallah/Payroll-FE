@@ -171,15 +171,15 @@ const Dashboard = () => {
     <>
       {/* Skeleton for Balance, Income, Expense */}
       <div className="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2 lg:grid-cols-3">
-        <div className="p-6 bg-gray-200 rounded-lg shadow-lg">
+        <div className="p-6 bg-white rounded-lg shadow-lg">
           <Skeleton height={20} width="80%" />
           <Skeleton height={30} width="60%" className="mt-2" />
         </div>
-        <div className="p-6 bg-gray-200 rounded-lg shadow-lg">
+        <div className="p-6 bg-white rounded-lg shadow-lg">
           <Skeleton height={20} width="80%" />
           <Skeleton height={30} width="60%" className="mt-2" />
         </div>
-        <div className="p-6 bg-gray-200 rounded-lg shadow-lg">
+        <div className="p-6 bg-white rounded-lg shadow-lg">
           <Skeleton height={20} width="80%" />
           <Skeleton height={30} width="60%" className="mt-2" />
         </div>
@@ -193,14 +193,14 @@ const Dashboard = () => {
 
       {/* Skeleton for Pie Charts */}
       <div className="grid grid-cols-1 gap-6 mb-6 sm:grid-cols-2">
-        <div className="p-6 bg-gray-200 rounded-lg shadow-lg">
+        <div className="p-6 bg-white rounded-lg shadow-lg">
           <Skeleton width={80} height={20} className="mb-4" />{" "}
           {/* Skeleton judul "Planning" */}
           <div className="flex justify-center">
             <Skeleton circle={true} height={200} width={200} />
           </div>
         </div>
-        <div className="p-6 bg-gray-200 rounded-lg shadow-lg">
+        <div className="p-6 bg-white rounded-lg shadow-lg">
           <Skeleton width={100} height={20} className="mb-4" />{" "}
           {/* Skeleton judul "Realization" */}
           <div className="flex justify-center">
@@ -210,11 +210,67 @@ const Dashboard = () => {
       </div>
 
       {/* Skeleton for Transaction Table */}
-      <div className="p-6 mb-6 overflow-x-auto bg-gray-200 rounded-lg shadow-lg">
-        <Skeleton height={40} width="100%" className="mb-4" />
-        {[...Array(5)].map((_, index) => (
-          <Skeleton key={index} height={30} width="100%" className="mb-2" />
-        ))}
+      <div className="p-6 overflow-x-auto bg-white rounded-lg shadow-lg">
+        <table className="min-w-full text-left border-collapse table-auto">
+          <thead>
+            <tr className="border-b">
+              <th className="px-4 py-2 text-center">
+                <Skeleton width={100} height={20} />
+              </th>
+              <th className="px-4 py-2 text-center">
+                <Skeleton width={100} height={20} />
+              </th>
+              <th className="px-4 py-2 text-center">
+                <Skeleton width={100} height={20} />
+              </th>
+              <th className="px-4 py-2 text-center">
+                <Skeleton width={100} height={20} />
+              </th>
+              <th className="px-4 py-2 text-center">
+                <Skeleton width={100} height={20} />
+              </th>
+              <th className="px-4 py-2 text-center">
+                <Skeleton width={100} height={20} />
+              </th>
+              <th className="px-4 py-2 text-center">
+                <Skeleton width={100} height={20} />
+              </th>
+              <th className="px-4 py-2 text-center">
+                <Skeleton width={100} height={20} />
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {Array.from({ length: 5 }).map((_, index) => (
+              <tr key={index} className="border-b">
+                <td className="px-4 py-2 text-center">
+                  <Skeleton width={50} height={20} />
+                </td>
+                <td className="px-4 py-2 text-center">
+                  <Skeleton width={100} height={20} />
+                </td>
+                <td className="px-4 py-2 text-center">
+                  <Skeleton width={100} height={20} />
+                </td>
+                <td className="px-4 py-2 text-center">
+                  <Skeleton width={100} height={20} />
+                </td>
+                <td className="px-4 py-2 text-center">
+                  <Skeleton width={100} height={20} />
+                </td>
+                <td className="px-4 py-2 text-center">
+                  <Skeleton width={100} height={20} />
+                </td>
+                <td className="px-4 py-2 text-center">
+                  <Skeleton width={100} height={20} />
+                </td>
+                <td className="px-4 py-2 text-center">
+                  <Skeleton width={100} height={20} />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </>
   );
