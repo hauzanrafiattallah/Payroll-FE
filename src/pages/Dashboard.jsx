@@ -529,9 +529,16 @@ const Dashboard = () => {
               </div>
 
               {/* Transaction List */}
-              <h1 className="mb-6 text-2xl font-bold text-center lg:text-left mt-10">
-                Transaction List
-              </h1>
+              <div className="flex justify-between items-center mb-6">
+                <h1 className="text-2xl font-bold">Transaction List</h1>
+                <button
+                  className="flex items-center px-4 py-2 text-sm font-semibold text-black bg-white border rounded-md shadow-sm hover:bg-gray-100 border-gray-300"
+                  onClick={() => setIsFilterOpen(true)}
+                >
+                  <FaSlidersH className="mr-2" /> Filter
+                </button>
+              </div>
+
               <div className="p-6 mb-6 overflow-x-auto bg-white rounded-lg shadow-lg">
                 <table className="w-full text-left table-auto min-w-[600px]">
                   <thead>
