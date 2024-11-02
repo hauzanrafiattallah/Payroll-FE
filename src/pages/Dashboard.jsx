@@ -327,10 +327,10 @@ const Dashboard = () => {
               </div>
 
               {/* Monthly Income & Expenses Bar Chart */}
+              <h1 className="mb-10 text-2xl font-bold text-center lg:text-left mt-10">
+                Monthly income & Expenses
+              </h1>
               <div className="mb-6">
-                <h2 className="text-lg font-semibold mb-4">
-                  Monthly Income & Expenses
-                </h2>
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart
                     data={dashboardData.monthlyIncomeExpenseData}
@@ -370,71 +370,168 @@ const Dashboard = () => {
                 </ResponsiveContainer>
               </div>
 
-              {/* Planning and Realization Pie Charts */}
               <div className="grid grid-cols-1 gap-6 mb-6 sm:grid-cols-2">
-                <div className="p-6 rounded-lg shadow-lg bg-white">
-                  <h2 className="text-lg font-semibold mb-4">Planning</h2>
-                  <div className="text-xl font-bold text-gray-700 mb-4">
-                    Total
-                    <br />
-                    Rp.
-                    {dashboardData.pieChart.totalPlanning.toLocaleString(
-                      "id-ID"
-                    )}
+                {/* Planning Section */}
+                <div>
+                  <h1 className="mb-6 text-2xl font-bold text-center lg:text-left mt-10">
+                    Planning
+                  </h1>
+                  <div className="p-6 rounded-lg shadow-lg bg-white">
+                    <div className="text-xl font-bold text-gray-700 mb-4">
+                      Total
+                      <br />
+                      Rp.
+                      {dashboardData.pieChart.totalPlanning.toLocaleString(
+                        "id-ID"
+                      )}
+                    </div>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <PieChart>
+                        <Pie
+                          data={dashboardData.pieChart.planningData}
+                          dataKey="value"
+                          nameKey="name"
+                          outerRadius={100}
+                        >
+                          {dashboardData.pieChart.planningData.map(
+                            (entry, index) => (
+                              <Cell
+                                key={`cell-${index}`}
+                                fill={COLORS[index % COLORS.length]}
+                              />
+                            )
+                          )}
+                        </Pie>
+                        <Legend
+                          align="right"
+                          verticalAlign="middle"
+                          layout="vertical"
+                          iconSize={0} // Menghapus ikon bulat
+                          formatter={(value, entry, index) => {
+                            const item =
+                              dashboardData.pieChart.planningData[index];
+                            const color = COLORS[index % COLORS.length];
+                            return (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 8,
+                                }}
+                              >
+                                <span
+                                  style={{
+                                    display: "inline-block",
+                                    width: 12,
+                                    height: 12,
+                                    backgroundColor: color,
+                                    borderRadius: "2px",
+                                    marginRight: 8,
+                                  }}
+                                ></span>
+                                <div style={{ lineHeight: 1.2 }}>
+                                  <span
+                                    style={{ color: color, fontWeight: "bold" }}
+                                  >
+                                    {item.name}
+                                  </span>
+                                  <br />
+                                  <span style={{ color: "#888888" }}>
+                                    Rp.{item.value.toLocaleString("id-ID")}
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          }}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
                   </div>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <PieChart>
-                      <Pie
-                        data={dashboardData.pieChart.planningData}
-                        dataKey="value"
-                        nameKey="name"
-                        outerRadius={100}
-                        label
-                      >
-                        {dashboardData.pieChart.planningData.map((_, index) => (
-                          <Cell
-                            key={`cell-${index}`}
-                            fill={COLORS[index % COLORS.length]}
-                          />
-                        ))}
-                      </Pie>
-                    </PieChart>
-                  </ResponsiveContainer>
                 </div>
-                <div className="p-6 rounded-lg shadow-lg bg-white">
-                  <h2 className="text-lg font-semibold mb-4">Realization</h2>
-                  <div className="text-xl font-bold text-gray-700 mb-4">
-                    Total
-                    <br />
-                    Rp.
-                    {dashboardData.pieChart.totalRealization.toLocaleString(
-                      "id-ID"
-                    )}
+
+                {/* Realization Section */}
+                <div>
+                  <h1 className="mb-6 text-2xl font-bold text-center lg:text-left mt-10">
+                    Realization
+                  </h1>
+                  <div className="p-6 rounded-lg shadow-lg bg-white">
+                    <div className="text-xl font-bold text-gray-700 mb-4">
+                      Total
+                      <br />
+                      Rp.
+                      {dashboardData.pieChart.totalRealization.toLocaleString(
+                        "id-ID"
+                      )}
+                    </div>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <PieChart>
+                        <Pie
+                          data={dashboardData.pieChart.realizationData}
+                          dataKey="value"
+                          nameKey="name"
+                          outerRadius={100}
+                        >
+                          {dashboardData.pieChart.realizationData.map(
+                            (entry, index) => (
+                              <Cell
+                                key={`cell-${index}`}
+                                fill={COLORS[index % COLORS.length]}
+                              />
+                            )
+                          )}
+                        </Pie>
+                        <Legend
+                          align="right"
+                          verticalAlign="middle"
+                          layout="vertical"
+                          iconSize={0} // Menghapus ikon bulat
+                          formatter={(value, entry, index) => {
+                            const item =
+                              dashboardData.pieChart.realizationData[index];
+                            const color = COLORS[index % COLORS.length];
+                            return (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 8,
+                                }}
+                              >
+                                <span
+                                  style={{
+                                    display: "inline-block",
+                                    width: 12,
+                                    height: 12,
+                                    backgroundColor: color,
+                                    borderRadius: "2px",
+                                    marginRight: 8,
+                                  }}
+                                ></span>
+                                <div style={{ lineHeight: 1.2 }}>
+                                  <span
+                                    style={{ color: color, fontWeight: "bold" }}
+                                  >
+                                    {item.name}
+                                  </span>
+                                  <br />
+                                  <span style={{ color: "#888888" }}>
+                                    Rp.{item.value.toLocaleString("id-ID")}
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          }}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
                   </div>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <PieChart>
-                      <Pie
-                        data={dashboardData.pieChart.realizationData}
-                        dataKey="value"
-                        nameKey="name"
-                        outerRadius={100}
-                        label
-                      >
-                        {dashboardData.pieChart.realizationData.map(
-                          (_, index) => (
-                            <Cell
-                              key={`cell-${index}`}
-                              fill={COLORS[index % COLORS.length]}
-                            />
-                          )
-                        )}
-                      </Pie>
-                    </PieChart>
-                  </ResponsiveContainer>
                 </div>
               </div>
 
               {/* Transaction List */}
+              <h1 className="mb-6 text-2xl font-bold text-center lg:text-left mt-10">
+                Transaction List
+              </h1>
               <div className="p-6 mb-6 overflow-x-auto bg-white rounded-lg shadow-lg">
                 <table className="w-full text-left table-auto min-w-[600px]">
                   <thead>
