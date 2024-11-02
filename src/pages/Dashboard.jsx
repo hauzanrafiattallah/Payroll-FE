@@ -374,6 +374,14 @@ const Dashboard = () => {
               <div className="grid grid-cols-1 gap-6 mb-6 sm:grid-cols-2">
                 <div className="p-6 rounded-lg shadow-lg bg-white">
                   <h2 className="text-lg font-semibold mb-4">Planning</h2>
+                  <div className="text-xl font-bold text-gray-700 mb-4">
+                    Total
+                    <br />
+                    Rp.
+                    {dashboardData.pieChart.totalPlanning.toLocaleString(
+                      "id-ID"
+                    )}
+                  </div>
                   <ResponsiveContainer width="100%" height={300}>
                     <PieChart>
                       <Pie
@@ -395,6 +403,14 @@ const Dashboard = () => {
                 </div>
                 <div className="p-6 rounded-lg shadow-lg bg-white">
                   <h2 className="text-lg font-semibold mb-4">Realization</h2>
+                  <div className="text-xl font-bold text-gray-700 mb-4">
+                    Total
+                    <br />
+                    Rp.
+                    {dashboardData.pieChart.totalRealization.toLocaleString(
+                      "id-ID"
+                    )}
+                  </div>
                   <ResponsiveContainer width="100%" height={300}>
                     <PieChart>
                       <Pie
