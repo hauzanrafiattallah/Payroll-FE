@@ -22,7 +22,7 @@ const Compare = () => {
     setIsLoading(true);
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/compare?page=${page}&limit=5`,
+        `${import.meta.env.VITE_API_URL}/planning-compare?page=${page}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -38,6 +38,7 @@ const Compare = () => {
       setIsLoading(false);
     }
   };
+  
 
   useEffect(() => {
     fetchCompares(currentPage);

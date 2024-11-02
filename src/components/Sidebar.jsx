@@ -144,7 +144,7 @@ const Sidebar = () => {
             </li>
           </Link>
 
-          <Link to="/income">
+          {/* <Link to="/income">
             <li
               className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
                 location.pathname === "/income"
@@ -155,9 +155,9 @@ const Sidebar = () => {
               <PiHandWithdrawBold className="mr-3 text-2xl" />
               <span>Income</span>
             </li>
-          </Link>
+          </Link> */}
 
-          <Link to="/expenses">
+          {/* <Link to="/expenses">
             <li
               className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
                 location.pathname === "/expenses"
@@ -168,7 +168,7 @@ const Sidebar = () => {
               <PiHandDepositBold className="mr-3 text-2xl" />
               <span>Expenses</span>
             </li>
-          </Link>
+          </Link> */}
 
           {role === "superAdmin" && (
             <Link to="/approval">
