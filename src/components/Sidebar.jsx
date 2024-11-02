@@ -121,7 +121,7 @@ const Sidebar = () => {
           <Link to="/compare">
             <li
               className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
-                location.pathname === "/export"
+                location.pathname === "/compare"
                   ? "bg-[#FDE8E8] text-[#B4252A]" // Background merah dan teks merah saat aktif
                   : "text-gray-700 hover:bg-gray-100 hover:text-[#B4252A]"
               }`}
