@@ -15,6 +15,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PlanningDetails from "./pages/PlanningDetails";
 import Realization from "./pages/Realization";
+import Compare from "./pages/Compare";
 
 const App = () => {
   return (
@@ -79,14 +80,6 @@ const App = () => {
           }
         />
         <Route
-          path="/realization"
-          element={
-            <ProtectedRoute>
-              <Realization />
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path="/planning/:id"
           element={
             <ProtectedRoute>
@@ -95,10 +88,26 @@ const App = () => {
           }
         />
         <Route
+          path="/realization"
+          element={
+            <ProtectedRoute>
+              <Realization />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/export"
           element={
             <ProtectedRoute>
               <Export />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/compare"
+          element={
+            <ProtectedRoute>
+              <Compare />
             </ProtectedRoute>
           }
         />

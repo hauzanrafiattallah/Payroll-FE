@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import { FaTh, FaClipboardList, FaUpload, FaBars } from "react-icons/fa";
 import { PiHandWithdrawBold, PiHandDepositBold } from "react-icons/pi";
 import { MdTask } from "react-icons/md";
+import { FiGitMerge } from 'react-icons/fi';
 import { AiOutlineFileDone } from "react-icons/ai";
 import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import ReactLoading from "react-loading"; // Import ReactLoading
+import ReactLoading from "react-loading"; 
+import { BiGitCompare } from "react-icons/bi";
 
 const Sidebar = () => {
   const location = useLocation();
@@ -98,7 +100,7 @@ const Sidebar = () => {
                   : "text-gray-700 hover:bg-gray-100 hover:text-[#B4252A]"
               }`}
             >
-              <FaClipboardList className="mr-3 text-lg" />
+              <FaClipboardList className="mr-3 text-xl" />
               <span>Planning</span>
             </li>
           </Link>
@@ -111,8 +113,21 @@ const Sidebar = () => {
                   : "text-gray-700 hover:bg-gray-100 hover:text-[#B4252A]"
               }`}
             >
-              <MdTask className="mr-3 text-xl" />
+              <MdTask className="mr-3 text-2xl" />
               <span>Realization</span>
+            </li>
+          </Link>
+
+          <Link to="/compare">
+            <li
+              className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
+                location.pathname === "/export"
+                  ? "bg-[#FDE8E8] text-[#B4252A]" // Background merah dan teks merah saat aktif
+                  : "text-gray-700 hover:bg-gray-100 hover:text-[#B4252A]"
+              }`}
+            >
+              <BiGitCompare className="mr-3 text-2xl" />
+              <span>Compare</span>
             </li>
           </Link>
 
