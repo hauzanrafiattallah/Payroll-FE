@@ -17,6 +17,9 @@ import {
   PieChart,
   Pie,
   Cell,
+  Legend,
+  CartesianGrid,
+  Rectangle,
 } from "recharts";
 
 const Dashboard = () => {
@@ -329,12 +332,36 @@ const Dashboard = () => {
                   Monthly Income & Expenses
                 </h2>
                 <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={dashboardData.monthlyIncomeExpenseData}>
+                  <BarChart
+                    data={dashboardData.monthlyIncomeExpenseData}
+                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                  >
                     <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Bar dataKey="income" stackId="a" fill="#82ca9d" />
-                    <Bar dataKey="expense" stackId="a" fill="#8884d8" />
+                    <YAxis
+                      tickFormatter={(value) =>
+                        `${value.toLocaleString("id-ID")}`
+                      }
+                    />
+                    <Tooltip
+                      formatter={(value) => `${value.toLocaleString("id-ID")}`}
+                      contentStyle={{
+                        backgroundColor: "white",
+                        borderRadius: 8,
+                        boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.15)",
+                      }}
+                      labelStyle={{ color: "#333" }}
+                      itemStyle={{ color: "#333", fontWeight: "bold" }}
+                    />
+                    <Bar
+                      dataKey="income"
+                      fill="#AFE9B0"
+                      radius={[4, 4, 0, 0]}
+                    />
+                    <Bar
+                      dataKey="expense"
+                      fill="#FD898D"
+                      radius={[4, 4, 0, 0]}
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
