@@ -167,6 +167,56 @@ const Dashboard = () => {
     return pageNumbers;
   };
 
+  const renderSkeleton = () => (
+    <>
+      {/* Skeleton for Balance, Income, Expense */}
+      <div className="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="p-6 bg-gray-200 rounded-lg shadow-lg">
+          <Skeleton height={20} width="80%" />
+          <Skeleton height={30} width="60%" className="mt-2" />
+        </div>
+        <div className="p-6 bg-gray-200 rounded-lg shadow-lg">
+          <Skeleton height={20} width="80%" />
+          <Skeleton height={30} width="60%" className="mt-2" />
+        </div>
+        <div className="p-6 bg-gray-200 rounded-lg shadow-lg">
+          <Skeleton height={20} width="80%" />
+          <Skeleton height={30} width="60%" className="mt-2" />
+        </div>
+      </div>
+
+      {/* Skeleton for Bar Chart */}
+      <div className="mb-6">
+        <Skeleton height={30} width="20%" className="mb-2" />
+        <Skeleton height={300} width="100%" />
+      </div>
+
+      {/* Skeleton for Pie Charts */}
+      <div className="grid grid-cols-1 gap-6 mb-6 sm:grid-cols-2">
+        <div className="p-6 bg-gray-200 rounded-lg shadow-lg flex flex-col items-center">
+          <Skeleton height={30} width="40%" className="mb-4" />
+          <div className="relative w-48 h-48 bg-gray-300 rounded-full flex items-center justify-center">
+            <Skeleton circle={true} height={200} width={200} />
+          </div>
+        </div>
+        <div className="p-6 bg-gray-200 rounded-lg shadow-lg flex flex-col items-center">
+          <Skeleton height={30} width="40%" className="mb-4" />
+          <div className="relative w-48 h-48 bg-gray-300 rounded-full flex items-center justify-center">
+            <Skeleton circle={true} height={200} width={200} />
+          </div>
+        </div>
+      </div>
+
+      {/* Skeleton for Transaction Table */}
+      <div className="p-6 mb-6 overflow-x-auto bg-gray-200 rounded-lg shadow-lg">
+        <Skeleton height={40} width="100%" className="mb-4" />
+        {[...Array(5)].map((_, index) => (
+          <Skeleton key={index} height={30} width="100%" className="mb-2" />
+        ))}
+      </div>
+    </>
+  );
+
   return (
     <>
       <Topbar />
@@ -178,7 +228,7 @@ const Dashboard = () => {
           </h1>
 
           {loading ? (
-            <Skeleton count={5} />
+            renderSkeleton()
           ) : (
             <>
               {/* Balance, Monthly Income, and Monthly Expense */}
@@ -359,7 +409,6 @@ const Dashboard = () => {
                   </button>
                 </div>
               </div>
-
             </>
           )}
         </div>
