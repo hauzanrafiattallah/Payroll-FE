@@ -6,6 +6,7 @@ import PlanPopUp from "../components/PlanPopUp";
 import PlanPopUpEdit from "../components/PlanPopUpEdit";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { FaPlus } from "react-icons/fa";
 
 const Realization = () => {
   const [realizations, setRealizations] = useState([]);
@@ -121,6 +122,15 @@ const Realization = () => {
           <h1 className="mb-6 text-2xl font-bold text-center lg:text-left">
             Realization
           </h1>
+
+          <div className="flex justify-end items-center mb-6">
+            <button
+              className="flex items-center justify-center bg-[#B4252A] text-white font-semibold py-2 px-5 rounded-lg hover:bg-[#8E1F22] shadow-md text-base sm:text-sm md:text-base lg:text-lg h-10 w-36 sm:w-32 md:w-36 lg:w-40"
+              onClick={() => setIsPlanPopUpOpen(true)}
+            >
+              <FaPlus className="mr-2" /> New Plan
+            </button>
+          </div>
 
           <div className="space-y-4">
             {isLoading
