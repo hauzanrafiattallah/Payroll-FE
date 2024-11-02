@@ -193,15 +193,17 @@ const Dashboard = () => {
 
       {/* Skeleton for Pie Charts */}
       <div className="grid grid-cols-1 gap-6 mb-6 sm:grid-cols-2">
-        <div className="p-6 bg-gray-200 rounded-lg shadow-lg flex flex-col items-center">
-          <Skeleton height={30} width="40%" className="mb-4" />
-          <div className="relative w-48 h-48 bg-gray-300 rounded-full flex items-center justify-center">
+        <div className="p-6 bg-gray-200 rounded-lg shadow-lg">
+          <Skeleton width={80} height={20} className="mb-4" />{" "}
+          {/* Skeleton judul "Planning" */}
+          <div className="flex justify-center">
             <Skeleton circle={true} height={200} width={200} />
           </div>
         </div>
-        <div className="p-6 bg-gray-200 rounded-lg shadow-lg flex flex-col items-center">
-          <Skeleton height={30} width="40%" className="mb-4" />
-          <div className="relative w-48 h-48 bg-gray-300 rounded-full flex items-center justify-center">
+        <div className="p-6 bg-gray-200 rounded-lg shadow-lg">
+          <Skeleton width={100} height={20} className="mb-4" />{" "}
+          {/* Skeleton judul "Realization" */}
+          <div className="flex justify-center">
             <Skeleton circle={true} height={200} width={200} />
           </div>
         </div>
