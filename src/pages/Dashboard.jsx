@@ -170,6 +170,7 @@ const Dashboard = () => {
     return pageNumbers;
   };
 
+  // Skeleton Loading
   const renderSkeleton = () => (
     <>
       {/* Skeleton for Balance, Income, Expense */}
@@ -190,8 +191,21 @@ const Dashboard = () => {
 
       {/* Skeleton for Bar Chart */}
       <div className="mb-6">
-        <Skeleton height={30} width="20%" className="mb-2" />
-        <Skeleton height={300} width="100%" />
+        <div
+          className="relative bg-gray-100 rounded-lg p-4"
+          style={{ height: 300 }}
+        >
+          <div className="absolute inset-0 flex justify-center items-end space-x-2">
+            {/* Bar Skeletons */}
+            <Skeleton width={40} height={50} className="bg-gray-300" />
+            <Skeleton width={40} height={100} className="bg-gray-300" />
+            <Skeleton width={40} height={30} className="bg-gray-300" />
+            <Skeleton width={40} height={80} className="bg-gray-300" />
+            <Skeleton width={40} height={60} className="bg-gray-300" />
+            <Skeleton width={40} height={150} className="bg-gray-300" />
+            <Skeleton width={40} height={90} className="bg-gray-300" />
+          </div>
+        </div>
       </div>
 
       {/* Skeleton for Pie Charts */}
