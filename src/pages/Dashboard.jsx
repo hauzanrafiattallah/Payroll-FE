@@ -408,7 +408,7 @@ const Dashboard = () => {
                           data={dashboardData.pieChart.planningData}
                           dataKey="value"
                           nameKey="name"
-                          outerRadius={window.innerWidth < 640 ? 60 : 100} // Ukuran lebih kecil untuk mobile
+                          outerRadius={window.innerWidth < 640 ? 80 : 100} // Ukuran lebih kecil untuk mobile
                         >
                           {dashboardData.pieChart.planningData.map(
                             (entry, index) => (
@@ -499,7 +499,7 @@ const Dashboard = () => {
                           data={dashboardData.pieChart.realizationData}
                           dataKey="value"
                           nameKey="name"
-                          outerRadius={window.innerWidth < 640 ? 60 : 100} // Ukuran lebih kecil untuk mobile
+                          outerRadius={window.innerWidth < 640 ? 80 : 100} // Ukuran lebih kecil untuk mobile
                         >
                           {dashboardData.pieChart.realizationData.map(
                             (entry, index) => (
