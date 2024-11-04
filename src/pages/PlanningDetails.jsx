@@ -4,7 +4,7 @@ import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import { useParams, useNavigate } from "react-router-dom";
 import ReactLoading from "react-loading"; // Import untuk spinner loading
-import "../App.css";
+
 
 const PlanningDetails = () => {
   const { id } = useParams(); // Mengambil ID dari parameter URL
