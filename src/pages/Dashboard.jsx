@@ -401,7 +401,7 @@ const Dashboard = () => {
                     </div>
                     <ResponsiveContainer
                       width="100%"
-                      height={window.innerWidth < 640 ? 200 : 300}
+                      height={window.innerWidth < 640 ? 250 : 300} // Ukuran lebih kecil untuk mobile
                     >
                       <PieChart>
                         <Pie
@@ -420,14 +420,22 @@ const Dashboard = () => {
                           )}
                         </Pie>
                         <Legend
-                          align="center"
-                          verticalAlign="bottom"
-                          layout="horizontal"
+                          align={window.innerWidth < 640 ? "center" : "right"}
+                          verticalAlign={
+                            window.innerWidth < 640 ? "bottom" : "middle"
+                          }
+                          layout={
+                            window.innerWidth < 640 ? "horizontal" : "vertical"
+                          }
+                          iconSize={0} // Menghilangkan ikon bawaan
                           wrapperStyle={{
                             display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            marginTop: "1rem",
+                            flexDirection:
+                              window.innerWidth < 640 ? "row" : "column",
+                            alignItems:
+                              window.innerWidth < 640 ? "center" : "flex-start",
+                            marginTop: window.innerWidth < 640 ? "1rem" : "0",
+                            gap: window.innerWidth < 640 ? "0.5rem" : "0",
                           }}
                           formatter={(value, entry, index) => {
                             const item =
@@ -491,7 +499,7 @@ const Dashboard = () => {
                           data={dashboardData.pieChart.realizationData}
                           dataKey="value"
                           nameKey="name"
-                          outerRadius={100}
+                          outerRadius={window.innerWidth < 640 ? 60 : 100} // Ukuran lebih kecil untuk mobile
                         >
                           {dashboardData.pieChart.realizationData.map(
                             (entry, index) => (
@@ -503,10 +511,21 @@ const Dashboard = () => {
                           )}
                         </Pie>
                         <Legend
-                          align="right"
-                          verticalAlign="middle"
-                          layout="vertical"
-                          iconSize={0} // Menghapus ikon bulat
+                          align={window.innerWidth < 640 ? "center" : "right"}
+                          verticalAlign={
+                            window.innerWidth < 640 ? "bottom" : "middle"
+                          }
+                          layout={
+                            window.innerWidth < 640 ? "horizontal" : "vertical"
+                          }
+                          iconSize={0}
+                          wrapperStyle={{
+                            display: "flex",
+                            flexDirection:
+                              window.innerWidth < 640 ? "row" : "column",
+                            alignItems: "center",
+                            marginTop: window.innerWidth < 640 ? "1rem" : "0",
+                          }}
                           formatter={(value, entry, index) => {
                             const item =
                               dashboardData.pieChart.realizationData[index];
