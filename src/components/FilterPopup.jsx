@@ -37,6 +37,9 @@ const FilterPopup = ({ isOpen, onClose, applyFilter }) => {
     e.stopPropagation();
   };
 
+  // Mendapatkan tanggal hari ini dalam format yyyy-mm-dd
+  const today = new Date().toISOString().split("T")[0];
+
   return (
     <div
       id="popup-background"
@@ -97,6 +100,7 @@ const FilterPopup = ({ isOpen, onClose, applyFilter }) => {
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
+                max={today} // Membatasi tanggal awal hingga hari ini
                 className="w-full px-4 py-2 pl-10 placeholder-gray-500 border border-gray-300 rounded-lg focus:border-[#B4252A] focus:ring-2 focus:ring-[#B4252A] focus:outline-none"
                 placeholder="Start Date"
               />
@@ -109,6 +113,7 @@ const FilterPopup = ({ isOpen, onClose, applyFilter }) => {
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
+                max={today} // Membatasi tanggal akhir hingga hari ini
                 className="w-full px-4 py-2 pl-10 placeholder-gray-500 border border-gray-300 rounded-lg focus:border-[#B4252A] focus:ring-2 focus:ring-[#B4252A] focus:outline-none"
                 placeholder="End Date"
               />
