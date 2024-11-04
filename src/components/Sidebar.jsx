@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaTh, FaClipboardList, FaUpload, FaBars } from "react-icons/fa";
-import { PiHandWithdrawBold, PiHandDepositBold } from "react-icons/pi";
 import { MdTask } from "react-icons/md";
-import { FiGitMerge } from 'react-icons/fi';
 import { AiOutlineFileDone } from "react-icons/ai";
 import { Link, useLocation } from "react-router-dom";
 import axios from "axios";

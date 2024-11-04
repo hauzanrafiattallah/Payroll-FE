@@ -399,13 +399,16 @@ const Dashboard = () => {
                         "id-ID"
                       )}
                     </div>
-                    <ResponsiveContainer width="100%" height={300}>
+                    <ResponsiveContainer
+                      width="100%"
+                      height={window.innerWidth < 640 ? 200 : 300}
+                    >
                       <PieChart>
                         <Pie
                           data={dashboardData.pieChart.planningData}
                           dataKey="value"
                           nameKey="name"
-                          outerRadius={100}
+                          outerRadius={window.innerWidth < 640 ? 60 : 100} // Ukuran lebih kecil untuk mobile
                         >
                           {dashboardData.pieChart.planningData.map(
                             (entry, index) => (
@@ -417,10 +420,15 @@ const Dashboard = () => {
                           )}
                         </Pie>
                         <Legend
-                          align="right"
-                          verticalAlign="middle"
-                          layout="vertical"
-                          iconSize={0} // Menghapus ikon bulat
+                          align="center"
+                          verticalAlign="bottom"
+                          layout="horizontal"
+                          wrapperStyle={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            marginTop: "1rem",
+                          }}
                           formatter={(value, entry, index) => {
                             const item =
                               dashboardData.pieChart.planningData[index];
