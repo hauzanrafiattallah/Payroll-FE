@@ -18,7 +18,6 @@ import {
   Pie,
   Cell,
   Legend,
-  CartesianGrid,
   Rectangle,
 } from "recharts";
 
@@ -47,7 +46,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const authToken = localStorage.getItem("token");
 
-  // Tambahkan fungsi getBackgroundColor di sini
+  // getBackgroundColor
   const getBackgroundColor = (section) => {
     if (filter.type === "income" && section === "income") {
       return "bg-[#B4252A] text-white";
