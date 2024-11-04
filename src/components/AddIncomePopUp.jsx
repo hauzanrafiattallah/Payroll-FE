@@ -51,7 +51,7 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-
+  
     // Validasi form
     if (
       !activityName ||
@@ -64,7 +64,7 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
       toast.error("Pastikan semua field terisi dengan benar.");
       return;
     }
-
+  
     // Validasi tipe file documentEvidence (harus PDF atau EXCEL)
     const allowedFileTypes = [
       "application/pdf",
@@ -74,7 +74,7 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
       toast.error("File keuangan harus dalam format PDF atau XLSX.");
       return;
     }
-
+  
     // Buat FormData untuk mengirim file bersama dengan field lainnya
     const formData = new FormData();
     formData.append("activity_name", activityName);
@@ -83,8 +83,8 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
     formData.append("tax_amount", taxAmount);
     formData.append("document_evidence", documentEvidence);
     formData.append("image_evidence", imageEvidence);
-    formData.append("transaction_date", selectedDate); // Menggunakan tanggal dari input HTML
-
+    formData.append("date", selectedDate); // Ubah ke "date" sesuai dengan yang diharapkan API
+  
     try {
       setIsLoading(true);
       const response = await axios.post(
@@ -98,7 +98,7 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
           },
         }
       );
-
+  
       toast.success("Data berhasil disimpan!"); // Tampilkan pesan sukses
       closePopup(); // Tutup popup setelah submit berhasil
     } catch (error) {
@@ -110,6 +110,7 @@ const AddIncomePopup = ({ isOpen, onClose }) => {
       setIsLoading(false); // Nonaktifkan loading state setelah submit selesai
     }
   };
+  
 
   // Fungsi untuk memicu klik pada input file yang disembunyikan
   const triggerFileUpload = (id) => {

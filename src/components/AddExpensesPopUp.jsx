@@ -79,7 +79,7 @@ const AddExpensesPopup = ({ isOpen, onClose }) => {
     formData.append("tax_amount", taxAmount);
     formData.append("document_evidence", documentEvidence);
     formData.append("image_evidence", imageEvidence);
-    formData.append("transaction_date", selectedDate);
+    formData.append("date", selectedDate); // Ganti menjadi "date" sesuai dengan yang diharapkan API
 
     try {
       setIsLoading(true); // Aktifkan loading state
@@ -164,9 +164,7 @@ const AddExpensesPopup = ({ isOpen, onClose }) => {
 
           <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
             <div className="w-full">
-              <label className="block mb-2 font-semibold">
-                Upload 
-              </label>
+              <label className="block mb-2 font-semibold">Upload</label>
               <div
                 className="h-32 p-4 text-center border border-gray-300 rounded-lg cursor-pointer"
                 onClick={() => triggerFileUpload("documentEvidence")}
