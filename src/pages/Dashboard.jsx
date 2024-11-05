@@ -69,6 +69,49 @@ const Dashboard = () => {
   // Data tahun yang tersedia di dropdown
   const years = [2024, 2023, 2022, 2021];
 
+  useEffect(() => {
+    const fetchBarChartData = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/dashboard`,
+          {
+            params: {
+              transaction_type: filter.type === "All" ? "" : filter.type,
+              start_date: `${selectedYearBarChart}-01-01`,
+              end_date: `${selectedYearBarChart}-12-31`,
+            },
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        );
+
+        console.log(
+          "BarChart Response Data:",
+          response.data.data.monthlyIncomeExpenseData
+        );
+
+        const filteredData = response.data.data.monthlyIncomeExpenseData.filter(
+          (item) => new Date(item.date).getFullYear() === selectedYearBarChart
+        );
+
+        setDashboardData((prevData) => ({
+          ...prevData,
+          monthlyIncomeExpenseData: filteredData,
+        }));
+
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching BarChart data:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchBarChartData();
+  }, [selectedYearBarChart, filter, authToken]);
+
   const handleYearSelectBarChart = (year) => {
     setSelectedYearBarChart(year);
     setShowYearDropdownBarChart(false);
@@ -139,27 +182,29 @@ const Dashboard = () => {
             },
           }
         );
-  
-        // Filter data untuk memastikan hanya data dari tahun yang dipilih yang ditampilkan
-        const filteredData = response.data.data.monthlyIncomeExpenseData.filter(
-          (item) => new Date(item.date).getFullYear() === selectedYearBarChart
-        );
-  
+    
+        const rawData = response.data.data.monthlyIncomeExpenseData;
+        const formattedData = rawData.map((item) => ({
+          name: item.name || "Unknown",
+          income: item.income || 0,
+          expense: item.expense || 0,
+        }));
+    
         setDashboardData((prevData) => ({
           ...prevData,
-          monthlyIncomeExpenseData: filteredData,
+          monthlyIncomeExpenseData: formattedData,
         }));
-  
+    
         setLoading(false);
       } catch (error) {
         console.error("Error fetching BarChart data:", error);
         setLoading(false);
       }
     };
-  
+    
+
     fetchBarChartData();
   }, [selectedYearBarChart, filter, authToken]);
-  
 
   useEffect(() => {
     const fetchPieChartData = async () => {
@@ -463,43 +508,49 @@ const Dashboard = () => {
               </div>
 
               <div className="mb-6">
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart
-                    data={dashboardData.monthlyIncomeExpenseData}
-                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                  >
-                    <XAxis dataKey="name" />
-                    <YAxis
-                      tickFormatter={(value) =>
-                        `${value.toLocaleString("id-ID")}`
-                      }
-                    />
-                    <Tooltip
-                      formatter={(value) => `${value.toLocaleString("id-ID")}`}
-                      contentStyle={{
-                        backgroundColor: "white",
-                        borderRadius: 8,
-                        boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.15)",
-                      }}
-                      labelStyle={{ color: "#333" }}
-                      itemStyle={{ color: "#333", fontWeight: "bold" }}
-                    />
-                    <Bar
-                      dataKey="income"
-                      fill="#AFE9B0"
-                      radius={[4, 4, 0, 0]}
-                      shape={<Rectangle />}
-                      activeShape={<Rectangle fill="#B4252A4D" />}
-                    />
-                    <Bar
-                      dataKey="expense"
-                      fill="#FD898D"
-                      radius={[4, 4, 0, 0]}
-                      shape={<Rectangle />}
-                      activeShape={<Rectangle fill="#B4252A4D" />}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
+                {dashboardData.monthlyIncomeExpenseData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart
+                      data={dashboardData.monthlyIncomeExpenseData}
+                      margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                    >
+                      <XAxis dataKey="name" />
+                      <YAxis
+                        tickFormatter={(value) =>
+                          `${value.toLocaleString("id-ID")}`
+                        }
+                      />
+                      <Tooltip
+                        formatter={(value) =>
+                          `${value.toLocaleString("id-ID")}`
+                        }
+                        contentStyle={{
+                          backgroundColor: "white",
+                          borderRadius: 8,
+                          boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.15)",
+                        }}
+                        labelStyle={{ color: "#333" }}
+                        itemStyle={{ color: "#333", fontWeight: "bold" }}
+                      />
+                      <Bar
+                        dataKey="income"
+                        fill="#AFE9B0"
+                        radius={[4, 4, 0, 0]}
+                        shape={<Rectangle />}
+                        activeShape={<Rectangle fill="#B4252A4D" />}
+                      />
+                      <Bar
+                        dataKey="expense"
+                        fill="#FD898D"
+                        radius={[4, 4, 0, 0]}
+                        shape={<Rectangle />}
+                        activeShape={<Rectangle fill="#B4252A4D" />}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <p>No data available for the selected year.</p>
+                )}
               </div>
 
               <div className="grid grid-cols-1 gap-6 mb-6 sm:grid-cols-2">
