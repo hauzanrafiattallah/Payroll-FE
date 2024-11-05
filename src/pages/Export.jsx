@@ -42,7 +42,7 @@ const Export = () => {
   // Mengambil token autentikasi dari local storage
   const authToken = localStorage.getItem("token");
 
-  // Fungsi untuk menangani submit pada bagian category Data
+  // Fungsi untuk menangani submit pada bagian items Data
   const handleFormSubmit1 = async () => {
     if (!startDate1 || !endDate1) {
       toast.error("Harap pilih rentang tanggal untuk Data Perencanaan!");
@@ -61,12 +61,12 @@ const Export = () => {
       );
       downloadFile(
         response,
-        `Category_Data_${startDate1}_to_${endDate1}.${
+        `Item Dari ${startDate1} hingga ${endDate1}.${
           exportType1 === "excel" ? "xlsx" : "pdf"
         }`
       );
     } catch (error) {
-      toast.error("Gagal mengekspor data perencanaan!");
+      toast.error("Gagal mengekspor item!");
     }
     setLoading(false);
   };
@@ -90,7 +90,7 @@ const Export = () => {
       );
       downloadFile(
         response,
-        `Transaction_Data_${startDate2}_to_${endDate2}.${
+        `Laporan Keuangan dari ${startDate2} hingga ${endDate2}.${
           exportType2 === "excel" ? "xlsx" : "pdf"
         }`
       );
@@ -165,7 +165,7 @@ const Export = () => {
             Export Items
           </h1>
 
-          {/* Bagian untuk Export category Data */}
+          {/* Bagian untuk Export items */}
           <ExportSection
             exportType={exportType1}
             setExportType={setExportType1}
