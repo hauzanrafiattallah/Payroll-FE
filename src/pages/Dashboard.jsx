@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
@@ -52,6 +52,30 @@ const Dashboard = () => {
     useState(false);
   const [showYearDropdownPieChart, setShowYearDropdownPieChart] =
     useState(false);
+  const barChartDropdownRef = useRef(null);
+  const pieChartDropdownRef = useRef(null);
+
+  const handleClickOutside = (e) => {
+    if (
+      barChartDropdownRef.current &&
+      !barChartDropdownRef.current.contains(e.target)
+    ) {
+      setShowYearDropdownBarChart(false);
+    }
+    if (
+      pieChartDropdownRef.current &&
+      !pieChartDropdownRef.current.contains(e.target)
+    ) {
+      setShowYearDropdownPieChart(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // getBackgroundColor
   const getBackgroundColor = (section) => {
@@ -122,7 +146,7 @@ const Dashboard = () => {
             params: {
               transaction_type: filter.type === "All" ? "" : filter.type,
               start_date: filter.startDate || "", // Menambahkan start_date
-              end_date: filter.endDate || "",     // Menambahkan end_date
+              end_date: filter.endDate || "", // Menambahkan end_date
               page: currentPage,
               limit: 10,
             },
@@ -132,7 +156,7 @@ const Dashboard = () => {
             },
           }
         );
-  
+
         setDashboardData({
           ballance: response.data.data.balance,
           monthlyIncome: response.data.data.monthlyIncome,
@@ -141,7 +165,7 @@ const Dashboard = () => {
           pieChart: response.data.data.pieChart,
           transactionList: response.data.data.transactionList.data,
         });
-  
+
         setCurrentPage(response.data.data.transactionList.current_page);
         setLastPage(response.data.data.transactionList.last_page);
         setNextPageUrl(response.data.data.transactionList.next_page_url);
@@ -152,10 +176,9 @@ const Dashboard = () => {
         setLoading(false);
       }
     };
-  
+
     fetchDashboardData();
   }, [filter, currentPage, authToken]);
-  
 
   useEffect(() => {
     const fetchPieChartData = async () => {
@@ -440,7 +463,10 @@ const Dashboard = () => {
                     <FaCalendarAlt className="mr-2" /> {selectedYearBarChart}
                   </button>
                   {showYearDropdownBarChart && (
-                    <div className="absolute right-0 z-50 w-32 mt-2 bg-white border rounded-lg shadow-lg">
+                    <div
+                      ref={barChartDropdownRef}
+                      className="absolute right-0 z-50 w-32 mt-2 bg-white border rounded-lg shadow-lg"
+                    >
                       {years.map((year) => (
                         <div
                           key={year}
@@ -608,7 +634,10 @@ const Dashboard = () => {
                         {selectedYearPieChart}
                       </button>
                       {showYearDropdownPieChart && (
-                        <div className="absolute right-0 z-50 w-32 mt-2 bg-white border rounded-lg shadow-lg">
+                        <div
+                          ref={pieChartDropdownRef}
+                          className="absolute right-0 z-50 w-32 mt-2 bg-white border rounded-lg shadow-lg"
+                        >
                           {years.map((year) => (
                             <div
                               key={year}
