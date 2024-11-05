@@ -6,7 +6,7 @@ import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import ReactLoading from "react-loading"; 
+import ReactLoading from "react-loading";
 import { BiGitCompare } from "react-icons/bi";
 
 const Sidebar = () => {
@@ -116,19 +116,6 @@ const Sidebar = () => {
             </li>
           </Link>
 
-          <Link to="/compare">
-            <li
-              className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
-                location.pathname === "/compare"
-                  ? "bg-[#FDE8E8] text-[#B4252A]" // Background merah dan teks merah saat aktif
-                  : "text-gray-700 hover:bg-gray-100 hover:text-[#B4252A]"
-              }`}
-            >
-              <BiGitCompare className="mr-3 text-2xl" />
-              <span>Compare</span>
-            </li>
-          </Link>
-
           <Link to="/export">
             <li
               className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
@@ -139,6 +126,19 @@ const Sidebar = () => {
             >
               <FaUpload className="mr-3 text-lg" />
               <span>Export</span>
+            </li>
+          </Link>
+
+          <Link to="/compare">
+            <li
+              className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
+                location.pathname === "/compare"
+                  ? "bg-[#FDE8E8] text-[#B4252A]" // Background merah dan teks merah saat aktif
+                  : "text-gray-700 hover:bg-gray-100 hover:text-[#B4252A]"
+              }`}
+            >
+              <BiGitCompare className="mr-3 text-2xl" />
+              <span>Compare</span>
             </li>
           </Link>
 
