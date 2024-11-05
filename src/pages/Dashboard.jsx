@@ -67,7 +67,7 @@ const Dashboard = () => {
   };
 
   // Data tahun yang tersedia di dropdown
-  const years = [2024, 2023, 2022, 2021];
+  const years = [2025, 2024, 2023, 2022, 2021];
 
   useEffect(() => {
     const fetchBarChartData = async () => {
@@ -86,7 +86,7 @@ const Dashboard = () => {
             },
           }
         );
-  
+
         const filteredData = response.data.data.monthlyIncomeExpenseData || [];
         setDashboardData((prevData) => ({
           ...prevData,
@@ -98,10 +98,9 @@ const Dashboard = () => {
         setLoading(false);
       }
     };
-  
+
     fetchBarChartData();
   }, [selectedYearBarChart, filter, authToken]);
-  
 
   const handleYearSelectBarChart = (year) => {
     setSelectedYearBarChart(year);
@@ -171,7 +170,7 @@ const Dashboard = () => {
             },
           }
         );
-  
+
         setDashboardData((prevData) => ({
           ...prevData,
           pieChart: response.data.data.pieChart,
@@ -182,10 +181,9 @@ const Dashboard = () => {
         setLoading(false);
       }
     };
-  
+
     fetchPieChartData();
   }, [selectedYearPieChart, authToken]);
-  
 
   const handleTransactionClick = (transactionId) => {
     setSelectedTransactionId(transactionId);
