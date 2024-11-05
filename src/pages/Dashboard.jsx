@@ -121,6 +121,8 @@ const Dashboard = () => {
           {
             params: {
               transaction_type: filter.type === "All" ? "" : filter.type,
+              start_date: filter.startDate || "", // Menambahkan start_date
+              end_date: filter.endDate || "",     // Menambahkan end_date
               page: currentPage,
               limit: 10,
             },
@@ -130,7 +132,7 @@ const Dashboard = () => {
             },
           }
         );
-
+  
         setDashboardData({
           ballance: response.data.data.balance,
           monthlyIncome: response.data.data.monthlyIncome,
@@ -139,7 +141,7 @@ const Dashboard = () => {
           pieChart: response.data.data.pieChart,
           transactionList: response.data.data.transactionList.data,
         });
-
+  
         setCurrentPage(response.data.data.transactionList.current_page);
         setLastPage(response.data.data.transactionList.last_page);
         setNextPageUrl(response.data.data.transactionList.next_page_url);
@@ -150,9 +152,10 @@ const Dashboard = () => {
         setLoading(false);
       }
     };
-
+  
     fetchDashboardData();
   }, [filter, currentPage, authToken]);
+  
 
   useEffect(() => {
     const fetchPieChartData = async () => {
