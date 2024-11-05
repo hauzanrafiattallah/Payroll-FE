@@ -3,6 +3,7 @@ import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import { FaSlidersH } from "react-icons/fa";
+import { FaCalendarAlt } from "react-icons/fa";
 import FilterPopup from "../components/FilterPopup";
 import TransactionPopUp from "../components/TransactionPopUp";
 import Skeleton from "react-loading-skeleton";
@@ -45,6 +46,12 @@ const Dashboard = () => {
   const [prevPageUrl, setPrevPageUrl] = useState(null);
   const [loading, setLoading] = useState(true);
   const authToken = localStorage.getItem("token");
+  const [selectedYearBarChart, setSelectedYearBarChart] = useState(2024); // Tahun untuk BarChart
+  const [selectedYearPieChart, setSelectedYearPieChart] = useState(2024); // Tahun untuk PieChart
+  const [showYearDropdownBarChart, setShowYearDropdownBarChart] =
+    useState(false);
+  const [showYearDropdownPieChart, setShowYearDropdownPieChart] =
+    useState(false);
 
   // getBackgroundColor
   const getBackgroundColor = (section) => {
@@ -59,6 +66,19 @@ const Dashboard = () => {
     }
   };
 
+  // Data tahun yang tersedia di dropdown
+  const years = [2024, 2023, 2022, 2021];
+
+  const handleYearSelectBarChart = (year) => {
+    setSelectedYearBarChart(year);
+    setShowYearDropdownBarChart(false);
+  };
+
+  const handleYearSelectPieChart = (year) => {
+    setSelectedYearPieChart(year);
+    setShowYearDropdownPieChart(false);
+  };
+
   useEffect(() => {
     const fetchDashboardData = async () => {
       setLoading(true);
@@ -68,8 +88,6 @@ const Dashboard = () => {
           {
             params: {
               transaction_type: filter.type === "All" ? "" : filter.type,
-              start_date: filter.startDate,
-              end_date: filter.endDate,
               page: currentPage,
               limit: 10,
             },
@@ -102,6 +120,80 @@ const Dashboard = () => {
 
     fetchDashboardData();
   }, [filter, currentPage, authToken]);
+
+  useEffect(() => {
+    const fetchBarChartData = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/dashboard`,
+          {
+            params: {
+              transaction_type: filter.type === "All" ? "" : filter.type,
+              start_date: `${selectedYearBarChart}-01-01`,
+              end_date: `${selectedYearBarChart}-12-31`,
+            },
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        );
+  
+        // Filter data untuk memastikan hanya data dari tahun yang dipilih yang ditampilkan
+        const filteredData = response.data.data.monthlyIncomeExpenseData.filter(
+          (item) => new Date(item.date).getFullYear() === selectedYearBarChart
+        );
+  
+        setDashboardData((prevData) => ({
+          ...prevData,
+          monthlyIncomeExpenseData: filteredData,
+        }));
+  
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching BarChart data:", error);
+        setLoading(false);
+      }
+    };
+  
+    fetchBarChartData();
+  }, [selectedYearBarChart, filter, authToken]);
+  
+
+  useEffect(() => {
+    const fetchPieChartData = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/dashboard`,
+          {
+            params: {
+              transaction_type: filter.type === "All" ? "" : filter.type,
+              start_date: `${selectedYearPieChart}-01-01`,
+              end_date: `${selectedYearPieChart}-12-31`,
+            },
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        );
+
+        setDashboardData((prevData) => ({
+          ...prevData,
+          pieChart: response.data.data.pieChart,
+        }));
+
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching PieChart data:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchPieChartData();
+  }, [selectedYearPieChart, filter, authToken]);
 
   const handleTransactionClick = (transactionId) => {
     setSelectedTransactionId(transactionId);
@@ -340,9 +432,36 @@ const Dashboard = () => {
               </div>
 
               {/* Monthly Income & Expenses Bar Chart */}
-              <h1 className="mb-10 text-2xl font-bold text-center lg:text-left mt-10">
-                Monthly income & Expenses
-              </h1>
+              <div className="flex justify-between items-center mb-6">
+                <h1 className="text-2xl font-bold">
+                  Monthly Income & Expenses
+                </h1>
+                <div className="relative">
+                  <button
+                    className="flex items-center px-4 py-2 text-sm font-semibold text-black bg-white border rounded-md shadow-sm hover:bg-gray-100 border-gray-300"
+                    onClick={() => {
+                      setShowYearDropdownBarChart(!showYearDropdownBarChart);
+                      setShowYearDropdownPieChart(false); // Pastikan hanya satu dropdown terbuka pada satu waktu
+                    }}
+                  >
+                    <FaCalendarAlt className="mr-2" /> {selectedYearBarChart}
+                  </button>
+                  {showYearDropdownBarChart && (
+                    <div className="absolute right-0 z-50 w-32 mt-2 bg-white border rounded-lg shadow-lg">
+                      {years.map((year) => (
+                        <div
+                          key={year}
+                          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                          onClick={() => handleYearSelectBarChart(year)}
+                        >
+                          {year}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
               <div className="mb-6">
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart
@@ -480,9 +599,36 @@ const Dashboard = () => {
 
                 {/* Realization Section */}
                 <div>
-                  <h1 className="mb-6 text-2xl font-bold text-center lg:text-left mt-10">
-                    Realization
-                  </h1>
+                  <div className="flex justify-between items-center mb-6 mt-8">
+                    <h1 className="text-2xl font-bold">Realization</h1>
+                    <div className="relative">
+                      <button
+                        className="flex items-center px-4 py-2 text-sm font-semibold text-black bg-white border rounded-md shadow-sm hover:bg-gray-100 border-gray-300"
+                        onClick={() => {
+                          setShowYearDropdownPieChart(
+                            !showYearDropdownPieChart
+                          );
+                          setShowYearDropdownBarChart(false); // Pastikan hanya satu dropdown terbuka pada satu waktu
+                        }}
+                      >
+                        <FaCalendarAlt className="mr-2" />{" "}
+                        {selectedYearPieChart}
+                      </button>
+                      {showYearDropdownPieChart && (
+                        <div className="absolute right-0 z-50 w-32 mt-2 bg-white border rounded-lg shadow-lg">
+                          {years.map((year) => (
+                            <div
+                              key={year}
+                              className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                              onClick={() => handleYearSelectPieChart(year)}
+                            >
+                              {year}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
                   <div className="p-6 rounded-lg shadow-lg bg-white">
                     <div className="text-xl font-bold text-gray-700 mb-4">
                       Total
