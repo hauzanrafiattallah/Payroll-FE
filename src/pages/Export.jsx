@@ -51,13 +51,20 @@ const Export = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/export-item?type=${exportType1}&startDate=${startDate1}&endDate=${endDate1}&category=${category1}`,
+        `${
+          import.meta.env.VITE_API_URL
+        }/export-item?type=${exportType1}&startDate=${startDate1}&endDate=${endDate1}&category=${category1}`,
         {
           headers: { Authorization: `Bearer ${authToken}` },
           responseType: "blob",
         }
       );
-      downloadFile(response, `Category_Data_${startDate1}_to_${endDate1}.${exportType1 === "excel" ? "xlsx" : "pdf"}`);
+      downloadFile(
+        response,
+        `Category_Data_${startDate1}_to_${endDate1}.${
+          exportType1 === "excel" ? "xlsx" : "pdf"
+        }`
+      );
     } catch (error) {
       toast.error("Gagal mengekspor data perencanaan!");
     }
@@ -73,13 +80,20 @@ const Export = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/export?type=${exportType2}&startDate=${startDate2}&endDate=${endDate2}`,
+        `${
+          import.meta.env.VITE_API_URL
+        }/export?type=${exportType2}&startDate=${startDate2}&endDate=${endDate2}`,
         {
           headers: { Authorization: `Bearer ${authToken}` },
           responseType: "blob",
         }
       );
-      downloadFile(response, `Transaction_Data_${startDate2}_to_${endDate2}.${exportType2 === "excel" ? "xlsx" : "pdf"}`);
+      downloadFile(
+        response,
+        `Transaction_Data_${startDate2}_to_${endDate2}.${
+          exportType2 === "excel" ? "xlsx" : "pdf"
+        }`
+      );
     } catch (error) {
       toast.error("Gagal mengekspor data transaksi!");
     }
@@ -100,11 +114,28 @@ const Export = () => {
   // Efek untuk menutup dropdown atau date picker saat klik di luar
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (datePickerRef1.current && !datePickerRef1.current.contains(event.target)) setShowDatePicker1(false);
-      if (exportTypeRef1.current && !exportTypeRef1.current.contains(event.target)) setShowExportTypeDropdown1(false);
-      if (categoryRef1.current && !categoryRef1.current.contains(event.target)) setShowCategoryDropdown1(false);
-      if (datePickerRef2.current && !datePickerRef2.current.contains(event.target)) setShowDatePicker2(false);
-      if (exportTypeRef2.current && !exportTypeRef2.current.contains(event.target)) setShowExportTypeDropdown2(false);
+      if (
+        datePickerRef1.current &&
+        !datePickerRef1.current.contains(event.target)
+      )
+        setShowDatePicker1(false);
+      if (
+        exportTypeRef1.current &&
+        !exportTypeRef1.current.contains(event.target)
+      )
+        setShowExportTypeDropdown1(false);
+      if (categoryRef1.current && !categoryRef1.current.contains(event.target))
+        setShowCategoryDropdown1(false);
+      if (
+        datePickerRef2.current &&
+        !datePickerRef2.current.contains(event.target)
+      )
+        setShowDatePicker2(false);
+      if (
+        exportTypeRef2.current &&
+        !exportTypeRef2.current.contains(event.target)
+      )
+        setShowExportTypeDropdown2(false);
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
@@ -115,7 +146,11 @@ const Export = () => {
   // Fungsi untuk menampilkan rentang tanggal yang dipilih
   const getDisplayDateRange = (start, end) => {
     if (start && end) {
-      return `${format(new Date(start), "dd MMM", { locale: id })} - ${format(new Date(end), "dd MMM yyyy", { locale: id })}`;
+      return `${format(new Date(start), "dd MMM", { locale: id })} - ${format(
+        new Date(end),
+        "dd MMM yyyy",
+        { locale: id }
+      )}`;
     }
     return "Pilih Tanggal";
   };
@@ -126,11 +161,12 @@ const Export = () => {
       <div className="flex flex-col mt-20 lg:flex-row">
         <Sidebar />
         <div className="w-full p-8 mx-auto mt-2 lg:max-w-full lg:ml-72">
-          <h1 className="mb-6 text-2xl font-bold text-center lg:text-left">Export</h1>
+          <h1 className="mb-6 text-2xl font-bold text-center lg:text-left">
+            Export Items
+          </h1>
 
           {/* Bagian untuk Export category Data */}
           <ExportSection
-            title="Export Category Data"
             exportType={exportType1}
             setExportType={setExportType1}
             startDate={startDate1}
@@ -154,8 +190,10 @@ const Export = () => {
           />
 
           {/* Bagian untuk Export Transaction Data */}
+          <h1 className="mb-6 text-2xl font-bold text-center lg:text-left">
+            Export Transaction
+          </h1>
           <ExportSection
-            title="Export Transaction"
             exportType={exportType2}
             setExportType={setExportType2}
             startDate={startDate2}
@@ -186,9 +224,20 @@ const Export = () => {
 };
 
 // Komponen Dropdown
-const Dropdown = ({ label, selectedOption, options, onSelect, dropdownVisible, toggleDropdown, dropdownRef }) => (
+const Dropdown = ({
+  label,
+  selectedOption,
+  options,
+  onSelect,
+  dropdownVisible,
+  toggleDropdown,
+  dropdownRef,
+}) => (
   <div className="relative">
-    <div className="relative flex items-center justify-between p-4 border rounded-lg cursor-pointer" onClick={toggleDropdown}>
+    <div
+      className="relative flex items-center justify-between p-4 border rounded-lg cursor-pointer"
+      onClick={toggleDropdown}
+    >
       <div>
         <p className="text-gray-500">{label}</p>
         <h2 className="text-lg font-bold">{selectedOption}</h2>
@@ -196,9 +245,19 @@ const Dropdown = ({ label, selectedOption, options, onSelect, dropdownVisible, t
       <div className="text-4xl md:text-6xl">&rsaquo;</div>
     </div>
     {dropdownVisible && (
-      <div ref={dropdownRef} className="absolute top-full left-0 z-50 p-4 mt-2 bg-white border rounded-lg shadow-lg w-72">
+      <div
+        ref={dropdownRef}
+        className="absolute top-full left-0 z-50 p-4 mt-2 bg-white border rounded-lg shadow-lg w-72"
+      >
         {options.map((option) => (
-          <div key={option.value} onClick={() => { onSelect(option.value); toggleDropdown(); }} className="cursor-pointer p-2 hover:bg-gray-100 rounded-md">
+          <div
+            key={option.value}
+            onClick={() => {
+              onSelect(option.value);
+              toggleDropdown();
+            }}
+            className="cursor-pointer p-2 hover:bg-gray-100 rounded-md"
+          >
             {option.label}
           </div>
         ))}
@@ -238,28 +297,55 @@ const ExportSection = ({
       <Dropdown
         label="Export As"
         selectedOption={exportType === "excel" ? "Excel (.xlsx)" : "PDF (.pdf)"}
-        options={[{ value: "excel", label: "Excel (.xlsx)" }, { value: "pdf", label: "PDF (.pdf)" }]}
+        options={[
+          { value: "excel", label: "Excel (.xlsx)" },
+          { value: "pdf", label: "PDF (.pdf)" },
+        ]}
         onSelect={setExportType}
         dropdownVisible={showExportTypeDropdown}
-        toggleDropdown={() => setShowExportTypeDropdown(!showExportTypeDropdown)}
+        toggleDropdown={() =>
+          setShowExportTypeDropdown(!showExportTypeDropdown)
+        }
         dropdownRef={exportTypeRef}
       />
 
       {/* Pilihan tanggal */}
       <div className="relative">
-        <div className="relative flex items-center justify-between p-4 border rounded-lg cursor-pointer" onClick={() => setShowDatePicker(!showDatePicker)}>
+        <div
+          className="relative flex items-center justify-between p-4 border rounded-lg cursor-pointer"
+          onClick={() => setShowDatePicker(!showDatePicker)}
+        >
           <div className="truncate">
             <p className="text-gray-500">Pilih Rentang Tanggal</p>
-            <h2 className="text-lg font-bold">{getDisplayDateRange(startDate, endDate)}</h2>
+            <h2 className="text-lg font-bold">
+              {getDisplayDateRange(startDate, endDate)}
+            </h2>
           </div>
           <div className="text-4xl md:text-6xl">&rsaquo;</div>
         </div>
         {showDatePicker && (
-          <div ref={datePickerRef} className="absolute top-full left-0 z-50 p-4 mt-2 bg-white border rounded-lg shadow-lg w-72">
-            <label className="block mb-1 text-sm font-semibold">Tanggal Mulai</label>
-            <input type="date" value={startDate || ""} onChange={(e) => setStartDate(e.target.value)} className="block w-full p-2 mt-1 border border-gray-300 rounded-lg" />
-            <label className="block mt-4 mb-1 text-sm font-semibold">Tanggal Akhir</label>
-            <input type="date" value={endDate || ""} onChange={(e) => setEndDate(e.target.value)} className="block w-full p-2 mt-1 border border-gray-300 rounded-lg" />
+          <div
+            ref={datePickerRef}
+            className="absolute top-full left-0 z-50 p-4 mt-2 bg-white border rounded-lg shadow-lg w-72"
+          >
+            <label className="block mb-1 text-sm font-semibold">
+              Tanggal Mulai
+            </label>
+            <input
+              type="date"
+              value={startDate || ""}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="block w-full p-2 mt-1 border border-gray-300 rounded-lg"
+            />
+            <label className="block mt-4 mb-1 text-sm font-semibold">
+              Tanggal Akhir
+            </label>
+            <input
+              type="date"
+              value={endDate || ""}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="block w-full p-2 mt-1 border border-gray-300 rounded-lg"
+            />
           </div>
         )}
       </div>
@@ -268,7 +354,13 @@ const ExportSection = ({
       {category && (
         <Dropdown
           label="Pilih Kategori"
-          selectedOption={category === "internal" ? "Internal" : category === "external" ? "External" : "RKA"}
+          selectedOption={
+            category === "internal"
+              ? "Internal"
+              : category === "external"
+              ? "External"
+              : "RKA"
+          }
           options={[
             { value: "internal", label: "Internal" },
             { value: "external", label: "External" },
@@ -283,7 +375,11 @@ const ExportSection = ({
 
       {/* Tombol Export */}
       <div className="flex justify-end col-span-1 md:col-span-2">
-        <button className="bg-[#B4252A] hover:bg-[#8E1F22] text-white font-bold py-2 px-8 rounded-md" onClick={handleFormSubmit} disabled={loading}>
+        <button
+          className="bg-[#B4252A] hover:bg-[#8E1F22] text-white font-bold py-2 px-8 rounded-md"
+          onClick={handleFormSubmit}
+          disabled={loading}
+        >
           Export
         </button>
       </div>
