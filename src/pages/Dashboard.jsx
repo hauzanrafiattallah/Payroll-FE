@@ -422,7 +422,7 @@ const Dashboard = () => {
                 >
                   <h2 className="text-lg font-semibold">Balance</h2>
                   <p className="text-2xl font-bold">
-                    Rp. {dashboardData.ballance.toLocaleString("id-ID")}
+                    Rp. {(dashboardData.ballance || 0).toLocaleString("id-ID")}
                   </p>
                 </div>
                 <div
@@ -432,7 +432,8 @@ const Dashboard = () => {
                 >
                   <h2 className="text-lg font-semibold">Monthly Income</h2>
                   <p className="text-2xl font-bold">
-                    Rp. {dashboardData.monthlyIncome.toLocaleString("id-ID")}
+                    Rp.{" "}
+                    {(dashboardData.monthlyIncome || 0).toLocaleString("id-ID")}
                   </p>
                 </div>
                 <div
@@ -442,7 +443,10 @@ const Dashboard = () => {
                 >
                   <h2 className="text-lg font-semibold">Monthly Expense</h2>
                   <p className="text-2xl font-bold">
-                    Rp. {dashboardData.monthlyExpense.toLocaleString("id-ID")}
+                    Rp.{" "}
+                    {(dashboardData.monthlyExpense || 0).toLocaleString(
+                      "id-ID"
+                    )}
                   </p>
                 </div>
               </div>
@@ -532,9 +536,9 @@ const Dashboard = () => {
                       Total
                       <br />
                       Rp.
-                      {dashboardData.pieChart.totalPlanning.toLocaleString(
-                        "id-ID"
-                      )}
+                      {(
+                        dashboardData.pieChart.totalPlanning || 0
+                      ).toLocaleString("id-ID")}
                     </div>
                     <ResponsiveContainer
                       width="100%"
@@ -656,9 +660,9 @@ const Dashboard = () => {
                       Total
                       <br />
                       Rp.
-                      {dashboardData.pieChart.totalRealization.toLocaleString(
-                        "id-ID"
-                      )}
+                      {(
+                        dashboardData.pieChart.totalRealization || 0
+                      ).toLocaleString("id-ID")}
                     </div>
                     <ResponsiveContainer width="100%" height={300}>
                       <PieChart>
@@ -772,8 +776,9 @@ const Dashboard = () => {
                           {new Date(item.date).toLocaleDateString("id-ID")}
                         </td>
                         <td className="px-4 py-2 text-center">
-                          Rp. {item.amount.toLocaleString("id-ID")}
+                          Rp. {(item.amount || 0).toLocaleString("id-ID")}
                         </td>
+
                         <td className="px-4 py-2 text-center">
                           <span
                             className={`font-semibold ${
@@ -797,7 +802,7 @@ const Dashboard = () => {
                                 : "bg-red-100 text-red-600"
                             }`}
                           >
-                            {item.status}
+                            {item.status || "Unknown"}
                           </span>
                         </td>
                       </tr>
