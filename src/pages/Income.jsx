@@ -2,9 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
-import ReactLoading from "react-loading"; // Tambahkan ReactLoading untuk indikator loading
 import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css"; // Optional: untuk styling default skeleton
+import "react-loading-skeleton/dist/skeleton.css";
 
 const Income = () => {
   const [incomeData, setIncomeData] = useState([]); // State untuk menyimpan data income
