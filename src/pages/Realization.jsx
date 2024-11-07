@@ -128,7 +128,7 @@ const Realization = () => {
 
           <div className="flex justify-end items-center mb-6">
             <button
-              className="flex items-center justify-center bg-[#B4252A] text-white font-semibold py-2 px-5 rounded-lg hover:bg-[#8E1F22] shadow-md text-base sm:text-sm md:text-base lg:text-lg h-10 w-36 sm:w-32 md:w-36 lg:w-40"
+              className="flex items-center justify-center bg-[#B4252A] text-white font-semibold py-2 px-5 rounded-lg hover:bg-[#8E1F22] shadow-md text-base sm:text-sm md:text-base lg:text-md h-10 w-36 sm:w-32 md:w-36 lg:w-40"
               onClick={() => setIsPlanPopUpOpen(true)}
             >
               <TbEdit className="mr-2" /> Edit
