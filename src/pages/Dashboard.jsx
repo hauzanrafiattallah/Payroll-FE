@@ -222,7 +222,7 @@ const Dashboard = () => {
     }
   };
 
-  const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+  const COLORS = ["#EA9B4D", "#48B121", "#617BFF", "#FF617B", "#FFD761"];
 
   const renderPagination = () => {
     const pageNumbers = [];
