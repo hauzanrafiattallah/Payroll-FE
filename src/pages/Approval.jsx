@@ -3,7 +3,7 @@ import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import TransactionPopUp from "../components/TransactionPopUp";
-import { PiHandWithdrawBold, PiHandDepositBold } from "react-icons/pi"; // Import icons
+import { PiHandWithdrawBold, PiHandDepositBold } from "react-icons/pi";
 import ReactLoading from "react-loading";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -17,11 +17,10 @@ const Approval = () => {
   const [approvalData, setApprovalData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isTransactionPopupOpen, setIsTransactionPopupOpen] = useState(false);
-  const [isConfirming, setIsConfirming] = useState(false); // State untuk loading saat confirm
+  const [isConfirming, setIsConfirming] = useState(false);
 
-  const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
+  const authToken = localStorage.getItem("token");
 
-  // Fetch data approval dari API
   useEffect(() => {
     const fetchApprovalData = async () => {
       setLoading(true);
@@ -30,12 +29,12 @@ const Approval = () => {
           `${import.meta.env.VITE_API_URL}/pending`,
           {
             headers: {
-              Authorization: `Bearer ${authToken}`, // Sertakan token di header
+              Authorization: `Bearer ${authToken}`,
               Accept: "application/json",
             },
           }
         );
-        setApprovalData(response.data.data.data); // Menyimpan data approval ke state
+        setApprovalData(response.data.data.data);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching approval data:", error);
@@ -48,16 +47,15 @@ const Approval = () => {
   }, [authToken]);
 
   const handleConfirmClick = (type, transaction) => {
-    setSelectedTransaction(transaction); // Set data transaksi yang dipilih
-    setActionType(type); // Set action type (approve atau decline)
-    setIsConfirmPopupOpen(true); // Buka confirm popup
+    setSelectedTransaction(transaction);
+    setActionType(type);
+    setIsConfirmPopupOpen(true);
   };
 
   const handleCloseConfirmPopup = () => {
-    setIsConfirmPopupOpen(false); // Tutup confirm popup
+    setIsConfirmPopupOpen(false);
   };
 
-  // Fungsi untuk approve atau decline transaksi
   const handleAction = async () => {
     if (!selectedTransaction) {
       toast.error("Tidak ada transaksi yang dipilih!");
@@ -70,7 +68,7 @@ const Approval = () => {
     }`;
 
     try {
-      setIsConfirming(true); // Aktifkan loading saat confirm
+      setIsConfirming(true);
       const response = await axios.post(
         endpoint,
         { status },
@@ -84,12 +82,10 @@ const Approval = () => {
       if (response.data.status) {
         toast.success(`Transaksi berhasil di${status}`);
 
-        // Update UI: Hapus transaksi yang sudah di-approve atau di-decline dari state
         setApprovalData((prevData) =>
           prevData.filter((item) => item.id !== selectedTransaction.id)
         );
 
-        // Reset selected transaction setelah selesai
         setSelectedTransaction(null);
       } else {
         toast.error(`Gagal ${status} transaksi`);
@@ -97,24 +93,22 @@ const Approval = () => {
     } catch (error) {
       toast.error(`Gagal ${status} transaksi`);
     } finally {
-      setIsConfirming(false); // Nonaktifkan loading setelah selesai
+      setIsConfirming(false);
     }
 
     handleCloseConfirmPopup();
   };
 
-  // Handle outside click to close confirm popup
   const handleOutsideClick = (e) => {
     if (e.target.id === "confirm-popup-background") {
-      setIsConfirmPopupOpen(false); // Close confirm popup if clicking outside
+      setIsConfirmPopupOpen(false);
     }
   };
 
-  // Fungsi untuk menampilkan popup detail transaksi
   const handleTransactionClick = (transaction) => {
     if (transaction && transaction.id) {
-      setSelectedTransaction(transaction); // Simpan transaksi yang dipilih
-      setIsTransactionPopupOpen(true); // Buka TransactionPopup
+      setSelectedTransaction(transaction);
+      setIsTransactionPopupOpen(true);
     } else {
       toast.error("Transaksi tidak valid");
     }
@@ -181,12 +175,11 @@ const Approval = () => {
                     (e.currentTarget.style.boxShadow =
                       "0 0 15px 3px rgba(180, 37, 42, 0.15)")
                   }
-                  onMouseLeave={
-                    (e) =>
-                      (e.currentTarget.style.boxShadow =
-                        "0 0 8px 2px rgba(0, 0, 0, 0.05)") // Kembali ke shadow default saat tidak di-hover
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.boxShadow =
+                      "0 0 8px 2px rgba(0, 0, 0, 0.05)")
                   }
-                  onClick={() => handleTransactionClick(item)} // Ketika item diklik, tampilkan detail transaksi
+                  onClick={() => handleTransactionClick(item)}
                 >
                   {/* Type and Transaction Details */}
                   <div className="flex items-center mb-4 space-x-4 md:mb-0">
@@ -263,7 +256,7 @@ const Approval = () => {
         <TransactionPopUp
           isOpen={isTransactionPopupOpen}
           onClose={() => setIsTransactionPopupOpen(false)}
-          transactionId={selectedTransaction.id} // Kirim ID transaksi ke TransactionPopup
+          transactionId={selectedTransaction.id}
         />
       )}
 
@@ -272,7 +265,7 @@ const Approval = () => {
         <div
           id="confirm-popup-background"
           className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30"
-          onClick={handleOutsideClick} // Close on outside click
+          onClick={handleOutsideClick}
         >
           <div className="w-[90%] max-w-[400px] p-8 bg-white rounded-lg shadow-lg">
             <h2 className="mb-8 text-xl font-semibold text-center">
@@ -294,7 +287,7 @@ const Approval = () => {
                 <button
                   className="w-32 h-10 px-4 py-2 text-white bg-[#B4252A] rounded-lg hover:bg-red-800 transition-colors duration-200"
                   onClick={handleAction}
-                  disabled={isConfirming} // Disable tombol saat loading
+                  disabled={isConfirming}
                 >
                   Confirm
                 </button>
