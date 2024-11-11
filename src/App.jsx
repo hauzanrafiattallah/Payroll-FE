@@ -15,6 +15,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PlanningDetails from "./pages/PlanningDetails";
 import Realization from "./pages/Realization";
+import RealizationDetails from "./pages/RealizationDetails";
 import Compare from "./pages/Compare";
 
 const App = () => {
@@ -90,6 +91,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <Realization />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/realization/:id"
+          element={
+            <ProtectedRoute>
+              <RealizationDetails />
             </ProtectedRoute>
           }
         />

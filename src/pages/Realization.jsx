@@ -6,10 +6,8 @@ import PlanPopUp from "../components/PlanPopUp";
 import PlanPopUpEdit from "../components/PlanPopUpEdit";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { FaPencilAlt, FaPlus } from "react-icons/fa";
-import { MdEdit } from "react-icons/md";
-import { BsPencilSquare } from "react-icons/bs";
 import { TbEdit } from "react-icons/tb";
+import { useNavigate } from "react-router-dom";
 
 const Realization = () => {
   const [realizations, setRealizations] = useState([]);
@@ -19,6 +17,7 @@ const Realization = () => {
   const [selectedRealization, setSelectedRealization] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
+  const navigate = useNavigate(); // Add navigate hook for navigation
 
   const fetchRealizations = async (page = 1) => {
     const token = localStorage.getItem("token");
@@ -116,6 +115,10 @@ const Realization = () => {
     }
   };
 
+  const handleCardClick = (realizationId) => {
+    navigate(`/realization/${realizationId}`);
+  };
+
   return (
     <>
       <Topbar />
@@ -177,6 +180,7 @@ const Realization = () => {
               : realizations.map((realization) => (
                   <div
                     key={realization.id}
+                    onClick={() => handleCardClick(realization.id)} // Navigate to detail on click
                     className="p-5 bg-white border rounded-lg shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center transition-shadow cursor-pointer transform hover:-translate-y-1"
                     style={{
                       boxShadow: "0 0 8px 2px rgba(0, 0, 0, 0.05)",
