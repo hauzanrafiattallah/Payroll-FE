@@ -7,6 +7,7 @@ import PlanPopUp from "../components/PlanPopUp";
 import PlanPopUpEdit from "../components/PlanPopUpEdit";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { useNavigate } from "react-router-dom";
 
 const Planning = () => {
   const [plans, setPlans] = useState([]);
@@ -17,6 +18,8 @@ const Planning = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  
+  const navigate = useNavigate(); // For navigation to details page
 
   const fetchPlans = async (page = 1) => {
     const token = localStorage.getItem("token");
@@ -115,6 +118,10 @@ const Planning = () => {
     }
   };
 
+  const handleCardClick = (planId) => {
+    navigate(`/planning/${planId}`); // Navigate to the correct route
+  };
+
   return (
     <>
       <Topbar />
@@ -128,7 +135,7 @@ const Planning = () => {
           <div className="flex justify-end items-center mb-6">
             <button
               className="flex items-center justify-center bg-[#B4252A] text-white font-semibold py-2 px-5 rounded-lg hover:bg-[#8E1F22] shadow-md text-base sm:text-sm md:text-base lg:text-md h-10 w-36 sm:w-32 md:w-36 lg:w-40"
-              // onClick={() => setIsPlanPopUpOpen(true)}
+              onClick={() => setIsPlanPopUpOpen(true)}
             >
               <FaPlus className="mr-2" /> New Plan
             </button>
@@ -176,6 +183,7 @@ const Planning = () => {
               : plans.map((plan) => (
                   <div
                     key={plan.id}
+                    onClick={() => handleCardClick(plan.id)}
                     className="p-5 bg-white border rounded-lg shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center transition-shadow cursor-pointer transform hover:-translate-y-1"
                     style={{
                       boxShadow: "0 0 8px 2px rgba(0, 0, 0, 0.05)",
