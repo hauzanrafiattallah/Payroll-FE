@@ -46,8 +46,8 @@ const Dashboard = () => {
   const [prevPageUrl, setPrevPageUrl] = useState(null);
   const [loading, setLoading] = useState(true);
   const authToken = localStorage.getItem("token");
-  const [selectedYearBarChart, setSelectedYearBarChart] = useState(2024); // Tahun untuk BarChart
-  const [selectedYearPieChart, setSelectedYearPieChart] = useState(2024); // Tahun untuk PieChart
+  const [selectedYearBarChart, setSelectedYearBarChart] = useState(2024); 
+  const [selectedYearPieChart, setSelectedYearPieChart] = useState(2024); 
   const [showYearDropdownBarChart, setShowYearDropdownBarChart] =
     useState(false);
   const [showYearDropdownPieChart, setShowYearDropdownPieChart] =
@@ -77,7 +77,7 @@ const Dashboard = () => {
     };
   }, []);
 
-  // getBackgroundColor
+  
   const getBackgroundColor = (section) => {
     if (filter.type === "income" && section === "income") {
       return "bg-[#B4252A] text-white";
@@ -90,7 +90,7 @@ const Dashboard = () => {
     }
   };
 
-  // Data tahun yang tersedia di dropdown
+  
   const years = [2025, 2024, 2023, 2022, 2021];
 
   useEffect(() => {
@@ -145,8 +145,8 @@ const Dashboard = () => {
           {
             params: {
               transaction_type: filter.type === "All" ? "" : filter.type,
-              start_date: filter.startDate || "", // Menambahkan start_date
-              end_date: filter.endDate || "", // Menambahkan end_date
+              start_date: filter.startDate || "", 
+              end_date: filter.endDate || "", 
               page: currentPage,
               limit: 10,
             },
@@ -277,7 +277,7 @@ const Dashboard = () => {
     return pageNumbers;
   };
 
-  // Skeleton Loading
+  
   const renderSkeleton = () => (
     <>
       {/* Skeleton for Balance, Income, Expense */}
@@ -461,7 +461,7 @@ const Dashboard = () => {
                     className="flex items-center px-4 py-2 text-sm font-semibold text-black bg-white border rounded-md shadow-sm hover:bg-gray-100 border-gray-300"
                     onClick={() => {
                       setShowYearDropdownBarChart(!showYearDropdownBarChart);
-                      setShowYearDropdownPieChart(false); // Pastikan hanya satu dropdown terbuka pada satu waktu
+                      setShowYearDropdownPieChart(false); 
                     }}
                   >
                     <FaCalendarAlt className="mr-2" /> {selectedYearBarChart}
@@ -542,14 +542,14 @@ const Dashboard = () => {
                     </div>
                     <ResponsiveContainer
                       width="100%"
-                      height={window.innerWidth < 640 ? 250 : 300} // Ukuran lebih kecil untuk mobile
+                      height={window.innerWidth < 640 ? 250 : 300} 
                     >
                       <PieChart>
                         <Pie
                           data={dashboardData.pieChart.planningData}
                           dataKey="value"
                           nameKey="name"
-                          outerRadius={window.innerWidth < 640 ? 80 : 100} // Ukuran lebih kecil untuk mobile
+                          outerRadius={window.innerWidth < 640 ? 80 : 100} 
                         >
                           {dashboardData.pieChart.planningData.map(
                             (entry, index) => (
@@ -568,7 +568,7 @@ const Dashboard = () => {
                           layout={
                             window.innerWidth < 640 ? "horizontal" : "vertical"
                           }
-                          iconSize={0} // Menghilangkan ikon bawaan
+                          iconSize={0} 
                           wrapperStyle={{
                             display: "flex",
                             flexDirection:
@@ -631,7 +631,7 @@ const Dashboard = () => {
                           setShowYearDropdownPieChart(
                             !showYearDropdownPieChart
                           );
-                          setShowYearDropdownBarChart(false); // Pastikan hanya satu dropdown terbuka pada satu waktu
+                          setShowYearDropdownBarChart(false); 
                         }}
                       >
                         <FaCalendarAlt className="mr-2" />{" "}
@@ -670,7 +670,7 @@ const Dashboard = () => {
                           data={dashboardData.pieChart.realizationData}
                           dataKey="value"
                           nameKey="name"
-                          outerRadius={window.innerWidth < 640 ? 80 : 100} // Ukuran lebih kecil untuk mobile
+                          outerRadius={window.innerWidth < 640 ? 80 : 100} 
                         >
                           {dashboardData.pieChart.realizationData.map(
                             (entry, index) => (
