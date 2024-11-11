@@ -18,8 +18,8 @@ const Planning = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [loading, setLoading] = useState(true);
-  
-  const navigate = useNavigate(); // For navigation to details page
+
+  const navigate = useNavigate();
 
   const fetchPlans = async (page = 1) => {
     const token = localStorage.getItem("token");
@@ -119,7 +119,7 @@ const Planning = () => {
   };
 
   const handleCardClick = (planId) => {
-    navigate(`/planning/${planId}`); // Navigate to the correct route
+    navigate(`/planning/${planId}`);
   };
 
   return (
