@@ -12,16 +12,16 @@ import { BiGitCompare } from "react-icons/bi";
 const Sidebar = () => {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
-  const [loading, setLoading] = useState(false); // State for loading
-  const [role, setRole] = useState(localStorage.getItem("role")); // Ambil role dari localStorage jika ada
+  const [loading, setLoading] = useState(false); 
+  const [role, setRole] = useState(localStorage.getItem("role")); 
 
-  // Ambil role dari API user jika belum ada di localStorage
+  
   useEffect(() => {
     const fetchUserRole = async () => {
       if (!role) {
-        // Hanya fetch role jika belum ada di localStorage
+        
         try {
-          const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
+          const authToken = localStorage.getItem("token"); 
 
           const response = await axios.get(
             `${import.meta.env.VITE_API_URL}/user`,
@@ -34,8 +34,8 @@ const Sidebar = () => {
           );
 
           const userRole = response.data.role;
-          setRole(userRole); // Set role pengguna dari API
-          localStorage.setItem("role", userRole); // Simpan role ke localStorage
+          setRole(userRole); 
+          localStorage.setItem("role", userRole); 
         } catch (error) {
           console.error("Error fetching user role:", error);
           toast.error("Gagal mendapatkan data pengguna.");
@@ -43,8 +43,8 @@ const Sidebar = () => {
       }
     };
 
-    fetchUserRole(); // Panggil fungsi untuk ambil role saat komponen di-mount
-  }, [role]); // Hanya panggil useEffect jika role tidak ada
+    fetchUserRole(); 
+  }, [role]); 
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -81,7 +81,7 @@ const Sidebar = () => {
             <li
               className={`flex items-center rounded-lg p-2 transition-colors duration-200 ${
                 location.pathname === "/"
-                  ? "bg-[#FDE8E8] text-[#B4252A]" // Background merah dan teks merah saat aktif
+                  ? "bg-[#FDE8E8] text-[#B4252A]" 
                   : "text-gray-700 hover:bg-gray-100 hover:text-[#B4252A]"
               }`}
             >
@@ -94,7 +94,7 @@ const Sidebar = () => {
             <li
               className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
                 location.pathname === "/planning"
-                  ? "bg-[#FDE8E8] text-[#B4252A]" // Background merah dan teks merah saat aktif
+                  ? "bg-[#FDE8E8] text-[#B4252A]" 
                   : "text-gray-700 hover:bg-gray-100 hover:text-[#B4252A]"
               }`}
             >
@@ -107,7 +107,7 @@ const Sidebar = () => {
             <li
               className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
                 location.pathname === "/realization"
-                  ? "bg-[#FDE8E8] text-[#B4252A]" // Background merah dan teks merah saat aktif
+                  ? "bg-[#FDE8E8] text-[#B4252A]" 
                   : "text-gray-700 hover:bg-gray-100 hover:text-[#B4252A]"
               }`}
             >
@@ -120,7 +120,7 @@ const Sidebar = () => {
             <li
               className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
                 location.pathname === "/export"
-                  ? "bg-[#FDE8E8] text-[#B4252A]" // Background merah dan teks merah saat aktif
+                  ? "bg-[#FDE8E8] text-[#B4252A]" 
                   : "text-gray-700 hover:bg-gray-100 hover:text-[#B4252A]"
               }`}
             >
@@ -133,7 +133,7 @@ const Sidebar = () => {
             <li
               className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
                 location.pathname === "/compare"
-                  ? "bg-[#FDE8E8] text-[#B4252A]" // Background merah dan teks merah saat aktif
+                  ? "bg-[#FDE8E8] text-[#B4252A]" 
                   : "text-gray-700 hover:bg-gray-100 hover:text-[#B4252A]"
               }`}
             >
@@ -146,7 +146,7 @@ const Sidebar = () => {
             <li
               className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
                 location.pathname === "/income"
-                  ? "bg-[#FDE8E8] text-[#B4252A]" // Background merah dan teks merah saat aktif
+                  ? "bg-[#FDE8E8] text-[#B4252A]" 
                   : "text-gray-700 hover:bg-gray-100 hover:text-[#B4252A]"
               }`}
             >
@@ -159,7 +159,7 @@ const Sidebar = () => {
             <li
               className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
                 location.pathname === "/expenses"
-                  ? "bg-[#FDE8E8] text-[#B4252A]" // Background merah dan teks merah saat aktif
+                  ? "bg-[#FDE8E8] text-[#B4252A]" 
                   : "text-gray-700 hover:bg-gray-100 hover:text-[#B4252A]"
               }`}
             >
@@ -173,7 +173,7 @@ const Sidebar = () => {
               <li
                 className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
                   location.pathname === "/approval"
-                    ? "bg-[#FDE8E8] text-[#B4252A]" // Background merah dan teks merah saat aktif
+                    ? "bg-[#FDE8E8] text-[#B4252A]" 
                     : "text-gray-700 hover:bg-gray-100 hover:text-[#B4252A]"
                 }`}
               >
