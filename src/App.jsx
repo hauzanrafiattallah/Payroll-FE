@@ -20,7 +20,6 @@ import Compare from "./pages/Compare";
 const App = () => {
   return (
     <Router>
-      {/* ToastContainer*/}
       <ToastContainer
         position="top-center"
         autoClose={3000}
@@ -36,9 +35,8 @@ const App = () => {
       />
 
       <Routes>
-        <Route path="/login" element={<Login />} /> {/* Halaman Login */}
-        <Route path="/register" element={<Register />} />{" "}
-        {/* Halaman Register */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route
           path="/"
           element={
@@ -128,7 +126,6 @@ const App = () => {
           }
         />
         <Route path="*" element={<NotFound />} />
-        {/* Halaman jika rute tidak ditemukan */}
       </Routes>
     </Router>
   );
