@@ -3,17 +3,16 @@ import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import { useParams, useNavigate } from "react-router-dom";
-import ReactLoading from "react-loading"; 
+import ReactLoading from "react-loading";
 
 const PlanningDetails = () => {
-  const { id } = useParams(); // Retrieve the ID parameter from the URL
-  const [planning, setPlanning] = useState(null); // State to store planning data
-  const [loading, setLoading] = useState(true); // State to manage loading status
-  const navigate = useNavigate(); // For navigation to other pages
+  const { id } = useParams();
+  const [planning, setPlanning] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-  // Fetch planning data by ID from the API
   const fetchPlanningById = async () => {
-    const token = localStorage.getItem("token"); // Get token from localStorage
+    const token = localStorage.getItem("token");
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/planning/${id}`,
@@ -22,23 +21,22 @@ const PlanningDetails = () => {
         }
       );
       if (response.data.status) {
-        setPlanning(response.data.data); // Set planning data if response is successful
+        setPlanning(response.data.data);
       } else {
         console.error("Error: No data found.");
       }
     } catch (error) {
-      console.error("Error fetching planning details:", error); // Handle API errors
+      console.error("Error fetching planning details:", error);
     } finally {
-      setLoading(false); // Stop loading after data retrieval
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchPlanningById(); // Fetch data when component mounts or ID changes
+    fetchPlanningById();
   }, [id]);
 
   if (loading) {
-    // Display a loading spinner while data is being fetched
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-10">
         <ReactLoading type="spin" color="#B4252A" height={50} width={50} />
@@ -47,7 +45,6 @@ const PlanningDetails = () => {
   }
 
   if (!planning) {
-    // Show a message if no planning data is found
     return (
       <div className="text-center py-8">
         <h2 className="text-lg font-bold text-red-500">
@@ -73,28 +70,28 @@ const PlanningDetails = () => {
 
   return (
     <>
-      <Topbar /> {/* Top navigation bar */}
+      <Topbar />
       <div className="flex flex-col mt-20 lg:flex-row">
-        <Sidebar /> {/* Sidebar component for navigation */}
+        <Sidebar />
         <div className="w-full p-8 mx-auto mt-2 lg:max-w-full lg:ml-72">
           <h1 className="mb-6 text-2xl font-bold text-center lg:text-left">
-            Planning / Planning Details
+            <span className="text-gray-600">Planning /</span> Planning Details
           </h1>
 
-          {/* Information Section displaying planning details */}
+          {/* Information Section */}
           <div className="bg-white p-8 rounded-lg shadow-lg">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8">
-              <div className="text-center sm:text-left">
+              <div className="text-left">
                 <p className="text-gray-500 font-semibold">Kegiatan</p>
               </div>
-              <div className="text-center sm:text-right">
+              <div className="text-right">
                 <h2 className="text-lg font-bold">{planning.title}</h2>
               </div>
 
-              <div className="text-center sm:text-left">
+              <div className="text-left">
                 <p className="text-gray-500 font-semibold">Start Date</p>
               </div>
-              <div className="text-center sm:text-right">
+              <div className="text-right">
                 <h2 className="text-lg font-bold">
                   {new Date(planning.start_date).toLocaleDateString("id-ID", {
                     day: "2-digit",
@@ -104,10 +101,10 @@ const PlanningDetails = () => {
                 </h2>
               </div>
 
-              <div className="text-center sm:text-left">
+              <div className="text-left">
                 <p className="text-gray-500 font-semibold">End Date</p>
               </div>
-              <div className="text-center sm:text-right">
+              <div className="text-right">
                 <h2 className="text-lg font-bold">
                   {new Date(planning.end_date).toLocaleDateString("id-ID", {
                     day: "2-digit",
@@ -118,62 +115,69 @@ const PlanningDetails = () => {
               </div>
             </div>
 
-            {/* Table displaying item details */}
-            <div className="mt-6 p-6 bg-white rounded-lg shadow-2xl">
-              <h3 className="text-2xl font-bold mb-4 text-center">Items</h3>
-              <table className="min-w-full bg-white border border-gray-200">
-                <thead>
-                  <tr>
-                    <th className="border px-4 py-2">Tanggal</th>
-                    <th className="border px-4 py-2">Keterangan</th>
-                    <th className="border px-4 py-2">Nilai Bruto</th>
-                    <th className="border px-4 py-2">Nilai Pajak</th>
-                    <th className="border px-4 py-2">Nilai Netto</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {planning.item.map((item) => (
-                    <tr key={item.id}>
-                      <td className="border px-4 py-2">
-                        {new Date(item.date).toLocaleDateString("id-ID", {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                        })}
+            {/* Items Title */}
+            <h3 className="text-xl font-bold text-center my-6">Items</h3>
+
+            {/* Items Table */}
+            <div className="p-6 bg-white rounded-lg shadow-lg">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="text-gray-700">
+                      <th className="py-2 px-4">Tanggal</th>
+                      <th className="py-2 px-4">Keterangan</th>
+                      <th className="py-2 px-4">Nilai Bruto</th>
+                      <th className="py-2 px-4">Nilai Pajak</th>
+                      <th className="py-2 px-4">Nilai Netto</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {planning.item.map((item) => (
+                      <tr key={item.id} className="text-gray-900">
+                        <td className="py-2 px-4 text-gray-600">
+                          {new Date(item.date).toLocaleDateString("id-ID", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          })}
+                        </td>
+                        <td className="py-2 px-4 text-gray-600">
+                          {item.information}
+                        </td>
+                        <td className="py-2 px-4">
+                          Rp.{item.bruto_amount.toLocaleString("id-ID")}
+                        </td>
+                        <td className="py-2 px-4">
+                          Rp.{item.tax_amount.toLocaleString("id-ID")}
+                        </td>
+                        <td className="py-2 px-4">
+                          Rp.{item.netto_amount.toLocaleString("id-ID")}
+                        </td>
+                      </tr>
+                    ))}
+                    <tr className="font-semibold text-red-600">
+                      <td colSpan="2" className="py-2 px-4 text-left">
+                        Total
                       </td>
-                      <td className="border px-4 py-2">{item.information}</td>
-                      <td className="border px-4 py-2">
-                        Rp.{item.bruto_amount.toLocaleString("id-ID")}
+                      <td className="py-2 px-4">
+                        Rp.{totalBruto.toLocaleString("id-ID")}
                       </td>
-                      <td className="border px-4 py-2">
-                        Rp.{item.tax_amount.toLocaleString("id-ID")}
+                      <td className="py-2 px-4">
+                        Rp.{totalPajak.toLocaleString("id-ID")}
                       </td>
-                      <td className="border px-4 py-2">
-                        Rp.{item.netto_amount.toLocaleString("id-ID")}
+                      <td className="py-2 px-4">
+                        Rp.{totalNetto.toLocaleString("id-ID")}
                       </td>
                     </tr>
-                  ))}
-                  {/* Row showing the total amounts */}
-                  <tr>
-                    <td className="border px-4 py-2 font-bold text-right" colSpan="2">Total</td>
-                    <td className="border px-4 py-2 font-bold">
-                      Rp.{totalBruto.toLocaleString("id-ID")}
-                    </td>
-                    <td className="border px-4 py-2 font-bold">
-                      Rp.{totalPajak.toLocaleString("id-ID")}
-                    </td>
-                    <td className="border px-4 py-2 font-bold">
-                      Rp.{totalNetto.toLocaleString("id-ID")}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                  </tbody>
+                </table>
+              </div>
             </div>
 
-            {/* Button to go back to the previous page */}
+            {/* Close Button */}
             <div className="flex justify-center mt-6">
               <button
-                className="bg-[#B4252A] text-white font-bold py-2 px-6 rounded-lg hover:bg-[#8E1F22]"
+                className="bg-[#B4252A] text-white font-bold py-2 px-8 rounded-lg hover:bg-[#8E1F22]"
                 onClick={() => navigate(-1)}
               >
                 Close
