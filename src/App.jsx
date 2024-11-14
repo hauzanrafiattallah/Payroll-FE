@@ -17,6 +17,7 @@ import PlanningDetails from "./pages/PlanningDetails";
 import Realization from "./pages/Realization";
 import RealizationDetails from "./pages/RealizationDetails";
 import Compare from "./pages/Compare";
+import AddPlanning from "./pages/AddPlanning";
 
 const App = () => {
   return (
@@ -83,6 +84,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <PlanningDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/add-planning"
+          element={
+            <ProtectedRoute>
+              <AddPlanning />
             </ProtectedRoute>
           }
         />
