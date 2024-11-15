@@ -5,8 +5,6 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Planning from "./pages/Planning";
 import Export from "./pages/Export";
-import Income from "./pages/Income";
-import Expenses from "./pages/Expenses";
 import Approval from "./pages/Approval";
 import Profile from "./pages/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -56,22 +54,7 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/income"
-          element={
-            <ProtectedRoute>
-              <Income />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/expenses"
-          element={
-            <ProtectedRoute>
-              <Expenses />
-            </ProtectedRoute>
-          }
-        />
+
         <Route
           path="/planning"
           element={
