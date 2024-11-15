@@ -95,19 +95,6 @@ const Compare = () => {
     if (page >= 1 && page <= lastPage) setCurrentPage(page);
   };
 
-  const getStatusClass = (status) => {
-    switch (status) {
-      case "approve":
-        return "bg-[#48B12129] text-[#48B121]";
-      case "pending":
-        return "bg-orange-100 text-orange-700";
-      case "decline":
-        return "bg-red-100 text-red-700";
-      default:
-        return "bg-gray-100 text-gray-600";
-    }
-  };
-
   return (
     <>
       <Topbar />
@@ -128,7 +115,7 @@ const Compare = () => {
                       boxShadow: "0 0 8px 2px rgba(0, 0, 0, 0.05)",
                     }}
                   >
-                    <Skeleton width={200} height={24} />
+                    <Skeleton width={100} height={24} />
                     <div className="flex space-x-4 mt-4 md:mt-0 justify-center w-full md:w-auto">
                       <div className="flex flex-col items-center text-center">
                         <Skeleton width={50} height={15} />
