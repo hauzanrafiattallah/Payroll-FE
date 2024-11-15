@@ -1,35 +1,17 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import { FaPlus, FaTrash } from "react-icons/fa";
+import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AddPlanning = () => {
+  const location = useLocation();
+  const planningId = location.state?.planningId; // Access planning_id from the navigation state
   const navigate = useNavigate();
-  const [items, setItems] = useState([
-    {
-      date: "2024-10-21",
-      information: "Ini Adalah Keterangan Dari Item 1",
-      bruto: 200000000,
-      tax: 20000000,
-      netto: 180000000,
-    },
-    {
-      date: "2024-10-21",
-      information: "Ini Adalah Keterangan Dari Item 2",
-      bruto: 200000000,
-      tax: 20000000,
-      netto: 180000000,
-    },
-    {
-      date: "2024-10-21",
-      information: "Ini Adalah Keterangan Dari Item 3",
-      bruto: 200000000,
-      tax: 20000000,
-      netto: 180000000,
-    },
-  ]);
-
+  const [items, setItems] = useState([]);
   const [isAddItemMode, setIsAddItemMode] = useState(false);
 
   const totalBruto = items.reduce((sum, item) => sum + item.bruto, 0);
@@ -47,9 +29,7 @@ const AddPlanning = () => {
   const handleInputChange = (index, field, value) => {
     const newItems = [...items];
     newItems[index][field] =
-      field === "bruto" || field === "tax"
-        ? parseInt(value) || 0
-        : value;
+      field === "bruto" || field === "tax" ? parseInt(value) || 0 : value;
     if (field === "bruto" || field === "tax") {
       newItems[index].netto = newItems[index].bruto - newItems[index].tax;
     }
@@ -61,14 +41,42 @@ const AddPlanning = () => {
     setItems(newItems);
   };
 
-  const handleSave = () => {
-    setIsAddItemMode(false);
+  const handleSave = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      for (let item of items) {
+        await axios.post(
+          `${import.meta.env.VITE_API_URL}/item`,
+          {
+            planning_id: planningId, // Use the planning_id from the popup
+            date: item.date,
+            information: item.information,
+            bruto_amount: item.bruto,
+            tax_amount: item.tax,
+            netto_amount: item.netto,
+            category: "internal",
+            isAddition: 1,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+      }
+
+      toast.success("Items added successfully!");
+      setIsAddItemMode(false); // Exit add item mode after saving
+    } catch (error) {
+      console.error("Error adding item:", error);
+      toast.error("Failed to add item. Please try again.");
+    }
   };
 
   const handleClose = () => {
     navigate(-1);
   };
-
   return (
     <>
       <Topbar />
@@ -76,14 +84,18 @@ const AddPlanning = () => {
         <Sidebar />
         <div className="w-full p-8 mx-auto mt-2 lg:max-w-full lg:ml-72">
           <div className="bg-white p-8 rounded-lg shadow-lg mb-6">
-            <h1 className="text-2xl font-bold text-center mb-6">Add New Plan</h1>
+            <h1 className="text-2xl font-bold text-center mb-6">
+              Add New Plan
+            </h1>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8 mb-8">
               <div className="text-left">
                 <p className="text-gray-500 font-semibold">Kegiatan</p>
               </div>
               <div className="text-right">
-                <h2 className="text-lg font-bold">Planning For Conference ICYCYTA</h2>
+                <h2 className="text-lg font-bold">
+                  Planning For Conference ICYCYTA
+                </h2>
               </div>
               <div className="text-left">
                 <p className="text-gray-500 font-semibold">Start Date</p>
@@ -114,7 +126,10 @@ const AddPlanning = () => {
 
             <div className="p-6 bg-white rounded-lg shadow-lg">
               <div className="overflow-x-auto">
-                <table className="w-full text-left border-separate" style={{ borderSpacing: "0 8px" }}>
+                <table
+                  className="w-full text-left border-separate"
+                  style={{ borderSpacing: "0 8px" }}
+                >
                   <thead>
                     <tr className="text-gray-700">
                       <th className="py-2 px-4">Tanggal</th>
@@ -126,69 +141,125 @@ const AddPlanning = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {items.map((item, index) => (
-                      <tr key={index} className="text-gray-900 bg-white border rounded-lg shadow-md">
-                        {isAddItemMode ? (
-                          <>
-                            <td className="py-2 px-4">
-                              <input
-                                type="date"
-                                value={item.date}
-                                onChange={(e) => handleInputChange(index, "date", e.target.value)}
-                                className="border rounded p-1 w-full"
-                              />
-                            </td>
-                            <td className="py-2 px-4">
-                              <input
-                                type="text"
-                                value={item.information}
-                                onChange={(e) => handleInputChange(index, "information", e.target.value)}
-                                className="border rounded p-1 w-full"
-                              />
-                            </td>
-                            <td className="py-2 px-4">
-                              <input
-                                type="number"
-                                value={item.bruto}
-                                onChange={(e) => handleInputChange(index, "bruto", e.target.value)}
-                                className="border rounded p-1 w-full"
-                              />
-                            </td>
-                            <td className="py-2 px-4">
-                              <input
-                                type="number"
-                                value={item.tax}
-                                onChange={(e) => handleInputChange(index, "tax", e.target.value)}
-                                className="border rounded p-1 w-full"
-                              />
-                            </td>
-                          </>
-                        ) : (
-                          <>
-                            <td className="py-2 px-4">{item.date}</td>
-                            <td className="py-2 px-4">{item.information}</td>
-                            <td className="py-2 px-4">Rp.{item.bruto.toLocaleString("id-ID")}</td>
-                            <td className="py-2 px-4">Rp.{item.tax.toLocaleString("id-ID")}</td>
-                          </>
-                        )}
-                        <td className="py-2 px-4">Rp.{item.netto.toLocaleString("id-ID")}</td>
-                        <td className="py-2 px-4 text-right">
-                          <button
-                            onClick={() => removeItem(index)}
-                            className="bg-[#B4252A] text-white rounded-md p-2 w-10 h-10 flex items-center justify-center hover:bg-[#8E1F22] shadow-md"
-                          >
-                            <FaTrash />
-                          </button>
+                    {items.length === 0 ? (
+                      <tr>
+                        <td
+                          colSpan="6"
+                          className="text-center text-gray-500 py-4"
+                        >
+                          No items added yet.
                         </td>
                       </tr>
-                    ))}
-                    <tr className="font-semibold text-red-600">
-                      <td colSpan="2" className="py-2 px-4 text-left">Total</td>
-                      <td className="py-2 px-4">Rp.{totalBruto.toLocaleString("id-ID")}</td>
-                      <td className="py-2 px-4">Rp.{totalTax.toLocaleString("id-ID")}</td>
-                      <td className="py-2 px-4">Rp.{totalNetto.toLocaleString("id-ID")}</td>
-                      <td></td>
-                    </tr>
+                    ) : (
+                      <>
+                        {items.map((item, index) => (
+                          <tr
+                            key={index}
+                            className="text-gray-900 bg-white border rounded-lg shadow-md"
+                          >
+                            {isAddItemMode ? (
+                              <>
+                                <td className="py-2 px-4">
+                                  <input
+                                    type="date"
+                                    value={item.date}
+                                    onChange={(e) =>
+                                      handleInputChange(
+                                        index,
+                                        "date",
+                                        e.target.value
+                                      )
+                                    }
+                                    className="border rounded p-1 w-full"
+                                  />
+                                </td>
+                                <td className="py-2 px-4">
+                                  <input
+                                    type="text"
+                                    value={item.information}
+                                    onChange={(e) =>
+                                      handleInputChange(
+                                        index,
+                                        "information",
+                                        e.target.value
+                                      )
+                                    }
+                                    className="border rounded p-1 w-full"
+                                  />
+                                </td>
+                                <td className="py-2 px-4">
+                                  <input
+                                    type="number"
+                                    value={item.bruto}
+                                    onChange={(e) =>
+                                      handleInputChange(
+                                        index,
+                                        "bruto",
+                                        e.target.value
+                                      )
+                                    }
+                                    className="border rounded p-1 w-full"
+                                  />
+                                </td>
+                                <td className="py-2 px-4">
+                                  <input
+                                    type="number"
+                                    value={item.tax}
+                                    onChange={(e) =>
+                                      handleInputChange(
+                                        index,
+                                        "tax",
+                                        e.target.value
+                                      )
+                                    }
+                                    className="border rounded p-1 w-full"
+                                  />
+                                </td>
+                              </>
+                            ) : (
+                              <>
+                                <td className="py-2 px-4">{item.date}</td>
+                                <td className="py-2 px-4">
+                                  {item.information}
+                                </td>
+                                <td className="py-2 px-4">
+                                  Rp.{item.bruto.toLocaleString("id-ID")}
+                                </td>
+                                <td className="py-2 px-4">
+                                  Rp.{item.tax.toLocaleString("id-ID")}
+                                </td>
+                              </>
+                            )}
+                            <td className="py-2 px-4">
+                              Rp.{item.netto.toLocaleString("id-ID")}
+                            </td>
+                            <td className="py-2 px-4 text-right">
+                              <button
+                                onClick={() => removeItem(index)}
+                                className="bg-[#B4252A] text-white rounded-md p-2 w-10 h-10 flex items-center justify-center hover:bg-[#8E1F22] shadow-md"
+                              >
+                                <FaTrash />
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                        <tr className="font-semibold text-red-600">
+                          <td colSpan="2" className="py-2 px-4 text-left">
+                            Total
+                          </td>
+                          <td className="py-2 px-4">
+                            Rp.{totalBruto.toLocaleString("id-ID")}
+                          </td>
+                          <td className="py-2 px-4">
+                            Rp.{totalTax.toLocaleString("id-ID")}
+                          </td>
+                          <td className="py-2 px-4">
+                            Rp.{totalNetto.toLocaleString("id-ID")}
+                          </td>
+                          <td></td>
+                        </tr>
+                      </>
+                    )}
                   </tbody>
                 </table>
               </div>

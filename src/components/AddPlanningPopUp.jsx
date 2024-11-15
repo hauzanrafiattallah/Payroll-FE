@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AddPlanningPopUp = ({ isOpen, onClose }) => {
   const [animatePopup, setAnimatePopup] = useState(false);
+  const [title, setTitle] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,12 +33,33 @@ const AddPlanningPopUp = ({ isOpen, onClose }) => {
     setTimeout(onClose, 100); // Close the popup after the animation
   };
 
-  const stopPropagation = (e) => {
-    e.stopPropagation();
-  };
+  const handleNext = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/planning`,
+        {
+          title: title,
+          start_date: startDate,
+          end_date: endDate,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-  const handleNextClick = () => {
-    navigate("/add-planning"); // Navigate to the add planning page
+      if (response.data.status) {
+        toast.success("Planning Created Successfully");
+        const planningId = response.data.planning.id; // Get the created planning_id
+        closePopup();
+        navigate("/add-planning", { state: { planningId } }); // Pass planningId to the AddPlanning page
+      }
+    } catch (error) {
+      console.error("Error creating planning:", error);
+      toast.error("Failed to create planning. Please try again.");
+    }
   };
 
   return (
@@ -46,7 +73,7 @@ const AddPlanningPopUp = ({ isOpen, onClose }) => {
         className={`bg-white p-6 sm:p-8 rounded-lg shadow-lg transform transition-transform duration-200 ease-in-out ${
           animatePopup ? "translate-y-0" : "-translate-y-full"
         } relative z-10 w-[90%] max-w-lg sm:max-w-xl mx-auto`}
-        onClick={stopPropagation}
+        onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-6 text-center">
           <h2 className="text-2xl font-bold mb-2">Add Planning</h2>
@@ -59,6 +86,8 @@ const AddPlanningPopUp = ({ isOpen, onClose }) => {
           <label className="block text-sm font-semibold mb-1">Nama Kegiatan</label>
           <input
             type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
             placeholder="Masukan nama kegiatan.."
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-500"
           />
@@ -69,6 +98,8 @@ const AddPlanningPopUp = ({ isOpen, onClose }) => {
             <label className="block text-sm font-semibold mb-1">Start Date</label>
             <input
               type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-[#B4252A]"
             />
           </div>
@@ -76,6 +107,8 @@ const AddPlanningPopUp = ({ isOpen, onClose }) => {
             <label className="block text-sm font-semibold mb-1">End Date</label>
             <input
               type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-[#B4252A]"
             />
           </div>
@@ -90,7 +123,7 @@ const AddPlanningPopUp = ({ isOpen, onClose }) => {
           </button>
           <button
             className="px-6 py-2 text-white bg-[#B4252A] rounded-lg hover:bg-red-800 transition duration-200"
-            onClick={handleNextClick} // Navigate to the add planning page
+            onClick={handleNext} // Call handleNext to submit data and navigate
           >
             Next
           </button>
