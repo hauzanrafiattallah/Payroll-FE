@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
-import PlanPopUp from "../components/PlanPopUp";
-import PlanPopUpEdit from "../components/PlanPopUpEdit";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { TbEdit } from "react-icons/tb";
@@ -12,12 +10,10 @@ import { useNavigate } from "react-router-dom";
 const Realization = () => {
   const [realizations, setRealizations] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isPlanPopUpOpen, setIsPlanPopUpOpen] = useState(false);
-  const [isPlanPopUpEditOpen, setIsPlanPopUpEditOpen] = useState(false);
-  const [selectedRealization, setSelectedRealization] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
-  const navigate = useNavigate(); // Add navigate hook for navigation
+  const [isEditMode, setIsEditMode] = useState(false);
+  const navigate = useNavigate();
 
   const fetchRealizations = async (page = 1) => {
     const token = localStorage.getItem("token");
@@ -44,6 +40,10 @@ const Realization = () => {
   useEffect(() => {
     fetchRealizations(currentPage);
   }, [currentPage]);
+
+  const toggleEditMode = () => {
+    setIsEditMode(!isEditMode);
+  };
 
   const renderPagination = () => {
     const pageNumbers = [];
@@ -116,7 +116,14 @@ const Realization = () => {
   };
 
   const handleCardClick = (realizationId) => {
-    navigate(`/realization/${realizationId}`);
+    if (!isEditMode) {
+      navigate(`/realization/${realizationId}`);
+    }
+  };
+
+  const handleCardEdit = (e, realizationId) => {
+    e.stopPropagation();
+    navigate(`/realization/edit/${realizationId}`);
   };
 
   return (
@@ -131,10 +138,20 @@ const Realization = () => {
 
           <div className="flex justify-end items-center mb-6">
             <button
-              className="flex items-center justify-center bg-[#B4252A] text-white font-semibold py-2 px-5 rounded-lg hover:bg-[#8E1F22] shadow-md text-base sm:text-sm md:text-base lg:text-md h-10 w-36 sm:w-32 md:w-36 lg:w-40"
-              // onClick={() => setIsPlanPopUpOpen(true)}
+              onClick={toggleEditMode}
+              className={`flex items-center justify-center space-x-1 font-medium py-2 px-5 rounded-lg shadow-sm transition-colors ${
+                isEditMode
+                  ? "bg-red-700 text-white border border-red-700"
+                  : "bg-[#B4252A] text-white"
+              }`}
             >
-              <TbEdit className="mr-2" /> Edit
+              {isEditMode ? (
+                <>Close</> // When in edit mode
+              ) : (
+                <>
+                  <TbEdit className="mr-1" /> Edit
+                </>
+              )}
             </button>
           </div>
 
@@ -144,9 +161,7 @@ const Realization = () => {
                   <div
                     key={index}
                     className="p-5 bg-white border rounded-lg shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center"
-                    style={{
-                      boxShadow: "0 0 8px 2px rgba(0, 0, 0, 0.05)",
-                    }}
+                    style={{ boxShadow: "0 0 8px 2px rgba(0, 0, 0, 0.05)" }}
                   >
                     <div className="flex flex-col items-center md:items-start md:flex-row md:justify-between w-full">
                       <div className="flex flex-col items-center md:items-start text-center md:text-left space-y-2">
@@ -158,29 +173,12 @@ const Realization = () => {
                         <Skeleton width={150} height={20} />
                       </div>
                     </div>
-                    <div className="flex space-x-4 mt-4 md:mt-0 justify-center w-full md:w-auto">
-                      <div className="flex flex-col items-center text-center">
-                        <Skeleton width={50} height={15} />
-                        <div className="rounded-lg border border-gray-200 p-3 shadow-inner">
-                          <Skeleton width={30} height={20} />
-                          <Skeleton width={40} height={30} />
-                        </div>
-                      </div>
-
-                      <div className="flex flex-col items-center text-center">
-                        <Skeleton width={50} height={15} />
-                        <div className="rounded-lg border border-gray-200 p-3 shadow-inner bg-gray-50">
-                          <Skeleton width={30} height={20} />
-                          <Skeleton width={40} height={30} />
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 ))
               : realizations.map((realization) => (
                   <div
                     key={realization.id}
-                    onClick={() => handleCardClick(realization.id)} // Navigate to detail on click
+                    onClick={() => handleCardClick(realization.id)}
                     className="p-5 bg-white border rounded-lg shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center transition-shadow cursor-pointer transform hover:-translate-y-1"
                     style={{
                       boxShadow: "0 0 8px 2px rgba(0, 0, 0, 0.05)",
@@ -224,40 +222,59 @@ const Realization = () => {
                         </p>
                       </div>
                     </div>
-                    <div className="flex space-x-4 mt-4 md:mt-0 justify-center w-full md:w-auto">
-                      <div className="flex flex-col items-center text-center">
-                        <span className="text-xs font-medium text-gray-700 mb-1">
-                          Start
-                        </span>
-                        <div className="rounded-lg border border-gray-200 p-3 shadow-inner">
-                          <span className="block text-sm font-semibold text-gray-500">
-                            {new Date(realization.start_date).toLocaleString(
-                              "default",
-                              { month: "short" }
-                            )}
-                          </span>
-                          <span className="block text-2xl font-bold bg-white px-3 py-1 rounded-md shadow">
-                            {new Date(realization.start_date).getDate()}
-                          </span>
-                        </div>
-                      </div>
 
-                      <div className="flex flex-col items-center text-center">
-                        <span className="text-xs font-medium text-gray-700 mb-1">
-                          End
-                        </span>
-                        <div className="rounded-lg border border-gray-200 p-3 shadow-inner bg-gray-50">
-                          <span className="block text-sm font-semibold text-gray-500">
-                            {new Date(realization.end_date).toLocaleString(
-                              "default",
-                              { month: "short" }
-                            )}
-                          </span>
-                          <span className="block text-2xl font-bold bg-white px-3 py-1 rounded-md shadow">
-                            {new Date(realization.end_date).getDate()}
-                          </span>
-                        </div>
-                      </div>
+                    {/* Date or Edit Button Section */}
+                    <div className="flex space-x-4 mt-4 md:mt-0 justify-center w-full md:w-auto">
+                      {isEditMode ? (
+                        <button
+                          onClick={(e) => handleCardEdit(e, realization.id)}
+                          className="bg-red-100 text-red-700 font-semibold px-4 py-2 rounded-md hover:bg-red-200 flex items-center space-x-1 border border-red-300"
+                        >
+                          <TbEdit className="mr-1" />
+                          <span>Edit</span>
+                        </button>
+                      ) : (
+                        <>
+                          {/* Start Date */}
+                          <div className="flex flex-col items-center text-center">
+                            <span className="text-xs font-medium text-gray-700 mb-1">
+                              Start
+                            </span>
+                            <div className="rounded-lg border border-gray-200 p-3 shadow-inner">
+                              <span className="block text-sm font-semibold text-gray-500">
+                                {new Date(
+                                  realization.start_date
+                                ).toLocaleString("default", {
+                                  month: "short",
+                                })}
+                              </span>
+                              <span className="block text-2xl font-bold bg-white px-3 py-1 rounded-md shadow">
+                                {new Date(realization.start_date).getDate()}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* End Date */}
+                          <div className="flex flex-col items-center text-center">
+                            <span className="text-xs font-medium text-gray-700 mb-1">
+                              End
+                            </span>
+                            <div className="rounded-lg border border-gray-200 p-3 shadow-inner bg-gray-50">
+                              <span className="block text-sm font-semibold text-gray-500">
+                                {new Date(realization.end_date).toLocaleString(
+                                  "default",
+                                  {
+                                    month: "short",
+                                  }
+                                )}
+                              </span>
+                              <span className="block text-2xl font-bold bg-white px-3 py-1 rounded-md shadow">
+                                {new Date(realization.end_date).getDate()}
+                              </span>
+                            </div>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -284,20 +301,6 @@ const Realization = () => {
           </div>
         </div>
       </div>
-
-      {isPlanPopUpOpen && (
-        <PlanPopUp
-          isOpen={isPlanPopUpOpen}
-          onClose={() => setIsPlanPopUpOpen(false)}
-        />
-      )}
-      {isPlanPopUpEditOpen && (
-        <PlanPopUpEdit
-          isOpen={isPlanPopUpEditOpen}
-          onClose={() => setIsPlanPopUpEditOpen(false)}
-          planId={selectedRealization?.id}
-        />
-      )}
     </>
   );
 };

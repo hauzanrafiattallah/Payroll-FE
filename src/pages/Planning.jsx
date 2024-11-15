@@ -3,21 +3,18 @@ import { FaPlus } from "react-icons/fa";
 import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
-import PlanPopUp from "../components/PlanPopUp";
-import PlanPopUpEdit from "../components/PlanPopUpEdit";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useNavigate } from "react-router-dom";
+import AddPlanningPopUp from "../components/AddPlanningPopUp"; // Import the AddPlanningPopUp component
 
 const Planning = () => {
   const [plans, setPlans] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isPlanPopUpOpen, setIsPlanPopUpOpen] = useState(false);
-  const [isPlanPopUpEditOpen, setIsPlanPopUpEditOpen] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [showPopup, setShowPopup] = useState(false); // State to control popup visibility
 
   const navigate = useNavigate();
 
@@ -122,6 +119,14 @@ const Planning = () => {
     navigate(`/planning/${planId}`);
   };
 
+  const openPopup = () => {
+    setShowPopup(true); // Open the popup
+  };
+
+  const closePopup = () => {
+    setShowPopup(false); // Close the popup
+  };
+
   return (
     <>
       <Topbar />
@@ -134,8 +139,8 @@ const Planning = () => {
 
           <div className="flex justify-end items-center mb-6">
             <button
+              onClick={openPopup} // Show popup on click
               className="flex items-center justify-center bg-[#B4252A] text-white font-semibold py-2 px-5 rounded-lg hover:bg-[#8E1F22] shadow-md text-base sm:text-sm md:text-base lg:text-md h-10 w-36 sm:w-32 md:w-36 lg:w-40"
-              onClick={() => setIsPlanPopUpOpen(true)}
             >
               <FaPlus className="mr-2" /> New Plan
             </button>
@@ -287,18 +292,8 @@ const Planning = () => {
         </div>
       </div>
 
-      {isPlanPopUpOpen && (
-        <PlanPopUp
-          isOpen={isPlanPopUpOpen}
-          onClose={() => setIsPlanPopUpOpen(false)}
-        />
-      )}
-      {isPlanPopUpEditOpen && (
-        <PlanPopUpEdit
-          isOpen={isPlanPopUpEditOpen}
-          onClose={() => setIsPlanPopUpEditOpen(false)}
-          planId={selectedPlan?.id}
-        />
+      {showPopup && (
+        <AddPlanningPopUp isOpen={showPopup} onClose={closePopup} />
       )}
     </>
   );
