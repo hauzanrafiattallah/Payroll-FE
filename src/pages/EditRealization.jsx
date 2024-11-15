@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
-import { FaPlus, FaTrash } from "react-icons/fa";
+import { FaPlus, FaTrash, FaEdit, FaSave, FaTimes } from "react-icons/fa";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const EditRealization = () => {
-  const { id: realizationId } = useParams(); // Ambil realizationId dari URL
+  const { id: realizationId } = useParams();
   const navigate = useNavigate();
 
   const [items, setItems] = useState([]);
@@ -17,8 +17,8 @@ const EditRealization = () => {
   const [endDate, setEndDate] = useState("");
   const [tempItem, setTempItem] = useState(null);
   const [isAddItemMode, setIsAddItemMode] = useState(false);
+  const [editModeItemId, setEditModeItemId] = useState(null);
 
-  // Fetch existing realization when the component mounts
   useEffect(() => {
     const fetchRealization = async () => {
       try {
@@ -40,7 +40,7 @@ const EditRealization = () => {
         }
       } catch (error) {
         console.error("Error fetching realization:", error);
-        toast.error("Gagal mengambil realisasi.");
+        toast.error("Failed to fetch realization.");
       }
     };
 
@@ -61,12 +61,12 @@ const EditRealization = () => {
       tax_amount: 0,
       netto_amount: 0,
       category: "internal",
-      isAddition: 1, // Set isAddition to 1 for realization
+      isAddition: 1,
     });
     setIsAddItemMode(true);
+    setEditModeItemId(null);
   };
 
-  // Function to format currency input
   const formatCurrency = (value) => {
     return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   };
@@ -118,9 +118,103 @@ const EditRealization = () => {
     setIsAddItemMode(false);
   };
 
+  const handleEditMode = async (itemId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/item/${itemId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.data.status) {
+        setTempItem(response.data.data);
+        setEditModeItemId(itemId);
+        console.log("Edit mode item:", response.data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching item details:", error);
+      toast.error("Failed to fetch item data.");
+    }
+  };
+
+  const handleSaveEdit = async () => {
+    if (tempItem && editModeItemId) {
+      const originalItem = items.find((item) => item.id === editModeItemId);
+
+      // Buat payload dengan semua field yang diharapkan server
+      const payload = {
+        planning_id: realizationId,
+        date: tempItem.date || originalItem.date,
+        information: tempItem.information || originalItem.information,
+        bruto_amount:
+          tempItem.bruto_amount != null
+            ? typeof tempItem.bruto_amount === "string"
+              ? parseInt(tempItem.bruto_amount.replace(/\./g, ""))
+              : tempItem.bruto_amount
+            : originalItem.bruto_amount,
+        tax_amount:
+          tempItem.tax_amount != null
+            ? typeof tempItem.tax_amount === "string"
+              ? parseInt(tempItem.tax_amount.replace(/\./g, ""))
+              : tempItem.tax_amount
+            : originalItem.tax_amount,
+        netto_amount:
+          tempItem.netto_amount != null
+            ? typeof tempItem.netto_amount === "string"
+              ? parseInt(tempItem.netto_amount.replace(/\./g, ""))
+              : tempItem.netto_amount
+            : originalItem.netto_amount,
+        category: tempItem.category || originalItem.category,
+        isAddition: 1,
+      };
+
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/item/${editModeItemId}`, // Pastikan ID disertakan dalam URL
+          payload,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.data.status) {
+          toast.success("Item updated successfully!");
+
+          // Update item dalam state tanpa mengganti ID
+          setItems(
+            items.map((item) =>
+              item.id === editModeItemId
+                ? { ...item, ...response.data.planning }
+                : item
+            )
+          );
+
+          setEditModeItemId(null);
+          setTempItem(null);
+        }
+      } catch (error) {
+        console.error("Error updating item:", error);
+        console.error(
+          "Response data:",
+          error.response?.data?.message || error.response?.data
+        );
+        toast.error(
+          `Error: ${error.response?.data?.message || "Gagal memperbarui item."}`
+        );
+      }
+    }
+  };
+
   const handleCloseAddItemMode = () => {
     setTempItem(null);
     setIsAddItemMode(false);
+    setEditModeItemId(null);
   };
 
   const removeItem = async (itemId) => {
@@ -223,6 +317,7 @@ const EditRealization = () => {
                       <th className="py-2 px-4">Nilai Pajak</th>
                       <th className="py-2 px-4">Nilai Netto</th>
                       <th className="py-2 px-4">Kategori</th>
+                      <th className="py-2 px-4">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -242,26 +337,144 @@ const EditRealization = () => {
                             key={item.id}
                             className="text-gray-900 bg-white border rounded-lg shadow-md"
                           >
-                            <td className="py-2 px-4">{item.date}</td>
-                            <td className="py-2 px-4">{item.information}</td>
-                            <td className="py-2 px-4">
-                              Rp.{item.bruto_amount.toLocaleString("id-ID")}
-                            </td>
-                            <td className="py-2 px-4">
-                              Rp.{item.tax_amount.toLocaleString("id-ID")}
-                            </td>
-                            <td className="py-2 px-4">
-                              Rp.{item.netto_amount.toLocaleString("id-ID")}
-                            </td>
-                            <td className="py-2 px-4">{item.category}</td>
-                            <td className="py-2 px-4 text-right">
-                              <button
-                                onClick={() => removeItem(item.id)}
-                                className="bg-[#B4252A] text-white rounded-md p-2 w-10 h-10 flex items-center justify-center hover:bg-[#8E1F22] shadow-md"
-                              >
-                                <FaTrash />
-                              </button>
-                            </td>
+                            {editModeItemId === item.id ? (
+                              <>
+                                <td className="py-2 px-4">
+                                  <input
+                                    type="date"
+                                    value={tempItem?.date || ""}
+                                    onChange={(e) =>
+                                      handleTempItemChange(
+                                        "date",
+                                        e.target.value
+                                      )
+                                    }
+                                    className="border rounded p-1 w-full"
+                                  />
+                                </td>
+                                <td className="py-2 px-4">
+                                  <input
+                                    type="text"
+                                    value={tempItem?.information || ""}
+                                    onChange={(e) =>
+                                      handleTempItemChange(
+                                        "information",
+                                        e.target.value
+                                      )
+                                    }
+                                    className="border rounded p-1 w-full"
+                                  />
+                                </td>
+                                <td className="py-2 px-4">
+                                  <input
+                                    type="text"
+                                    value={tempItem?.bruto_amount || ""}
+                                    onChange={(e) =>
+                                      handleTempItemChange(
+                                        "bruto_amount",
+                                        e.target.value
+                                      )
+                                    }
+                                    className="border rounded p-1 w-full"
+                                    placeholder="Rp"
+                                  />
+                                </td>
+                                <td className="py-2 px-4">
+                                  <input
+                                    type="text"
+                                    value={tempItem?.tax_amount || ""}
+                                    onChange={(e) =>
+                                      handleTempItemChange(
+                                        "tax_amount",
+                                        e.target.value
+                                      )
+                                    }
+                                    className="border rounded p-1 w-full"
+                                    placeholder="Rp"
+                                  />
+                                </td>
+                                <td className="py-2 px-4">
+                                  <input
+                                    type="text"
+                                    value={tempItem?.netto_amount || ""}
+                                    onChange={(e) =>
+                                      handleTempItemChange(
+                                        "netto_amount",
+                                        e.target.value
+                                      )
+                                    }
+                                    className="border rounded p-1 w-full"
+                                    placeholder="Rp"
+                                  />
+                                </td>
+                                <td className="py-2 px-4">
+                                  <select
+                                    value={tempItem?.category || "internal"}
+                                    onChange={(e) =>
+                                      handleTempItemChange(
+                                        "category",
+                                        e.target.value
+                                      )
+                                    }
+                                    className="border rounded p-1 w-full"
+                                  >
+                                    <option value="internal">Internal</option>
+                                    <option value="eksternal">Eksternal</option>
+                                    <option value="rka">RKA</option>
+                                  </select>
+                                </td>
+                                <td className="py-2 px-4 text-right flex space-x-2">
+                                  {/* Tombol Close (Silang) */}
+                                  <button
+                                    onClick={() => handleCloseAddItemMode()}
+                                    className="bg-red-500 text-white rounded-md p-2 w-10 h-10 flex items-center justify-center hover:bg-red-600 shadow-md"
+                                  >
+                                    <FaTimes />
+                                  </button>
+                                  <button
+                                    onClick={handleSaveEdit}
+                                    className="bg-green-500 text-white rounded-md p-2 w-10 h-10 flex items-center justify-center hover:bg-green-600 shadow-md"
+                                  >
+                                    <FaSave />
+                                  </button>
+                                </td>
+                              </>
+                            ) : (
+                              <>
+                                <td className="py-2 px-4">{item.date}</td>
+                                <td className="py-2 px-4">
+                                  {item.information}
+                                </td>
+                                <td className="py-2 px-4">
+                                  Rp.{item.bruto_amount.toLocaleString("id-ID")}
+                                </td>
+                                <td className="py-2 px-4">
+                                  Rp.{item.tax_amount.toLocaleString("id-ID")}
+                                </td>
+                                <td className="py-2 px-4">
+                                  Rp.{item.netto_amount.toLocaleString("id-ID")}
+                                </td>
+                                <td className="py-2 px-4">{item.category}</td>
+                                <td className="py-2 px-4 text-right flex space-x-2">
+                                  {!isAddItemMode && (
+                                    <>
+                                      <button
+                                        onClick={() => handleEditMode(item.id)}
+                                        className="bg-blue-500 text-white rounded-md p-2 w-10 h-10 flex items-center justify-center hover:bg-blue-600 shadow-md"
+                                      >
+                                        <FaEdit />
+                                      </button>
+                                      <button
+                                        onClick={() => removeItem(item.id)}
+                                        className="bg-[#B4252A] text-white rounded-md p-2 w-10 h-10 flex items-center justify-center hover:bg-[#8E1F22] shadow-md"
+                                      >
+                                        <FaTrash />
+                                      </button>
+                                    </>
+                                  )}
+                                </td>
+                              </>
+                            )}
                           </tr>
                         ))}
                         {isAddItemMode && (
