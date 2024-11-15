@@ -102,17 +102,8 @@ const Realization = () => {
     if (page >= 1 && page <= lastPage) setCurrentPage(page);
   };
 
-  const getStatusClass = (status) => {
-    switch (status) {
-      case "approve":
-        return "bg-[#48B12129] text-[#48B121]";
-      case "pending":
-        return "bg-orange-100 text-orange-700";
-      case "decline":
-        return "bg-red-100 text-red-700";
-      default:
-        return "bg-gray-100 text-gray-600";
-    }
+  const getStatusClass = () => {
+    return "bg-[#48B12129] text-[#48B121]";
   };
 
   const handleCardClick = (realizationId) => {
