@@ -7,26 +7,31 @@ import "react-toastify/dist/ReactToastify.css";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import ReactLoading from "react-loading";
+import ItemDetailPopUp from "../components/ItemDetailPopUp";
 
 const Approval = () => {
   const [activeTab, setActiveTab] = useState("planning");
   const [approvalData, setApprovalData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
+  const [showPopup, setShowPopup] = useState(false);
+  const [selectedPlanningId, setSelectedPlanningId] = useState(null);
   const authToken = localStorage.getItem("token");
 
   useEffect(() => {
     fetchApprovalData(currentPage);
   }, [currentPage, activeTab]);
 
-  const fetchApprovalData = async (page) => {
+  const fetchApprovalData = async (page = 1) => {
     setLoading(true);
     try {
       const endpoint =
         activeTab === "planning"
-          ? `${import.meta.env.VITE_API_URL}/planning-approve?page=${page}`
-          : `${import.meta.env.VITE_API_URL}/pending?page=${page}`;
+          ? `${import.meta.env.VITE_API_URL}/planning-approve?page=${page}&limit=5`
+          : `${import.meta.env.VITE_API_URL}/pending?page=${page}&limit=5`;
 
       const response = await axios.get(endpoint, {
         headers: {
@@ -34,13 +39,14 @@ const Approval = () => {
           Accept: "application/json",
         },
       });
+
       setApprovalData(response.data.data.data);
       setCurrentPage(response.data.data.current_page);
       setLastPage(response.data.data.last_page);
-      setLoading(false);
     } catch (error) {
       console.error("Error fetching approval data:", error);
       toast.error("Failed to fetch approval data.");
+    } finally {
       setLoading(false);
     }
   };
@@ -51,6 +57,7 @@ const Approval = () => {
   };
 
   const handleApprove = async (id) => {
+    setIsLoading(true);
     try {
       const endpoint =
         activeTab === "planning"
@@ -69,15 +76,18 @@ const Approval = () => {
 
       if (response.data.status) {
         toast.success("Item approved successfully!");
-        fetchApprovalData(currentPage); // Refresh the list
+        fetchApprovalData(currentPage);
       }
     } catch (error) {
       console.error("Error approving item:", error);
       toast.error("Failed to approve item.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleReject = async (id) => {
+    setIsLoading(true);
     try {
       const endpoint =
         activeTab === "planning"
@@ -96,12 +106,79 @@ const Approval = () => {
 
       if (response.data.status) {
         toast.success("Item rejected successfully!");
-        fetchApprovalData(currentPage); // Refresh the list
+        fetchApprovalData(currentPage);
       }
     } catch (error) {
       console.error("Error rejecting item:", error);
       toast.error("Failed to reject item.");
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  const handleItemClick = (planningId) => {
+    setSelectedPlanningId(planningId);
+    setShowPopup(true);
+  };
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= lastPage) {
+      setCurrentPage(page);
+      fetchApprovalData(page);
+    }
+  };
+
+  const renderPagination = () => {
+    const pageNumbers = [];
+    const maxPagesToShow = 2;
+
+    if (currentPage > maxPagesToShow + 1) {
+      pageNumbers.push(
+        <button
+          key={1}
+          className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
+          onClick={() => handlePageChange(1)}
+        >
+          1
+        </button>
+      );
+      pageNumbers.push(<span key="dots-before">...</span>);
+    }
+
+    for (
+      let i = Math.max(1, currentPage - maxPagesToShow);
+      i <= Math.min(lastPage, currentPage + maxPagesToShow);
+      i++
+    ) {
+      pageNumbers.push(
+        <button
+          key={i}
+          className={`px-3 py-1 rounded-full ${
+            i === currentPage
+              ? "text-white bg-[#B4252A]"
+              : "text-gray-600 bg-white hover:bg-gray-100"
+          }`}
+          onClick={() => handlePageChange(i)}
+        >
+          {i}
+        </button>
+      );
+    }
+
+    if (currentPage < lastPage - maxPagesToShow) {
+      pageNumbers.push(<span key="dots-after">...</span>);
+      pageNumbers.push(
+        <button
+          key={lastPage}
+          className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
+          onClick={() => handlePageChange(lastPage)}
+        >
+          {lastPage}
+        </button>
+      );
+    }
+
+    return pageNumbers;
   };
 
   const renderSkeleton = () => (
@@ -167,7 +244,7 @@ const Approval = () => {
               className={`px-4 py-2 rounded-full ${
                 activeTab === "planning"
                   ? "bg-[#B4252A] text-white"
-                  : "bg-gray-200 text-gray-600"
+                  : "bg-gray-200 text-black"
               }`}
               onClick={() => handleTabClick("planning")}
             >
@@ -177,7 +254,7 @@ const Approval = () => {
               className={`px-4 py-2 rounded-full ${
                 activeTab === "transaction"
                   ? "bg-[#B4252A] text-white"
-                  : "bg-gray-200 text-gray-600"
+                  : "bg-gray-200 text-black"
               }`}
               onClick={() => handleTabClick("transaction")}
             >
@@ -196,8 +273,10 @@ const Approval = () => {
                     <th className="px-4 py-2 text-center">Planning</th>
                     <th className="px-4 py-2 text-center">Start</th>
                     <th className="px-4 py-2 text-center">End</th>
-                    <th className="px-4 py-2 text-center">Item Count</th>
+                    <th className="px-4 py-2 text-center">Item</th>
                     <th className="px-4 py-2 text-center">Total Bruto</th>
+                    <th className="px-4 py-2 text-center">Total Pajak</th>
+                    <th className="px-4 py-2 text-center">Total Netto</th>
                     <th className="px-4 py-2 text-center">Approve</th>
                   </tr>
                 </thead>
@@ -212,13 +291,30 @@ const Approval = () => {
                         {new Date(plan.end_date).toLocaleDateString("id-ID")}
                       </td>
                       <td className="px-4 py-2 text-center">
-                        {plan.item_count}
+                        <button
+                          onClick={() => handleItemClick(plan.id)}
+                          className="hover:underline"
+                        >
+                          Item Details
+                        </button>
                       </td>
                       <td className="px-4 py-2 text-center">
                         Rp.{" "}
-                        {parseInt(plan.item_sum_bruto_amount || 0).toLocaleString(
+                        {parseInt(
+                          plan.item_sum_bruto_amount || 0
+                        ).toLocaleString("id-ID")}
+                      </td>
+                      <td className="px-4 py-2 text-center">
+                        Rp.{" "}
+                        {parseInt(plan.item_sum_tax_amount || 0).toLocaleString(
                           "id-ID"
                         )}
+                      </td>
+                      <td className="px-4 py-2 text-center">
+                        Rp.{" "}
+                        {parseInt(
+                          plan.item_sum_netto_amount || 0
+                        ).toLocaleString("id-ID")}
                       </td>
                       <td className="px-4 py-2 text-center flex items-center justify-center space-x-2">
                         <button
@@ -244,13 +340,13 @@ const Approval = () => {
               <table className="w-full text-left table-auto min-w-[600px]">
                 <thead>
                   <tr className="border-b">
-                    <th className="px-4 py-2 text-center">Activity</th>
-                    <th className="px-4 py-2 text-center">Type</th>
-                    <th className="px-4 py-2 text-center">Date</th>
-                    <th className="px-4 py-2 text-center">Amount</th>
-                    <th className="px-4 py-2 text-center">Tax</th>
-                    <th className="px-4 py-2 text-center">Document</th>
-                    <th className="px-4 py-2 text-center">Image</th>
+                    <th className="px-4 py-2 text-center">Kegiatan</th>
+                    <th className="px-4 py-2 text-center">Tipe</th>
+                    <th className="px-4 py-2 text-center">Tanggal</th>
+                    <th className="px-4 py-2 text-center">Jumlah</th>
+                    <th className="px-4 py-2 text-center">Pajak</th>
+                    <th className="px-4 py-2 text-center">Upload</th>
+                    <th className="px-4 py-2 text-center">Evidence</th>
                     <th className="px-4 py-2 text-center">Approve</th>
                   </tr>
                 </thead>
@@ -286,22 +382,32 @@ const Approval = () => {
                           ? item.tax_amount.toLocaleString("id-ID")
                           : "0"}
                       </td>
-                      <td className="px-4 py-2 text-center">
+                      <td className="px-4 py-2 text-center ">
                         <a
-                          href={`${import.meta.env.VITE_FILE_BASE_URL}/${item.document_evidence}`}
+                          href={`${import.meta.env.VITE_FILE_BASE_URL}/${
+                            item.document_evidence
+                          }`}
                           target="_blank"
                           rel="noopener noreferrer"
+                          className="hover:underline"
                         >
-                          Document
+                          {item.document_evidence
+                            ? `Laporan.${item.document_evidence.split(".").pop()}`
+                            : "No Document"}
                         </a>
                       </td>
                       <td className="px-4 py-2 text-center">
                         <a
-                          href={`${import.meta.env.VITE_FILE_BASE_URL}/${item.image_evidence}`}
+                          href={`${import.meta.env.VITE_FILE_BASE_URL}/${
+                            item.image_evidence
+                          }`}
                           target="_blank"
                           rel="noopener noreferrer"
+                          className="hover:underline"
                         >
-                          Image
+                          {item.image_evidence
+                            ? `Bukti.${item.image_evidence.split(".").pop()}`
+                            : "No Evidence"}
                         </a>
                       </td>
                       <td className="px-4 py-2 text-center flex items-center justify-center space-x-2">
@@ -323,6 +429,47 @@ const Approval = () => {
                 </tbody>
               </table>
             </div>
+          )}
+
+          {/* Overlay Loading */}
+          {isLoading && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-10">
+              <ReactLoading
+                type="spin"
+                color="#B4252A"
+                height={50}
+                width={50}
+              />
+            </div>
+          )}
+
+          {/* Pagination */}
+          <div className="flex justify-end mt-6">
+            <div className="flex items-center px-4 py-2 space-x-2 bg-white rounded-full shadow-md">
+              <button
+                className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                &lt;
+              </button>
+              {renderPagination()}
+              <button
+                className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === lastPage}
+              >
+                &gt;
+              </button>
+            </div>
+          </div>
+
+          {/* Item Detail Popup */}
+          {showPopup && (
+            <ItemDetailPopUp
+              planningId={selectedPlanningId}
+              onClose={() => setShowPopup(false)}
+            />
           )}
         </div>
       </div>

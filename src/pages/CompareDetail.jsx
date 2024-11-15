@@ -56,8 +56,10 @@ const CompareDetail = () => {
 
   const { planning, realization } = compareData;
 
-  const formatCurrency = (value) =>
-    `Rp.${parseInt(value).toLocaleString("id-ID")}`;
+  const formatCurrency = (value) => {
+    const parsedValue = parseInt(value);
+    return isNaN(parsedValue) ? "Rp.0" : `Rp.${parsedValue.toLocaleString("id-ID")}`;
+  };
 
   return (
     <>
