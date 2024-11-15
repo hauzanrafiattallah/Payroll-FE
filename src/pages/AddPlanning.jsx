@@ -10,12 +10,12 @@ import "react-toastify/dist/ReactToastify.css";
 const AddPlanning = () => {
   const location = useLocation();
   const planningId = location.state?.planningId;
-  const title = location.state?.title || "Planning Title";
-  const startDate = location.state?.startDate || "Start Date";
-  const endDate = location.state?.endDate || "End Date";
   const navigate = useNavigate();
 
   const [items, setItems] = useState([]);
+  const [title, setTitle] = useState("Planning Title");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [tempItem, setTempItem] = useState(null);
   const [isAddItemMode, setIsAddItemMode] = useState(false);
 
@@ -25,7 +25,7 @@ const AddPlanning = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/items?planning_id=${planningId}`,
+          `${import.meta.env.VITE_API_URL}/planning/${planningId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -33,38 +33,53 @@ const AddPlanning = () => {
           }
         );
         if (response.data.status) {
-          setItems(response.data.data); // Pastikan ini sesuai dengan respons API
+          const planningData = response.data.data;
+          setTitle(planningData.title);
+          setStartDate(planningData.start_date);
+          setEndDate(planningData.end_date);
+          setItems(planningData.item);
         }
       } catch (error) {
         console.error("Error fetching items:", error);
         toast.error("Gagal mengambil items.");
       }
     };
-  
+
     if (planningId) {
       fetchItems();
     }
   }, [planningId]);
-  
 
-  const totalBruto = items.reduce((sum, item) => sum + item.bruto, 0);
-  const totalTax = items.reduce((sum, item) => sum + item.tax, 0);
-  const totalNetto = items.reduce((sum, item) => sum + item.netto, 0);
+  const totalBruto = items.reduce((sum, item) => sum + item.bruto_amount, 0);
+  const totalTax = items.reduce((sum, item) => sum + item.tax_amount, 0);
+  const totalNetto = items.reduce((sum, item) => sum + item.netto_amount, 0);
 
   const addItem = () => {
-    setTempItem({ date: "", information: "", bruto: 0, tax: 0, netto: 0 });
+    setTempItem({
+      date: "",
+      information: "",
+      bruto_amount: 0,
+      tax_amount: 0,
+      netto_amount: 0, // Netto will be manually entered by the user
+      category: "internal",
+      isAddition: 0,
+    });
     setIsAddItemMode(true);
   };
 
+  // Function to format currency input
+  const formatCurrency = (value) => {
+    return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  };
+
   const handleTempItemChange = (field, value) => {
-    const updatedTempItem = {
-      ...tempItem,
-      [field]: field === "bruto" || field === "tax" ? parseInt(value) || 0 : value,
-    };
-    if (field === "bruto" || field === "tax") {
-      updatedTempItem.netto = updatedTempItem.bruto - updatedTempItem.tax;
-    }
-    setTempItem(updatedTempItem);
+    const formattedValue =
+      field === "bruto_amount" ||
+      field === "tax_amount" ||
+      field === "netto_amount"
+        ? formatCurrency(value)
+        : value;
+    setTempItem((prev) => ({ ...prev, [field]: formattedValue }));
   };
 
   const handleSave = async () => {
@@ -77,11 +92,13 @@ const AddPlanning = () => {
             planning_id: planningId,
             date: tempItem.date,
             information: tempItem.information,
-            bruto_amount: tempItem.bruto,
-            tax_amount: tempItem.tax,
-            netto_amount: tempItem.netto,
-            category: "internal",
-            isAddition: 1,
+            bruto_amount:
+              parseInt(tempItem.bruto_amount.replace(/\./g, "")) || 0,
+            tax_amount: parseInt(tempItem.tax_amount.replace(/\./g, "")) || 0,
+            netto_amount:
+              parseInt(tempItem.netto_amount.replace(/\./g, "")) || 0,
+            category: tempItem.category,
+            isAddition: tempItem.isAddition,
           },
           {
             headers: {
@@ -91,7 +108,7 @@ const AddPlanning = () => {
         );
         if (response.data.status) {
           toast.success("Item added successfully!");
-          setItems([...items, tempItem]);
+          setItems([...items, response.data.planning]);
         }
       } catch (error) {
         console.error("Error adding item:", error);
@@ -123,7 +140,9 @@ const AddPlanning = () => {
         <Sidebar />
         <div className="w-full p-8 mx-auto mt-2 lg:max-w-full lg:ml-72">
           <div className="bg-white p-8 rounded-lg shadow-lg mb-6">
-            <h1 className="text-2xl font-bold text-center mb-6">Add New Plan</h1>
+            <h1 className="text-2xl font-bold text-center mb-6">
+              Add New Plan
+            </h1>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8 mb-8">
               <div className="text-left">
@@ -137,11 +156,13 @@ const AddPlanning = () => {
               </div>
               <div className="text-right">
                 <h2 className="text-lg font-bold">
-                  {new Date(startDate).toLocaleDateString("id-ID", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })}
+                  {startDate
+                    ? new Date(startDate).toLocaleDateString("id-ID", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })
+                    : "Tanggal tidak valid"}
                 </h2>
               </div>
               <div className="text-left">
@@ -149,11 +170,13 @@ const AddPlanning = () => {
               </div>
               <div className="text-right">
                 <h2 className="text-lg font-bold">
-                  {new Date(endDate).toLocaleDateString("id-ID", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })}
+                  {endDate
+                    ? new Date(endDate).toLocaleDateString("id-ID", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })
+                    : "Tanggal tidak valid"}
                 </h2>
               </div>
             </div>
@@ -173,7 +196,10 @@ const AddPlanning = () => {
 
             <div className="p-6 bg-white rounded-lg shadow-lg">
               <div className="overflow-x-auto">
-                <table className="w-full text-left border-separate" style={{ borderSpacing: "0 8px" }}>
+                <table
+                  className="w-full text-left border-separate"
+                  style={{ borderSpacing: "0 8px" }}
+                >
                   <thead>
                     <tr className="text-gray-700">
                       <th className="py-2 px-4">Tanggal</th>
@@ -181,25 +207,39 @@ const AddPlanning = () => {
                       <th className="py-2 px-4">Nilai Bruto</th>
                       <th className="py-2 px-4">Nilai Pajak</th>
                       <th className="py-2 px-4">Nilai Netto</th>
+                      <th className="py-2 px-4">Kategori</th>
                       <th className="py-2 px-4">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {items.length === 0 && !isAddItemMode ? (
                       <tr>
-                        <td colSpan="6" className="text-center text-gray-500 py-4">
+                        <td
+                          colSpan="7"
+                          className="text-center text-gray-500 py-4"
+                        >
                           No items added yet.
                         </td>
                       </tr>
                     ) : (
                       <>
                         {items.map((item, index) => (
-                          <tr key={index} className="text-gray-900 bg-white border rounded-lg shadow-md">
+                          <tr
+                            key={index}
+                            className="text-gray-900 bg-white border rounded-lg shadow-md"
+                          >
                             <td className="py-2 px-4">{item.date}</td>
                             <td className="py-2 px-4">{item.information}</td>
-                            <td className="py-2 px-4">Rp.{item.bruto.toLocaleString("id-ID")}</td>
-                            <td className="py-2 px-4">Rp.{item.tax.toLocaleString("id-ID")}</td>
-                            <td className="py-2 px-4">Rp.{item.netto.toLocaleString("id-ID")}</td>
+                            <td className="py-2 px-4">
+                              Rp.{item.bruto_amount.toLocaleString("id-ID")}
+                            </td>
+                            <td className="py-2 px-4">
+                              Rp.{item.tax_amount.toLocaleString("id-ID")}
+                            </td>
+                            <td className="py-2 px-4">
+                              Rp.{item.netto_amount.toLocaleString("id-ID")}
+                            </td>
+                            <td className="py-2 px-4">{item.category}</td>
                             <td className="py-2 px-4 text-right">
                               <button
                                 onClick={() => removeItem(index)}
@@ -216,7 +256,9 @@ const AddPlanning = () => {
                               <input
                                 type="date"
                                 value={tempItem?.date || ""}
-                                onChange={(e) => handleTempItemChange("date", e.target.value)}
+                                onChange={(e) =>
+                                  handleTempItemChange("date", e.target.value)
+                                }
                                 className="border rounded p-1 w-full"
                               />
                             </td>
@@ -224,34 +266,72 @@ const AddPlanning = () => {
                               <input
                                 type="text"
                                 value={tempItem?.information || ""}
-                                onChange={(e) => handleTempItemChange("information", e.target.value)}
+                                onChange={(e) =>
+                                  handleTempItemChange(
+                                    "information",
+                                    e.target.value
+                                  )
+                                }
                                 className="border rounded p-1 w-full"
                               />
                             </td>
                             <td className="py-2 px-4">
                               <input
-                                type="number"
-                                value={tempItem?.bruto || 0}
-                                onChange={(e) => handleTempItemChange("bruto", e.target.value)}
+                                type="text"
+                                value={tempItem?.bruto_amount || ""}
+                                onChange={(e) =>
+                                  handleTempItemChange(
+                                    "bruto_amount",
+                                    e.target.value
+                                  )
+                                }
                                 className="border rounded p-1 w-full"
+                                placeholder="Rp"
                               />
                             </td>
                             <td className="py-2 px-4">
                               <input
-                                type="number"
-                                value={tempItem?.tax || 0}
-                                onChange={(e) => handleTempItemChange("tax", e.target.value)}
+                                type="text"
+                                value={tempItem?.tax_amount || ""}
+                                onChange={(e) =>
+                                  handleTempItemChange(
+                                    "tax_amount",
+                                    e.target.value
+                                  )
+                                }
                                 className="border rounded p-1 w-full"
+                                placeholder="Rp"
                               />
                             </td>
-                            <td className="py-2 px-4">Rp.{(tempItem?.netto || 0).toLocaleString("id-ID")}</td>
-                            <td className="py-2 px-4 text-right">
-                              <button
-                                onClick={handleCloseAddItemMode}
-                                className="bg-[#F5C6C7] text-[#B4252A] font-semibold py-2 px-4 rounded-md hover:bg-[#F1B0B1]"
+                            <td className="py-2 px-4">
+                              <input
+                                type="text"
+                                value={tempItem?.netto_amount || ""}
+                                onChange={(e) =>
+                                  handleTempItemChange(
+                                    "netto_amount",
+                                    e.target.value
+                                  )
+                                }
+                                className="border rounded p-1 w-full"
+                                placeholder="Rp"
+                              />
+                            </td>
+                            <td className="py-2 px-4">
+                              <select
+                                value={tempItem?.category || "internal"}
+                                onChange={(e) =>
+                                  handleTempItemChange(
+                                    "category",
+                                    e.target.value
+                                  )
+                                }
+                                className="border rounded p-1 w-full"
                               >
-                                Cancel
-                              </button>
+                                <option value="internal">Internal</option>
+                                <option value="eksternal">Eksternal</option>
+                                <option value="rka">RKA</option>
+                              </select>
                             </td>
                           </tr>
                         )}
@@ -259,10 +339,16 @@ const AddPlanning = () => {
                           <td colSpan="2" className="py-2 px-4 text-left">
                             Total
                           </td>
-                          <td className="py-2 px-4">Rp.{totalBruto.toLocaleString("id-ID")}</td>
-                          <td className="py-2 px-4">Rp.{totalTax.toLocaleString("id-ID")}</td>
-                          <td className="py-2 px-4">Rp.{totalNetto.toLocaleString("id-ID")}</td>
-                          <td></td>
+                          <td className="py-2 px-4">
+                            Rp.{totalBruto.toLocaleString("id-ID")}
+                          </td>
+                          <td className="py-2 px-4">
+                            Rp.{totalTax.toLocaleString("id-ID")}
+                          </td>
+                          <td className="py-2 px-4">
+                            Rp.{totalNetto.toLocaleString("id-ID")}
+                          </td>
+                          <td colSpan="2"></td>
                         </tr>
                       </>
                     )}
