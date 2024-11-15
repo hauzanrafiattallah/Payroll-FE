@@ -18,6 +18,7 @@ import Realization from "./pages/Realization";
 import RealizationDetails from "./pages/RealizationDetails";
 import Compare from "./pages/Compare";
 import AddPlanning from "./pages/AddPlanning";
+import CompareDetail from "./pages/CompareDetail";
 
 const App = () => {
   return (
@@ -124,6 +125,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <Compare />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/compare/:id"
+          element={
+            <ProtectedRoute>
+              <CompareDetail />
             </ProtectedRoute>
           }
         />

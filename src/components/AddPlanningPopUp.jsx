@@ -35,7 +35,7 @@ const AddPlanningPopUp = ({ isOpen, onClose }) => {
 
   const handleNext = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("token"); // Get token from local storage
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/planning`,
         {
@@ -49,18 +49,26 @@ const AddPlanningPopUp = ({ isOpen, onClose }) => {
           },
         }
       );
-
+  
       if (response.data.status) {
         toast.success("Planning Created Successfully");
-        const planningId = response.data.planning.id; // Get the created planning_id
         closePopup();
-        navigate("/add-planning", { state: { planningId } }); // Pass planningId to the AddPlanning page
+        // Pass planning ID, title, start_date, and end_date when navigating
+        navigate("/add-planning", {
+          state: {
+            planningId: response.data.planning.id,
+            title: title,
+            startDate: startDate,
+            endDate: endDate,
+          },
+        });
       }
     } catch (error) {
       console.error("Error creating planning:", error);
       toast.error("Failed to create planning. Please try again.");
     }
   };
+  
 
   return (
     <div
