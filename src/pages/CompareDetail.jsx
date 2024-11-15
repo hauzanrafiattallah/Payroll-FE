@@ -92,13 +92,16 @@ const CompareDetail = () => {
                 <p>{formatCurrency(planning.item_sum_tax_amount)}</p>
                 <p>{formatCurrency(planning.item_sum_netto_amount)}</p>
               </div>
-              <div className="bg-gray-50 rounded-lg p-4 shadow-sm">
+              <div className="bg-gray-50 rounded-lg p-4 shadow-sm overflow-x-auto">
                 <table className="w-full text-left">
                   <thead>
                     <tr className="text-gray-600 font-semibold">
                       <th className="py-2 px-3">Tanggal</th>
                       <th className="py-2 px-3">Keterangan</th>
                       <th className="py-2 px-3">Nilai Bruto</th>
+                      <th className="py-2 px-3">Nilai Pajak</th>
+                      <th className="py-2 px-3">Nilai Netto</th>
+                      <th className="py-2 px-3">Kategori</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -107,6 +110,9 @@ const CompareDetail = () => {
                         <td className="py-3 px-3">{new Date(item.date).toLocaleDateString("id-ID")}</td>
                         <td className="py-3 px-3">{item.information}</td>
                         <td className="py-3 px-3">{formatCurrency(item.bruto_amount)}</td>
+                        <td className="py-3 px-3">{formatCurrency(item.tax_amount)}</td>
+                        <td className="py-3 px-3">{formatCurrency(item.netto_amount)}</td>
+                        <td className="py-3 px-3">{item.category}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -124,13 +130,16 @@ const CompareDetail = () => {
                 <p>{formatCurrency(realization.item_sum_tax_amount)}</p>
                 <p>{formatCurrency(realization.item_sum_netto_amount)}</p>
               </div>
-              <div className="bg-gray-50 rounded-lg p-4 shadow-sm">
+              <div className="bg-gray-50 rounded-lg p-4 shadow-sm overflow-x-auto">
                 <table className="w-full text-left">
                   <thead>
                     <tr className="text-gray-600 font-semibold">
                       <th className="py-2 px-3">Tanggal</th>
                       <th className="py-2 px-3">Keterangan</th>
                       <th className="py-2 px-3">Nilai Bruto</th>
+                      <th className="py-2 px-3">Nilai Pajak</th>
+                      <th className="py-2 px-3">Nilai Netto</th>
+                      <th className="py-2 px-3">Kategori</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -139,6 +148,9 @@ const CompareDetail = () => {
                         <td className="py-3 px-3">{new Date(item.date).toLocaleDateString("id-ID")}</td>
                         <td className="py-3 px-3">{item.information}</td>
                         <td className="py-3 px-3">{formatCurrency(item.bruto_amount)}</td>
+                        <td className="py-3 px-3">{formatCurrency(item.tax_amount)}</td>
+                        <td className="py-3 px-3">{formatCurrency(item.netto_amount)}</td>
+                        <td className="py-3 px-3">{item.category}</td>
                       </tr>
                     ))}
                   </tbody>
