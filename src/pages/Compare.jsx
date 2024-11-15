@@ -4,13 +4,14 @@ import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { useNavigate } from "react-router-dom";
 
 const Compare = () => {
   const [compares, setCompares] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedCompare, setSelectedCompare] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
+  const navigate = useNavigate();
 
   const fetchCompares = async (page = 1) => {
     const token = localStorage.getItem("token");
@@ -37,6 +38,10 @@ const Compare = () => {
   useEffect(() => {
     fetchCompares(currentPage);
   }, [currentPage]);
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= lastPage) setCurrentPage(page);
+  };
 
   const renderPagination = () => {
     const pageNumbers = [];
@@ -89,10 +94,6 @@ const Compare = () => {
     }
 
     return pageNumbers;
-  };
-
-  const handlePageChange = (page) => {
-    if (page >= 1 && page <= lastPage) setCurrentPage(page);
   };
 
   return (
@@ -150,13 +151,11 @@ const Compare = () => {
                       (e.currentTarget.style.boxShadow =
                         "0 0 8px 2px rgba(0, 0, 0, 0.05)")
                     }
+                    onClick={() => navigate(`/compare/${compare.id}`)} // Navigate on click
                   >
-                    {/* Display Title with Larger Font */}
                     <h2 className="text-xl font-bold text-gray-800">
                       {compare.title}
                     </h2>
-
-                    {/* Display Start and End Dates */}
                     <div className="flex space-x-4">
                       <div className="flex flex-col items-center text-center">
                         <span className="text-xs font-medium text-gray-700 mb-1">
