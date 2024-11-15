@@ -6,6 +6,7 @@ import { FaPlus, FaTrash, FaEdit, FaSave, FaTimes } from "react-icons/fa";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ReactLoading from "react-loading";
 
 const EditRealization = () => {
   const { id: realizationId } = useParams();
@@ -18,9 +19,11 @@ const EditRealization = () => {
   const [tempItem, setTempItem] = useState(null);
   const [isAddItemMode, setIsAddItemMode] = useState(false);
   const [editModeItemId, setEditModeItemId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchRealization = async () => {
+      setIsLoading(true);
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
@@ -41,6 +44,8 @@ const EditRealization = () => {
       } catch (error) {
         console.error("Error fetching realization:", error);
         toast.error("Failed to fetch realization.");
+      } finally {
+        setIsLoading(false); // Set isLoading ke false setelah fetch selesai
       }
     };
 
@@ -83,6 +88,7 @@ const EditRealization = () => {
 
   const handleSave = async () => {
     if (tempItem) {
+      setIsLoading(true);
       try {
         const token = localStorage.getItem("token");
         const response = await axios.post(
@@ -112,6 +118,8 @@ const EditRealization = () => {
       } catch (error) {
         console.error("Error adding item:", error);
         toast.error("Failed to add item. Please try again.");
+      } finally {
+        setIsLoading(false); // Set isLoading ke false setelah POST selesai
       }
     }
     setTempItem(null);
@@ -119,6 +127,7 @@ const EditRealization = () => {
   };
 
   const handleEditMode = async (itemId) => {
+    setIsLoading(true);
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
@@ -137,11 +146,14 @@ const EditRealization = () => {
     } catch (error) {
       console.error("Error fetching item details:", error);
       toast.error("Failed to fetch item data.");
+    } finally {
+      setIsLoading(false); // Set isLoading ke false setelah proses selesai
     }
   };
 
   const handleSaveEdit = async () => {
     if (tempItem && editModeItemId) {
+      setIsLoading(true);
       const originalItem = items.find((item) => item.id === editModeItemId);
 
       // Buat payload dengan semua field yang diharapkan server
@@ -207,6 +219,8 @@ const EditRealization = () => {
         toast.error(
           `Error: ${error.response?.data?.message || "Gagal memperbarui item."}`
         );
+      } finally {
+        setIsLoading(false); // Set isLoading ke false setelah update selesai
       }
     }
   };
@@ -218,6 +232,7 @@ const EditRealization = () => {
   };
 
   const removeItem = async (itemId) => {
+    setIsLoading(true);
     try {
       const token = localStorage.getItem("token");
       const response = await axios.delete(
@@ -235,7 +250,10 @@ const EditRealization = () => {
     } catch (error) {
       console.error("Error deleting item:", error);
       toast.error("Failed to delete item. Please try again.");
+    } finally {
+      setIsLoading(false); // Set isLoading ke false setelah delete selesai
     }
+    d;
   };
 
   const handleClose = () => {
@@ -612,6 +630,12 @@ const EditRealization = () => {
           </div>
         </div>
       </div>
+
+      {isLoading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-10 ml-52">
+          <ReactLoading type="spin" color="#B4252A" height={50} width={50} />
+        </div>
+      )}
     </>
   );
 };
