@@ -223,7 +223,6 @@ const EditRealization = () => {
                       <th className="py-2 px-4">Nilai Pajak</th>
                       <th className="py-2 px-4">Nilai Netto</th>
                       <th className="py-2 px-4">Kategori</th>
-                      <th className="py-2 px-4">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
