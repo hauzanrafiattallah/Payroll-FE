@@ -17,6 +17,7 @@ import RealizationDetails from "./pages/RealizationDetails";
 import Compare from "./pages/Compare";
 import AddPlanning from "./pages/AddPlanning";
 import CompareDetail from "./pages/CompareDetail";
+import EditRealization from "./pages/EditRealization";
 
 const App = () => {
   return (
@@ -92,6 +93,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <RealizationDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/realization/edit/:id"
+          element={
+            <ProtectedRoute>
+              <EditRealization />
             </ProtectedRoute>
           }
         />

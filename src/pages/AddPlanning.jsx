@@ -124,9 +124,25 @@ const AddPlanning = () => {
     setIsAddItemMode(false);
   };
 
-  const removeItem = (index) => {
-    const newItems = items.filter((_, i) => i !== index);
-    setItems(newItems);
+  const removeItem = async (itemId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.delete(
+        `${import.meta.env.VITE_API_URL}/item/${itemId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.data.status) {
+        toast.success("Item deleted successfully!");
+        setItems(items.filter((item) => item.id !== itemId));
+      }
+    } catch (error) {
+      console.error("Error deleting item:", error);
+      toast.error("Failed to delete item. Please try again.");
+    }
   };
 
   const handleClose = () => {
@@ -208,7 +224,6 @@ const AddPlanning = () => {
                       <th className="py-2 px-4">Nilai Pajak</th>
                       <th className="py-2 px-4">Nilai Netto</th>
                       <th className="py-2 px-4">Kategori</th>
-                      <th className="py-2 px-4">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -223,9 +238,9 @@ const AddPlanning = () => {
                       </tr>
                     ) : (
                       <>
-                        {items.map((item, index) => (
+                        {items.map((item) => (
                           <tr
-                            key={index}
+                            key={item.id}
                             className="text-gray-900 bg-white border rounded-lg shadow-md"
                           >
                             <td className="py-2 px-4">{item.date}</td>
@@ -242,7 +257,7 @@ const AddPlanning = () => {
                             <td className="py-2 px-4">{item.category}</td>
                             <td className="py-2 px-4 text-right">
                               <button
-                                onClick={() => removeItem(index)}
+                                onClick={() => removeItem(item.id)}
                                 className="bg-[#B4252A] text-white rounded-md p-2 w-10 h-10 flex items-center justify-center hover:bg-[#8E1F22] shadow-md"
                               >
                                 <FaTrash />
