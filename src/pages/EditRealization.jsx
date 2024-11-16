@@ -478,7 +478,7 @@ const EditRealization = () => {
                                     <>
                                       <button
                                         onClick={() => handleEditMode(item.id)}
-                                        className="bg-blue-500 text-white rounded-md p-2 w-10 h-10 flex items-center justify-center hover:bg-blue-600 shadow-md"
+                                        className="bg-[#F5C6C7] text-[#B4252A] rounded-md p-2 w-10 h-10 flex items-center justify-center hover:bg-[#F1B0B1] shadow-md"
                                       >
                                         <FaEdit />
                                       </button>
