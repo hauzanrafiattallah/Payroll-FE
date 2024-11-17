@@ -356,13 +356,13 @@ const ExportSection = ({
           selectedOption={
             category === "internal"
               ? "Internal"
-              : category === "external"
-              ? "External"
+              : category === "eksternal"
+              ? "Eksternal"
               : "RKA"
           }
           options={[
             { value: "internal", label: "Internal" },
-            { value: "external", label: "External" },
+            { value: "eksternal", label: "Eksternal" },
             { value: "rka", label: "RKA" },
           ]}
           onSelect={setCategory}
