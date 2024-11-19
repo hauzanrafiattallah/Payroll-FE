@@ -141,33 +141,6 @@ const Sidebar = () => {
               <span>Compare</span>
             </li>
           </Link>
-
-          {/* <Link to="/income">
-            <li
-              className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
-                location.pathname === "/income"
-                  ? "bg-[#FDE8E8] text-[#B4252A]" 
-                  : "text-gray-700 hover:bg-gray-100 hover:text-[#B4252A]"
-              }`}
-            >
-              <PiHandWithdrawBold className="mr-3 text-2xl" />
-              <span>Income</span>
-            </li>
-          </Link> */}
-
-          {/* <Link to="/expenses">
-            <li
-              className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
-                location.pathname === "/expenses"
-                  ? "bg-[#FDE8E8] text-[#B4252A]" 
-                  : "text-gray-700 hover:bg-gray-100 hover:text-[#B4252A]"
-              }`}
-            >
-              <PiHandDepositBold className="mr-3 text-2xl" />
-              <span>Expenses</span>
-            </li>
-          </Link> */}
-
           {role === "superAdmin" && (
             <Link to="/approval">
               <li
