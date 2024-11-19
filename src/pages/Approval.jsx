@@ -30,7 +30,9 @@ const Approval = () => {
     try {
       const endpoint =
         activeTab === "planning"
-          ? `${import.meta.env.VITE_API_URL}/planning-approve?page=${page}&limit=5`
+          ? `${
+              import.meta.env.VITE_API_URL
+            }/planning-approve?page=${page}&limit=5`
           : `${import.meta.env.VITE_API_URL}/pending?page=${page}&limit=5`;
 
       const response = await axios.get(endpoint, {
@@ -130,7 +132,7 @@ const Approval = () => {
 
   const renderPagination = () => {
     const pageNumbers = [];
-    const maxPagesToShow = 2;
+    const maxPagesToShow = 1;
 
     if (currentPage > maxPagesToShow + 1) {
       pageNumbers.push(
@@ -138,6 +140,7 @@ const Approval = () => {
           key={1}
           className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
           onClick={() => handlePageChange(1)}
+          disabled={isLoading} // Disable jika sedang loading
         >
           1
         </button>
@@ -159,6 +162,7 @@ const Approval = () => {
               : "text-gray-600 bg-white hover:bg-gray-100"
           }`}
           onClick={() => handlePageChange(i)}
+          disabled={isLoading} // Disable jika sedang loading
         >
           {i}
         </button>
@@ -172,6 +176,7 @@ const Approval = () => {
           key={lastPage}
           className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
           onClick={() => handlePageChange(lastPage)}
+          disabled={isLoading} // Disable jika sedang loading
         >
           {lastPage}
         </button>
@@ -392,7 +397,9 @@ const Approval = () => {
                           className="hover:underline"
                         >
                           {item.document_evidence
-                            ? `Laporan.${item.document_evidence.split(".").pop()}`
+                            ? `Laporan.${item.document_evidence
+                                .split(".")
+                                .pop()}`
                             : "No Document"}
                         </a>
                       </td>
@@ -449,7 +456,7 @@ const Approval = () => {
               <button
                 className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
                 onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
+                disabled={currentPage === 1 || isLoading}
               >
                 &lt;
               </button>
@@ -457,7 +464,7 @@ const Approval = () => {
               <button
                 className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
                 onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === lastPage}
+                disabled={currentPage === lastPage || isLoading}
               >
                 &gt;
               </button>
