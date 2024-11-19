@@ -1,18 +1,13 @@
 import React, { useState, useEffect } from "react";
-import {
-  FaTh,
-  FaClipboardList,
-  FaUpload,
-  FaBars,
-} from "react-icons/fa"; // Ikon dari react-icons
+import { FaTh, FaClipboardList, FaUpload, FaBars } from "react-icons/fa";
 import { MdTask } from "react-icons/md";
 import { AiOutlineFileDone } from "react-icons/ai";
 import { BiGitCompare } from "react-icons/bi";
-import { Link, useLocation } from "react-router-dom"; // Navigasi internal
-import axios from "axios"; // HTTP request
-import { toast } from "react-toastify"; // Untuk notifikasi
-import "react-toastify/dist/ReactToastify.css"; // Style notifikasi
-import ReactLoading from "react-loading"; // Komponen loading
+import { Link, useLocation } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import ReactLoading from "react-loading";
 
 // Komponen Sidebar - Navigasi utama aplikasi
 const Sidebar = () => {
