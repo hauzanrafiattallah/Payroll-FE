@@ -68,21 +68,22 @@ const Realization = () => {
 
   const renderPagination = () => {
     const pageNumbers = [];
-    const maxPagesToShow = 2;
-
+    const maxPagesToShow = 1;
+  
     if (currentPage > maxPagesToShow + 1) {
       pageNumbers.push(
         <button
           key={1}
           className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
           onClick={() => handlePageChange(1)}
+          disabled={isLoading} // Disable jika sedang loading
         >
           1
         </button>
       );
       pageNumbers.push(<span key="dots-before">...</span>);
     }
-
+  
     for (
       let i = Math.max(1, currentPage - maxPagesToShow);
       i <= Math.min(lastPage, currentPage + maxPagesToShow);
@@ -97,12 +98,13 @@ const Realization = () => {
               : "text-gray-600 bg-white hover:bg-gray-100"
           }`}
           onClick={() => handlePageChange(i)}
+          disabled={isLoading} // Disable jika sedang loading
         >
           {i}
         </button>
       );
     }
-
+  
     if (currentPage < lastPage - maxPagesToShow) {
       pageNumbers.push(<span key="dots-after">...</span>);
       pageNumbers.push(
@@ -110,12 +112,13 @@ const Realization = () => {
           key={lastPage}
           className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
           onClick={() => handlePageChange(lastPage)}
+          disabled={isLoading} // Disable jika sedang loading
         >
           {lastPage}
         </button>
       );
     }
-
+  
     return pageNumbers;
   };
 
@@ -335,7 +338,7 @@ const Realization = () => {
               <button
                 className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
                 onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
+                disabled={currentPage === 1 || isLoading}
               >
                 &lt;
               </button>
@@ -343,7 +346,7 @@ const Realization = () => {
               <button
                 className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
                 onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === lastPage}
+                disabled={currentPage === lastPage || isLoading}
               >
                 &gt;
               </button>

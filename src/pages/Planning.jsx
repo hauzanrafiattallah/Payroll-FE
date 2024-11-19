@@ -6,7 +6,7 @@ import Topbar from "../components/Topbar";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useNavigate } from "react-router-dom";
-import AddPlanningPopUp from "../components/AddPlanningPopUp"; 
+import AddPlanningPopUp from "../components/AddPlanningPopUp";
 
 const Planning = () => {
   const [plans, setPlans] = useState([]);
@@ -14,9 +14,11 @@ const Planning = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [showPopup, setShowPopup] = useState(false); 
+  const [showPopup, setShowPopup] = useState(false);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const [availableYears, setAvailableYears] = useState([2026,2025,2024, 2023, 2022, 2021,2020]);
+  const [availableYears, setAvailableYears] = useState([
+    2026, 2025, 2024, 2023, 2022, 2021, 2020,
+  ]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const dropdownRef = useRef(null);
@@ -27,7 +29,9 @@ const Planning = () => {
     setIsLoading(true);
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/planning?page=${page}&limit=5&year=${selectedYear}`,
+        `${
+          import.meta.env.VITE_API_URL
+        }/planning?page=${page}&limit=5&year=${selectedYear}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -63,21 +67,22 @@ const Planning = () => {
 
   const renderPagination = () => {
     const pageNumbers = [];
-    const maxPagesToShow = 2;
-
+    const maxPagesToShow = 1;
+  
     if (currentPage > maxPagesToShow + 1) {
       pageNumbers.push(
         <button
           key={1}
           className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
           onClick={() => handlePageChange(1)}
+          disabled={isLoading} // Disable jika sedang loading
         >
           1
         </button>
       );
       pageNumbers.push(<span key="dots-before">...</span>);
     }
-
+  
     for (
       let i = Math.max(1, currentPage - maxPagesToShow);
       i <= Math.min(lastPage, currentPage + maxPagesToShow);
@@ -92,12 +97,13 @@ const Planning = () => {
               : "text-gray-600 bg-white hover:bg-gray-100"
           }`}
           onClick={() => handlePageChange(i)}
+          disabled={isLoading} // Disable jika sedang loading
         >
           {i}
         </button>
       );
     }
-
+  
     if (currentPage < lastPage - maxPagesToShow) {
       pageNumbers.push(<span key="dots-after">...</span>);
       pageNumbers.push(
@@ -105,14 +111,16 @@ const Planning = () => {
           key={lastPage}
           className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
           onClick={() => handlePageChange(lastPage)}
+          disabled={isLoading} // Disable jika sedang loading
         >
           {lastPage}
         </button>
       );
     }
-
+  
     return pageNumbers;
   };
+  
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= lastPage) setCurrentPage(page);
@@ -136,11 +144,11 @@ const Planning = () => {
   };
 
   const openPopup = () => {
-    setShowPopup(true); 
+    setShowPopup(true);
   };
 
   const closePopup = () => {
-    setShowPopup(false); 
+    setShowPopup(false);
   };
 
   const toggleDropdown = () => {
@@ -191,7 +199,7 @@ const Planning = () => {
             </div>
 
             <button
-              onClick={openPopup} 
+              onClick={openPopup}
               className="flex items-center justify-center bg-[#B4252A] text-white font-semibold py-2 px-5 rounded-lg hover:bg-[#8E1F22] shadow-md text-base sm:text-sm md:text-base lg:text-md h-10 w-36 sm:w-32 md:w-36 lg:w-40"
             >
               <FaPlus className="mr-2" /> New Plan
@@ -330,7 +338,7 @@ const Planning = () => {
               <button
                 className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
                 onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
+                disabled={currentPage === 1 || isLoading}
               >
                 &lt;
               </button>
@@ -338,7 +346,7 @@ const Planning = () => {
               <button
                 className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
                 onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === lastPage}
+                disabled={currentPage === lastPage || isLoading}
               >
                 &gt;
               </button>
