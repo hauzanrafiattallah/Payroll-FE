@@ -222,7 +222,7 @@ const Dashboard = () => {
 
   const renderPagination = () => {
     const pageNumbers = [];
-    const maxPagesToShow = 1;
+    const maxPagesToShow = 2;
 
     if (currentPage > maxPagesToShow + 1) {
       pageNumbers.push(
@@ -230,6 +230,7 @@ const Dashboard = () => {
           key={1}
           className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
           onClick={() => handlePageChange(1)}
+          disabled={loading} // Disable jika sedang loading
         >
           1
         </button>
@@ -251,6 +252,7 @@ const Dashboard = () => {
               : "text-gray-600 bg-white hover:bg-gray-100"
           }`}
           onClick={() => handlePageChange(i)}
+          disabled={loading} // Disable jika sedang loading
         >
           {i}
         </button>
@@ -264,6 +266,7 @@ const Dashboard = () => {
           key={lastPage}
           className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
           onClick={() => handlePageChange(lastPage)}
+          disabled={loading} // Disable jika sedang loading
         >
           {lastPage}
         </button>
@@ -395,29 +398,113 @@ const Dashboard = () => {
   );
 
   const COLORS = [
-    "#EA9B4D", "#48B121", "#617BFF", "#FF617B", "#FFD761",
-    "#FF9A8B", "#99CCFF", "#B9F6CA", "#8A2BE2", "#00FF00",
-    "#D500F9", "#FF5722", "#FFEB3B", "#4CAF50", "#00BCD4",
-    "#3F51B5", "#8BC34A", "#FF9800", "#F44336", "#9C27B0",
-    "#607D8B", "#795548", "#2196F3", "#03A9F4", "#CDDC39",
-    "#8D6E63", "#E91E63", "#FFC107", "#8BC34A", "#CDDC39",
-    "#FFEB3B", "#03A9F4", "#FF9800", "#8D6E63", "#795548",
-    "#FF4081", "#00E5FF", "#8BC34A", "#F44336", "#FF5722",
-    "#607D8B", "#9E9E9E", "#D32F2F", "#0288D1", "#388E3C",
-    "#F57C00", "#8E24AA", "#7B1FA2", "#00C853", "#FF6D00",
-    "#FFD600", "#2C6CB0", "#9E1B32", "#00A4A6", "#E040FB",
-    "#8BC34A", "#FFC107", "#FF5722", "#00BCD4", "#B71C1C",
-    "#00695C", "#5C6BC0", "#0288D1", "#D32F2F", "#1976D2",
-    "#388E3C", "#FF8A80", "#00E5FF", "#2196F3", "#FF6F00",
-    "#FF80AB", "#9E9D24", "#1976D2", "#4CAF50", "#64FFDA",
-    "#D50000", "#673AB7", "#FFEB3B", "#2196F3", "#FF5722",
-    "#00C853", "#607D8B", "#E040FB", "#FF9800", "#9C27B0",
-    "#3F51B5", "#607D8B", "#4CAF50", "#F44336", "#9E9E9E",
-    "#5C6BC0", "#00C853", "#03A9F4", "#FF4081", "#FFEB3B",
-    "#8BC34A", "#FF5722", "#F57C00", "#1976D2", "#7B1FA2",
-    "#0288D1", "#FF9800", "#8D6E63", "#795548", "#FF5252"
+    "#EA9B4D",
+    "#48B121",
+    "#617BFF",
+    "#FF617B",
+    "#FFD761",
+    "#FF9A8B",
+    "#99CCFF",
+    "#B9F6CA",
+    "#8A2BE2",
+    "#00FF00",
+    "#D500F9",
+    "#FF5722",
+    "#FFEB3B",
+    "#4CAF50",
+    "#00BCD4",
+    "#3F51B5",
+    "#8BC34A",
+    "#FF9800",
+    "#F44336",
+    "#9C27B0",
+    "#607D8B",
+    "#795548",
+    "#2196F3",
+    "#03A9F4",
+    "#CDDC39",
+    "#8D6E63",
+    "#E91E63",
+    "#FFC107",
+    "#8BC34A",
+    "#CDDC39",
+    "#FFEB3B",
+    "#03A9F4",
+    "#FF9800",
+    "#8D6E63",
+    "#795548",
+    "#FF4081",
+    "#00E5FF",
+    "#8BC34A",
+    "#F44336",
+    "#FF5722",
+    "#607D8B",
+    "#9E9E9E",
+    "#D32F2F",
+    "#0288D1",
+    "#388E3C",
+    "#F57C00",
+    "#8E24AA",
+    "#7B1FA2",
+    "#00C853",
+    "#FF6D00",
+    "#FFD600",
+    "#2C6CB0",
+    "#9E1B32",
+    "#00A4A6",
+    "#E040FB",
+    "#8BC34A",
+    "#FFC107",
+    "#FF5722",
+    "#00BCD4",
+    "#B71C1C",
+    "#00695C",
+    "#5C6BC0",
+    "#0288D1",
+    "#D32F2F",
+    "#1976D2",
+    "#388E3C",
+    "#FF8A80",
+    "#00E5FF",
+    "#2196F3",
+    "#FF6F00",
+    "#FF80AB",
+    "#9E9D24",
+    "#1976D2",
+    "#4CAF50",
+    "#64FFDA",
+    "#D50000",
+    "#673AB7",
+    "#FFEB3B",
+    "#2196F3",
+    "#FF5722",
+    "#00C853",
+    "#607D8B",
+    "#E040FB",
+    "#FF9800",
+    "#9C27B0",
+    "#3F51B5",
+    "#607D8B",
+    "#4CAF50",
+    "#F44336",
+    "#9E9E9E",
+    "#5C6BC0",
+    "#00C853",
+    "#03A9F4",
+    "#FF4081",
+    "#FFEB3B",
+    "#8BC34A",
+    "#FF5722",
+    "#F57C00",
+    "#1976D2",
+    "#7B1FA2",
+    "#0288D1",
+    "#FF9800",
+    "#8D6E63",
+    "#795548",
+    "#FF5252",
   ];
-  
+
   return (
     <>
       <Topbar />
@@ -836,7 +923,7 @@ const Dashboard = () => {
                   <button
                     className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
                     onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={!prevPageUrl}
+                    disabled={!prevPageUrl || loading}
                   >
                     &lt;
                   </button>
@@ -844,7 +931,7 @@ const Dashboard = () => {
                   <button
                     className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
                     onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={!nextPageUrl}
+                    disabled={!nextPageUrl || loading}
                   >
                     &gt;
                   </button>
