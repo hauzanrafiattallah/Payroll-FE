@@ -46,8 +46,8 @@ const Dashboard = () => {
   const [prevPageUrl, setPrevPageUrl] = useState(null);
   const [loading, setLoading] = useState(true);
   const authToken = localStorage.getItem("token");
-  const [selectedYearBarChart, setSelectedYearBarChart] = useState(2024); 
-  const [selectedYearPieChart, setSelectedYearPieChart] = useState(2024); 
+  const [selectedYearBarChart, setSelectedYearBarChart] = useState(2024);
+  const [selectedYearPieChart, setSelectedYearPieChart] = useState(2024);
   const [showYearDropdownBarChart, setShowYearDropdownBarChart] =
     useState(false);
   const [showYearDropdownPieChart, setShowYearDropdownPieChart] =
@@ -77,7 +77,6 @@ const Dashboard = () => {
     };
   }, []);
 
-  
   const getBackgroundColor = (section) => {
     if (filter.type === "income" && section === "income") {
       return "bg-[#B4252A] text-white";
@@ -90,7 +89,6 @@ const Dashboard = () => {
     }
   };
 
-  
   const years = [2025, 2024, 2023, 2022, 2021];
 
   useEffect(() => {
@@ -145,8 +143,8 @@ const Dashboard = () => {
           {
             params: {
               transaction_type: filter.type === "All" ? "" : filter.type,
-              start_date: filter.startDate || "", 
-              end_date: filter.endDate || "", 
+              start_date: filter.startDate || "",
+              end_date: filter.endDate || "",
               page: currentPage,
               limit: 10,
             },
@@ -222,8 +220,6 @@ const Dashboard = () => {
     }
   };
 
-  const COLORS = ["#EA9B4D", "#48B121", "#617BFF", "#FF617B", "#FFD761"];
-
   const renderPagination = () => {
     const pageNumbers = [];
     const maxPagesToShow = 2;
@@ -277,7 +273,6 @@ const Dashboard = () => {
     return pageNumbers;
   };
 
-  
   const renderSkeleton = () => (
     <>
       {/* Skeleton for Balance, Income, Expense */}
@@ -399,6 +394,30 @@ const Dashboard = () => {
     </>
   );
 
+  const COLORS = [
+    "#EA9B4D", "#48B121", "#617BFF", "#FF617B", "#FFD761",
+    "#FF9A8B", "#99CCFF", "#B9F6CA", "#8A2BE2", "#00FF00",
+    "#D500F9", "#FF5722", "#FFEB3B", "#4CAF50", "#00BCD4",
+    "#3F51B5", "#8BC34A", "#FF9800", "#F44336", "#9C27B0",
+    "#607D8B", "#795548", "#2196F3", "#03A9F4", "#CDDC39",
+    "#8D6E63", "#E91E63", "#FFC107", "#8BC34A", "#CDDC39",
+    "#FFEB3B", "#03A9F4", "#FF9800", "#8D6E63", "#795548",
+    "#FF4081", "#00E5FF", "#8BC34A", "#F44336", "#FF5722",
+    "#607D8B", "#9E9E9E", "#D32F2F", "#0288D1", "#388E3C",
+    "#F57C00", "#8E24AA", "#7B1FA2", "#00C853", "#FF6D00",
+    "#FFD600", "#2C6CB0", "#9E1B32", "#00A4A6", "#E040FB",
+    "#8BC34A", "#FFC107", "#FF5722", "#00BCD4", "#B71C1C",
+    "#00695C", "#5C6BC0", "#0288D1", "#D32F2F", "#1976D2",
+    "#388E3C", "#FF8A80", "#00E5FF", "#2196F3", "#FF6F00",
+    "#FF80AB", "#9E9D24", "#1976D2", "#4CAF50", "#64FFDA",
+    "#D50000", "#673AB7", "#FFEB3B", "#2196F3", "#FF5722",
+    "#00C853", "#607D8B", "#E040FB", "#FF9800", "#9C27B0",
+    "#3F51B5", "#607D8B", "#4CAF50", "#F44336", "#9E9E9E",
+    "#5C6BC0", "#00C853", "#03A9F4", "#FF4081", "#FFEB3B",
+    "#8BC34A", "#FF5722", "#F57C00", "#1976D2", "#7B1FA2",
+    "#0288D1", "#FF9800", "#8D6E63", "#795548", "#FF5252"
+  ];
+  
   return (
     <>
       <Topbar />
@@ -461,7 +480,7 @@ const Dashboard = () => {
                     className="flex items-center px-4 py-2 text-sm font-semibold text-black bg-white border rounded-md shadow-sm hover:bg-gray-100 border-gray-300"
                     onClick={() => {
                       setShowYearDropdownBarChart(!showYearDropdownBarChart);
-                      setShowYearDropdownPieChart(false); 
+                      setShowYearDropdownPieChart(false);
                     }}
                   >
                     <FaCalendarAlt className="mr-2" /> {selectedYearBarChart}
@@ -542,14 +561,14 @@ const Dashboard = () => {
                     </div>
                     <ResponsiveContainer
                       width="100%"
-                      height={window.innerWidth < 640 ? 250 : 300} 
+                      height={window.innerWidth < 640 ? 250 : 300}
                     >
                       <PieChart>
                         <Pie
                           data={dashboardData.pieChart.planningData}
                           dataKey="value"
                           nameKey="name"
-                          outerRadius={window.innerWidth < 640 ? 80 : 100} 
+                          outerRadius={window.innerWidth < 640 ? 80 : 100}
                         >
                           {dashboardData.pieChart.planningData.map(
                             (entry, index) => (
@@ -568,7 +587,7 @@ const Dashboard = () => {
                           layout={
                             window.innerWidth < 640 ? "horizontal" : "vertical"
                           }
-                          iconSize={0} 
+                          iconSize={0}
                           wrapperStyle={{
                             display: "flex",
                             flexDirection:
@@ -631,7 +650,7 @@ const Dashboard = () => {
                           setShowYearDropdownPieChart(
                             !showYearDropdownPieChart
                           );
-                          setShowYearDropdownBarChart(false); 
+                          setShowYearDropdownBarChart(false);
                         }}
                       >
                         <FaCalendarAlt className="mr-2" />{" "}
@@ -670,7 +689,7 @@ const Dashboard = () => {
                           data={dashboardData.pieChart.realizationData}
                           dataKey="value"
                           nameKey="name"
-                          outerRadius={window.innerWidth < 640 ? 80 : 100} 
+                          outerRadius={window.innerWidth < 640 ? 80 : 100}
                         >
                           {dashboardData.pieChart.realizationData.map(
                             (entry, index) => (
