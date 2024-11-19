@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { FaPlus } from "react-icons/fa";
+import React, { useState, useEffect, useRef } from "react";
+import { FaPlus, FaCalendarAlt } from "react-icons/fa";
 import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
@@ -15,7 +15,11 @@ const Planning = () => {
   const [lastPage, setLastPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [showPopup, setShowPopup] = useState(false); 
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [availableYears, setAvailableYears] = useState([2026,2025,2024, 2023, 2022, 2021,2020]);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
   const fetchPlans = async (page = 1) => {
@@ -23,7 +27,7 @@ const Planning = () => {
     setIsLoading(true);
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/planning?page=${page}&limit=5`,
+        `${import.meta.env.VITE_API_URL}/planning?page=${page}&limit=5&year=${selectedYear}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -43,7 +47,19 @@ const Planning = () => {
 
   useEffect(() => {
     fetchPlans(currentPage);
-  }, [currentPage]);
+  }, [currentPage, selectedYear]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const renderPagination = () => {
     const pageNumbers = [];
@@ -127,6 +143,16 @@ const Planning = () => {
     setShowPopup(false); 
   };
 
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prev) => !prev);
+  };
+
+  const handleYearChange = (year) => {
+    setSelectedYear(year);
+    setCurrentPage(1); // Reset ke halaman pertama setiap kali tahun diubah
+    setIsDropdownOpen(false);
+  };
+
   return (
     <>
       <Topbar />
@@ -137,7 +163,33 @@ const Planning = () => {
             Planning
           </h1>
 
-          <div className="flex justify-end items-center mb-6">
+          <div className="flex justify-end items-center mb-6 space-x-4">
+            {/* Filter Tahun */}
+            <div className="relative" ref={dropdownRef}>
+              <button
+                className="flex items-center bg-white border rounded-lg px-4 py-2 text-gray-700 shadow-md"
+                onClick={toggleDropdown}
+              >
+                <FaCalendarAlt className="mr-2" />
+                <span>{selectedYear}</span>
+              </button>
+              {isDropdownOpen && (
+                <ul className="absolute z-10 bg-white border rounded-md mt-1 w-full shadow-lg">
+                  {availableYears.map((year) => (
+                    <li
+                      key={year}
+                      className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
+                        year === selectedYear ? "font-bold text-[#B4252A]" : ""
+                      }`}
+                      onClick={() => handleYearChange(year)}
+                    >
+                      {year}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
             <button
               onClick={openPopup} 
               className="flex items-center justify-center bg-[#B4252A] text-white font-semibold py-2 px-5 rounded-lg hover:bg-[#8E1F22] shadow-md text-base sm:text-sm md:text-base lg:text-md h-10 w-36 sm:w-32 md:w-36 lg:w-40"
