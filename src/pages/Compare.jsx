@@ -1,16 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useNavigate } from "react-router-dom";
+import { FaCalendarAlt } from "react-icons/fa";
 
 const Compare = () => {
   const [compares, setCompares] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [availableYears, setAvailableYears] = useState([
+    2026, 2025, 2024, 2023, 2022, 2021, 2020,
+  ]);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
   const fetchCompares = async (page = 1) => {
@@ -18,7 +26,9 @@ const Compare = () => {
     setIsLoading(true);
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/planning-compare?page=${page}`,
+        `${
+          import.meta.env.VITE_API_URL
+        }/planning-compare?page=${page}&year=${selectedYear}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -37,30 +47,38 @@ const Compare = () => {
 
   useEffect(() => {
     fetchCompares(currentPage);
-  }, [currentPage]);
+  }, [currentPage, selectedYear]);
 
-  const handlePageChange = (page) => {
-    if (page >= 1 && page <= lastPage) setCurrentPage(page);
-  };
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const renderPagination = () => {
     const pageNumbers = [];
     const maxPagesToShow = 1;
-  
+
     if (currentPage > maxPagesToShow + 1) {
       pageNumbers.push(
         <button
           key={1}
           className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
           onClick={() => handlePageChange(1)}
-          disabled={isLoading} // Disable jika sedang loading
+          disabled={isLoading}
         >
           1
         </button>
       );
       pageNumbers.push(<span key="dots-before">...</span>);
     }
-  
+
     for (
       let i = Math.max(1, currentPage - maxPagesToShow);
       i <= Math.min(lastPage, currentPage + maxPagesToShow);
@@ -75,13 +93,13 @@ const Compare = () => {
               : "text-gray-600 bg-white hover:bg-gray-100"
           }`}
           onClick={() => handlePageChange(i)}
-          disabled={isLoading} // Disable jika sedang loading
+          disabled={isLoading}
         >
           {i}
         </button>
       );
     }
-  
+
     if (currentPage < lastPage - maxPagesToShow) {
       pageNumbers.push(<span key="dots-after">...</span>);
       pageNumbers.push(
@@ -89,14 +107,28 @@ const Compare = () => {
           key={lastPage}
           className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
           onClick={() => handlePageChange(lastPage)}
-          disabled={isLoading} // Disable jika sedang loading
+          disabled={isLoading}
         >
           {lastPage}
         </button>
       );
     }
-  
+
     return pageNumbers;
+  };
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= lastPage) setCurrentPage(page);
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prev) => !prev);
+  };
+
+  const handleYearChange = (year) => {
+    setSelectedYear(year);
+    setCurrentPage(1);
+    setIsDropdownOpen(false);
   };
 
   return (
@@ -108,6 +140,33 @@ const Compare = () => {
           <h1 className="mb-6 text-2xl font-bold text-center lg:text-left">
             Compare
           </h1>
+
+          <div className="flex justify-end items-center mb-6 space-x-4">
+            <div className="relative" ref={dropdownRef}>
+              <button
+                className="flex items-center bg-white border rounded-lg px-4 py-2 text-gray-700 shadow-md"
+                onClick={toggleDropdown}
+              >
+                <FaCalendarAlt className="mr-2" />
+                <span>{selectedYear}</span>
+              </button>
+              {isDropdownOpen && (
+                <ul className="absolute z-10 bg-white border rounded-md mt-1 w-full shadow-lg">
+                  {availableYears.map((year) => (
+                    <li
+                      key={year}
+                      className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
+                        year === selectedYear ? "font-bold text-[#B4252A]" : ""
+                      }`}
+                      onClick={() => handleYearChange(year)}
+                    >
+                      {year}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
 
           <div className="space-y-4">
             {isLoading
