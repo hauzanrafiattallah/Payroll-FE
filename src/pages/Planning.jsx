@@ -6,7 +6,7 @@ import Topbar from "../components/Topbar";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useNavigate } from "react-router-dom";
-import AddPlanningPopUp from "../components/AddPlanningPopUp"; // Import the AddPlanningPopUp component
+import AddPlanningPopUp from "../components/AddPlanningPopUp"; 
 
 const Planning = () => {
   const [plans, setPlans] = useState([]);
@@ -14,7 +14,7 @@ const Planning = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [showPopup, setShowPopup] = useState(false); // State to control popup visibility
+  const [showPopup, setShowPopup] = useState(false); 
 
   const navigate = useNavigate();
 
@@ -120,11 +120,11 @@ const Planning = () => {
   };
 
   const openPopup = () => {
-    setShowPopup(true); // Open the popup
+    setShowPopup(true); 
   };
 
   const closePopup = () => {
-    setShowPopup(false); // Close the popup
+    setShowPopup(false); 
   };
 
   return (
@@ -139,7 +139,7 @@ const Planning = () => {
 
           <div className="flex justify-end items-center mb-6">
             <button
-              onClick={openPopup} // Show popup on click
+              onClick={openPopup} 
               className="flex items-center justify-center bg-[#B4252A] text-white font-semibold py-2 px-5 rounded-lg hover:bg-[#8E1F22] shadow-md text-base sm:text-sm md:text-base lg:text-md h-10 w-36 sm:w-32 md:w-36 lg:w-40"
             >
               <FaPlus className="mr-2" /> New Plan
@@ -215,6 +215,9 @@ const Planning = () => {
                           </span>
                           <span className="px-3 py-1 text-xs font-semibold bg-gray-100 text-gray-600 rounded-full">
                             {plan.item_count} Items
+                          </span>
+                          <span className="px-3 py-1 text-xs font-semibold bg-blue-100 text-blue-700 rounded-full">
+                            {new Date(plan.start_date).getFullYear()}
                           </span>
                         </div>
                         <h2 className="text-lg font-bold text-gray-800 mt-2">

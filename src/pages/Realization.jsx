@@ -197,6 +197,9 @@ const Realization = () => {
                           <span className="px-3 py-1 text-xs font-semibold bg-gray-100 text-gray-600 rounded-full">
                             {realization.item_count} Items
                           </span>
+                          <span className="px-3 py-1 text-xs font-semibold bg-blue-100 text-blue-700 rounded-full">
+                            {new Date(realization.start_date).getFullYear()}
+                          </span>
                         </div>
                         <h2 className="text-lg font-bold text-gray-800 mt-2">
                           {realization.title}
