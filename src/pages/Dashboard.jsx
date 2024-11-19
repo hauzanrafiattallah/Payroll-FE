@@ -222,7 +222,7 @@ const Dashboard = () => {
 
   const renderPagination = () => {
     const pageNumbers = [];
-    const maxPagesToShow = 2;
+    const maxPagesToShow = 1;
 
     if (currentPage > maxPagesToShow + 1) {
       pageNumbers.push(
