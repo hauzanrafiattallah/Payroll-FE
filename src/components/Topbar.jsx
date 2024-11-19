@@ -1,30 +1,40 @@
+// Import dependencies and required components
+// - React for component state management and lifecycle hooks
+// - Icons for UI elements
+// - Pop-up components for adding income and expenses
+// - Axios for API requests
+// - Toastify for user notifications
+// - ReactLoading for displaying a loading spinner
 import React, { useState, useEffect, useRef } from "react";
 import { PiHandDepositBold, PiHandWithdrawBold } from "react-icons/pi";
 import { FaSignOutAlt } from "react-icons/fa";
 import AddIncomePopUp from "./AddIncomePopUp";
 import AddExpensesPopUp from "./AddExpensesPopUp";
-import { Link, useNavigate } from "react-router-dom"; // Import Link dan useNavigate dari react-router-dom
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import ReactLoading from "react-loading"; // Import ReactLoading
+import ReactLoading from "react-loading";
 
 const Topbar = () => {
-  const [isAddIncomeOpen, setIsAddIncomeOpen] = useState(false);
-  const [isAddExpensesOpen, setIsAddExpensesOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [loading, setLoading] = useState(false); // State untuk loading spinner
-  const [isLogoutPopupOpen, setIsLogoutPopupOpen] = useState(false); // State untuk popup logout
-  const dropdownRef = useRef(null); // Tambahkan ref untuk dropdown
+  // State variables for managing component behavior
+  const [isAddIncomeOpen, setIsAddIncomeOpen] = useState(false); // Controls the Add Income popup
+  const [isAddExpensesOpen, setIsAddExpensesOpen] = useState(false); // Controls the Add Expenses popup
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Manages the user dropdown visibility
+  const [loading, setLoading] = useState(false); // Controls the loading spinner
+  const [isLogoutPopupOpen, setIsLogoutPopupOpen] = useState(false); // Toggles the logout confirmation popup
+  const dropdownRef = useRef(null); // Ref for detecting clicks outside the dropdown
 
+  // User data from localStorage or fetch
   const [userData, setUserData] = useState(() => {
     const savedUserData = localStorage.getItem("userData");
     return savedUserData ? JSON.parse(savedUserData) : null;
   });
 
-  const authToken = localStorage.getItem("token"); // Ambil token dari localStorage
-  const baseImageUrl = import.meta.env.VITE_FILE_BASE_URL; // Mengambil base URL untuk gambar dari .env
-  const navigate = useNavigate(); // Untuk navigasi ke halaman lain
+  const authToken = localStorage.getItem("token"); // Retrieve auth token from localStorage
+  const baseImageUrl = import.meta.env.VITE_FILE_BASE_URL; // Base URL for user image
+  const navigate = useNavigate(); // Navigation for routing
 
+  // Fetch user data from the API and update local state
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -33,47 +43,49 @@ const Topbar = () => {
           {
             headers: {
               Accept: "application/json",
-              Authorization: `Bearer ${authToken}`, // Sertakan token di header
+              Authorization: `Bearer ${authToken}`,
             },
           }
         );
-        setUserData(response.data);
-        localStorage.setItem("userData", JSON.stringify(response.data)); // Simpan ke localStorage
+        setUserData(response.data); // Update state with user data
+        localStorage.setItem("userData", JSON.stringify(response.data)); // Cache data locally
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
     };
 
     if (authToken) {
-      fetchUserData(); // Panggil API untuk mendapatkan data pengguna terbaru
+      fetchUserData(); // Fetch user data if token is available
     }
   }, [authToken]);
 
-  // Deteksi klik di luar dropdown dan tutup dropdown
+  // Detect clicks outside the dropdown to close it
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsDropdownOpen(false); // Tutup dropdown jika klik di luar elemen dropdown
+        setIsDropdownOpen(false);
       }
     };
 
-    // Tambahkan event listener untuk klik di luar dropdown
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside); // Add event listener
 
     return () => {
-      // Hapus event listener ketika komponen di-unmount
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside); // Cleanup on unmount
     };
   }, []);
 
+  // Get the first name of the user for display purposes
   const getFirstName = (name) => {
-    if (!name) return "User"; // Fallback ke "User" jika nama tidak ada
-    return name.split(" ")[0]; // Ambil nama pertama sebelum spasi
+    if (!name) return "User"; // Default to "User" if name is missing
+    return name.split(" ")[0]; // Extract the first name
   };
 
+  // Handle logout functionality
+  // - Sends a logout request to the backend
+  // - Clears local storage and navigates to the login page
   const handleLogout = async () => {
     try {
-      setLoading(true); // Tampilkan loading spinner
+      setLoading(true);
 
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/logout`,
@@ -91,7 +103,7 @@ const Topbar = () => {
         localStorage.removeItem("role");
         toast.success("Logout berhasil!");
         setTimeout(() => {
-          navigate("/login");
+          navigate("/login"); // Redirect to login page
         }, 1000);
       } else {
         toast.error("Logout gagal, coba lagi.");
@@ -106,23 +118,27 @@ const Topbar = () => {
 
   return (
     <>
+      {/* Loading spinner overlay */}
       {loading && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-10">
           <ReactLoading type="spin" color="#B4252A" height={50} width={50} />
         </div>
       )}
 
-      {/* Logo Humic */}
+      {/* Topbar header */}
       <div className="flex items-center justify-between p-4 w-full shadow-md fixed top-0 left-0 right-0 z-50 bg-white transition-all duration-300">
+        {/* Logo Section */}
         <div
           className={`items-center ${
             userData?.role === "superAdmin" ? "flex" : "hidden lg:flex md:flex"
           } ml-2 sm:ml-4 lg:ml-14`}
         >
-          <img src="/header2.png" alt="Logo" className="mr-3 h-10  lg:h-12" />
+          <img src="/header2.png" alt="Logo" className="mr-3 h-10 lg:h-12" />
         </div>
 
+        {/* Action Buttons and User Dropdown */}
         <div className="flex items-center justify-between w-full lg:w-auto md:w-auto">
+          {/* Add Income and Expenses Buttons (Hidden for superAdmin) */}
           {userData?.role !== "superAdmin" && (
             <div className="flex space-x-1 sm:space-x-2 lg:space-x-4">
               <button
@@ -142,6 +158,7 @@ const Topbar = () => {
             </div>
           )}
 
+          {/* User Dropdown Menu */}
           <div className="relative dropdown-button ml-auto">
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -161,6 +178,7 @@ const Topbar = () => {
               />
             </button>
 
+            {/* Dropdown options */}
             {isDropdownOpen && (
               <div
                 className="absolute right-0 w-40 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg"
@@ -186,6 +204,7 @@ const Topbar = () => {
         </div>
       </div>
 
+      {/* Logout Confirmation Popup */}
       {isLogoutPopupOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg popup-content w-[90%] max-w-md">
@@ -198,9 +217,9 @@ const Topbar = () => {
                 <button
                   className={`px-6 py-2 text-red-600 bg-red-100 rounded-md hover:bg-red-200 w-32 ${
                     loading ? "opacity-50 cursor-not-allowed" : ""
-                  }`} // Tambah efek disable jika loading
-                  onClick={() => setIsLogoutPopupOpen(false)} // Tutup popup
-                  disabled={loading} // Disable tombol saat loading
+                  }`}
+                  onClick={() => setIsLogoutPopupOpen(false)}
+                  disabled={loading}
                 >
                   Back
                 </button>
@@ -208,14 +227,14 @@ const Topbar = () => {
                   <button
                     className={`px-6 py-2 text-white bg-[#B4252A] rounded-md hover:bg-[#8E1F22] w-32 flex items-center justify-center ${
                       loading ? "opacity-50 cursor-not-allowed" : ""
-                    }`} // Tambah efek disable dan loading spinner
+                    }`}
                     onClick={handleLogout}
-                    disabled={loading} // Disable tombol saat loading
+                    disabled={loading}
                   >
                     Confirm
                   </button>
 
-                  {loading && ( // Jika loading, tampilkan spinner di luar tombol
+                  {loading && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-10">
                       <ReactLoading
                         type="spin"
@@ -232,11 +251,11 @@ const Topbar = () => {
         </div>
       )}
 
+      {/* Popups for Income and Expenses */}
       <AddIncomePopUp
         isOpen={isAddIncomeOpen}
         onClose={() => setIsAddIncomeOpen(false)}
       />
-
       <AddExpensesPopUp
         isOpen={isAddExpensesOpen}
         onClose={() => setIsAddExpensesOpen(false)}

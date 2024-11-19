@@ -1,3 +1,10 @@
+// Import required libraries and dependencies
+// - React for component development
+// - Icons for UI elements
+// - React Router for navigation
+// - Axios for API communication
+// - Toastify for user notifications
+// - ReactLoading for loading indicators
 import React, { useState, useEffect } from "react";
 import { FaTh, FaClipboardList, FaUpload, FaBars } from "react-icons/fa";
 import { MdTask } from "react-icons/md";
@@ -9,21 +16,25 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ReactLoading from "react-loading";
 
-// Komponen Sidebar - Navigasi utama aplikasi
+// Sidebar Component
+// Provides main navigation for the application, including menu links and role-based access control.
+// - Dynamically highlights the active page.
+// - Toggles visibility for mobile view.
+// - Fetches and caches the user's role for conditional menu rendering.
 const Sidebar = () => {
-  const location = useLocation(); // Mendapatkan path saat ini
-  const [isOpen, setIsOpen] = useState(false); // State untuk toggle sidebar (mobile)
-  const [loading, setLoading] = useState(false); // State untuk loading
-  const [role, setRole] = useState(localStorage.getItem("role")); // Menyimpan peran pengguna
+  const location = useLocation(); // Tracks the current route location
+  const [isOpen, setIsOpen] = useState(false); // Controls sidebar visibility (mobile view)
+  const [loading, setLoading] = useState(false); // Controls the loading spinner
+  const [role, setRole] = useState(localStorage.getItem("role")); // Stores the user's role
 
-  // Fetch role pengguna dari API jika belum tersedia di localStorage
+  // Fetch the user's role from the API if not cached in localStorage
   useEffect(() => {
     const fetchUserRole = async () => {
       if (!role) {
         try {
-          const authToken = localStorage.getItem("token"); // Ambil token autentikasi
+          const authToken = localStorage.getItem("token"); // Retrieve authentication token
 
-          // Request data pengguna dari API
+          // Request user data from the API
           const response = await axios.get(
             `${import.meta.env.VITE_API_URL}/user`,
             {
@@ -35,11 +46,11 @@ const Sidebar = () => {
           );
 
           const userRole = response.data.role;
-          setRole(userRole); // Simpan role ke state
-          localStorage.setItem("role", userRole); // Cache role di localStorage
+          setRole(userRole); // Store role in state
+          localStorage.setItem("role", userRole); // Cache role in localStorage
         } catch (error) {
           console.error("Error fetching user role:", error);
-          toast.error("Gagal mendapatkan data pengguna."); // Notifikasi error
+          toast.error("Gagal mendapatkan data pengguna."); // Notify user about the error
         }
       }
     };
@@ -47,21 +58,21 @@ const Sidebar = () => {
     fetchUserRole();
   }, [role]);
 
-  // Toggle sidebar untuk mobile view
+  // Toggles sidebar visibility (mobile view)
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
 
   return (
     <>
-      {/* Komponen loading */}
+      {/* Loading spinner */}
       {loading && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-20">
           <ReactLoading type="spin" color="#B4252A" height={50} width={50} />
         </div>
       )}
 
-      {/* Tombol hamburger untuk toggle sidebar */}
+      {/* Hamburger button for toggling sidebar */}
       <div className="fixed left-0 z-50 top-24 lg:hidden">
         <button
           onClick={toggleSidebar}
@@ -71,15 +82,15 @@ const Sidebar = () => {
         </button>
       </div>
 
-      {/* Sidebar utama */}
+      {/* Main Sidebar */}
       <div
         className={`p-6 bg-white rounded-lg shadow-lg w-64 min-h-[75vh] max-h-[80vh] mt-20 fixed lg:fixed transition-transform duration-300 ease-in-out transform ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0 z-50 lg:z-10 flex flex-col justify-between lg:ml-6`}
       >
-        {/* Menu navigasi */}
+        {/* Navigation Menu */}
         <ul className="flex-1">
-          {/* Dashboard */}
+          {/* Dashboard Link */}
           <Link to="/">
             <li
               className={`flex items-center rounded-lg p-2 transition-colors duration-200 ${
@@ -93,7 +104,7 @@ const Sidebar = () => {
             </li>
           </Link>
 
-          {/* Planning */}
+          {/* Planning Link */}
           <Link to="/planning">
             <li
               className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
@@ -107,7 +118,7 @@ const Sidebar = () => {
             </li>
           </Link>
 
-          {/* Realization */}
+          {/* Realization Link */}
           <Link to="/realization">
             <li
               className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
@@ -121,7 +132,7 @@ const Sidebar = () => {
             </li>
           </Link>
 
-          {/* Export */}
+          {/* Export Link */}
           <Link to="/export">
             <li
               className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
@@ -135,7 +146,7 @@ const Sidebar = () => {
             </li>
           </Link>
 
-          {/* Compare */}
+          {/* Compare Link */}
           <Link to="/compare">
             <li
               className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
@@ -149,7 +160,7 @@ const Sidebar = () => {
             </li>
           </Link>
 
-          {/* Approval hanya untuk superAdmin */}
+          {/* Approval Link (visible only for superAdmin role) */}
           {role === "superAdmin" && (
             <Link to="/approval">
               <li
@@ -166,7 +177,7 @@ const Sidebar = () => {
           )}
         </ul>
 
-        {/* Copyright */}
+        {/* Footer Section */}
         <div className="mt-4 text-xs text-center text-gray-500">
           <p>Copyright © {new Date().getFullYear()} HUMIC Engineering</p>
         </div>
