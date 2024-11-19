@@ -14,6 +14,7 @@ const Realization = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [role, setRole] = useState(localStorage.getItem("role"));
   const navigate = useNavigate();
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [availableYears, setAvailableYears] = useState([
@@ -21,6 +22,32 @@ const Realization = () => {
   ]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      if (!role) {
+        try {
+          const authToken = localStorage.getItem("token");
+          const response = await axios.get(
+            `${import.meta.env.VITE_API_URL}/user`,
+            {
+              headers: {
+                Authorization: `Bearer ${authToken}`,
+                Accept: "application/json",
+              },
+            }
+          );
+          const userRole = response.data.role;
+          setRole(userRole);
+          localStorage.setItem("role", userRole);
+        } catch (error) {
+          console.error("Error fetching user role:", error);
+        }
+      }
+    };
+
+    fetchUserRole();
+  }, [role]);
 
   const fetchRealizations = async (page = 1) => {
     const token = localStorage.getItem("token");
@@ -69,7 +96,7 @@ const Realization = () => {
   const renderPagination = () => {
     const pageNumbers = [];
     const maxPagesToShow = 1;
-  
+
     if (currentPage > maxPagesToShow + 1) {
       pageNumbers.push(
         <button
@@ -83,7 +110,7 @@ const Realization = () => {
       );
       pageNumbers.push(<span key="dots-before">...</span>);
     }
-  
+
     for (
       let i = Math.max(1, currentPage - maxPagesToShow);
       i <= Math.min(lastPage, currentPage + maxPagesToShow);
@@ -104,7 +131,7 @@ const Realization = () => {
         </button>
       );
     }
-  
+
     if (currentPage < lastPage - maxPagesToShow) {
       pageNumbers.push(<span key="dots-after">...</span>);
       pageNumbers.push(
@@ -118,7 +145,7 @@ const Realization = () => {
         </button>
       );
     }
-  
+
     return pageNumbers;
   };
 
@@ -187,22 +214,24 @@ const Realization = () => {
                 </ul>
               )}
             </div>
-            <button
-              onClick={toggleEditMode}
-              className={`flex items-center justify-center space-x-1 font-medium py-2 px-5 rounded-lg shadow-sm transition-colors ${
-                isEditMode
-                  ? "bg-red-700 text-white border border-red-700"
-                  : "bg-[#B4252A] text-white"
-              }`}
-            >
-              {isEditMode ? (
-                <>Close</> // When in edit mode
-              ) : (
-                <>
-                  <TbEdit className="mr-1" /> Edit
-                </>
-              )}
-            </button>
+            {role !== "superAdmin" && (
+              <button
+                onClick={toggleEditMode}
+                className={`flex items-center justify-center space-x-1 font-medium py-2 px-5 rounded-lg shadow-sm transition-colors ${
+                  isEditMode
+                    ? "bg-red-700 text-white border border-red-700"
+                    : "bg-[#B4252A] text-white"
+                }`}
+              >
+                {isEditMode ? (
+                  <>Close</>
+                ) : (
+                  <>
+                    <TbEdit className="mr-1" /> Edit
+                  </>
+                )}
+              </button>
+            )}
           </div>
 
           <div className="space-y-4">
