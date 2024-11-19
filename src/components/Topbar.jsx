@@ -15,6 +15,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import ReactLoading from "react-loading";
 
+// Topbar Component: Displays the header with user options, action buttons, and user dropdown menu
 const Topbar = () => {
   // State variables for managing component behavior
   const [isAddIncomeOpen, setIsAddIncomeOpen] = useState(false); // Controls the Add Income popup
