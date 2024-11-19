@@ -9,7 +9,6 @@ import { toast } from "react-toastify";
 import ReactLoading from "react-loading"; // Import ReactLoading
 
 const Topbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isAddIncomeOpen, setIsAddIncomeOpen] = useState(false);
   const [isAddExpensesOpen, setIsAddExpensesOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
