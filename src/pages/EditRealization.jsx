@@ -335,7 +335,6 @@ const EditRealization = () => {
                       <th className="py-2 px-4">Nilai Pajak</th>
                       <th className="py-2 px-4">Nilai Netto</th>
                       <th className="py-2 px-4">Kategori</th>
-                      <th className="py-2 px-4">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -445,13 +444,13 @@ const EditRealization = () => {
                                   {/* Tombol Close (Silang) */}
                                   <button
                                     onClick={() => handleCloseAddItemMode()}
-                                    className="bg-red-500 text-white rounded-md p-2 w-10 h-10 flex items-center justify-center hover:bg-red-600 shadow-md"
+                                    className="bg-red-600 text-white rounded-md p-2 w-10 h-10 flex items-center justify-center hover:bg-red-700 shadow-md"
                                   >
                                     <FaTimes />
                                   </button>
                                   <button
                                     onClick={handleSaveEdit}
-                                    className="bg-green-500 text-white rounded-md p-2 w-10 h-10 flex items-center justify-center hover:bg-green-600 shadow-md"
+                                    className="bg-green-600 text-white rounded-md p-2 w-10 h-10 flex items-center justify-center hover:bg-green-700 shadow-md"
                                   >
                                     <FaSave />
                                   </button>
