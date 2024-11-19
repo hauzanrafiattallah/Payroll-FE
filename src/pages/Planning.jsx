@@ -15,6 +15,7 @@ const Planning = () => {
   const [lastPage, setLastPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
+  const [role, setRole] = useState(localStorage.getItem("role"));
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [availableYears, setAvailableYears] = useState([
     2026, 2025, 2024, 2023, 2022, 2021, 2020,
@@ -23,6 +24,32 @@ const Planning = () => {
 
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      if (!role) {
+        try {
+          const authToken = localStorage.getItem("token");
+          const response = await axios.get(
+            `${import.meta.env.VITE_API_URL}/user`,
+            {
+              headers: {
+                Authorization: `Bearer ${authToken}`,
+                Accept: "application/json",
+              },
+            }
+          );
+          const userRole = response.data.role;
+          setRole(userRole);
+          localStorage.setItem("role", userRole);
+        } catch (error) {
+          console.error("Error fetching user role:", error);
+        }
+      }
+    };
+
+    fetchUserRole();
+  }, [role]);
 
   const fetchPlans = async (page = 1) => {
     const token = localStorage.getItem("token");
@@ -68,7 +95,7 @@ const Planning = () => {
   const renderPagination = () => {
     const pageNumbers = [];
     const maxPagesToShow = 1;
-  
+
     if (currentPage > maxPagesToShow + 1) {
       pageNumbers.push(
         <button
@@ -82,7 +109,7 @@ const Planning = () => {
       );
       pageNumbers.push(<span key="dots-before">...</span>);
     }
-  
+
     for (
       let i = Math.max(1, currentPage - maxPagesToShow);
       i <= Math.min(lastPage, currentPage + maxPagesToShow);
@@ -103,7 +130,7 @@ const Planning = () => {
         </button>
       );
     }
-  
+
     if (currentPage < lastPage - maxPagesToShow) {
       pageNumbers.push(<span key="dots-after">...</span>);
       pageNumbers.push(
@@ -117,10 +144,9 @@ const Planning = () => {
         </button>
       );
     }
-  
+
     return pageNumbers;
   };
-  
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= lastPage) setCurrentPage(page);
@@ -198,12 +224,14 @@ const Planning = () => {
               )}
             </div>
 
-            <button
-              onClick={openPopup}
-              className="flex items-center justify-center bg-[#B4252A] text-white font-semibold py-2 px-5 rounded-lg hover:bg-[#8E1F22] shadow-md text-base sm:text-sm md:text-base lg:text-md h-10 w-36 sm:w-32 md:w-36 lg:w-40"
-            >
-              <FaPlus className="mr-2" /> New Plan
-            </button>
+            {role !== "superAdmin" && (
+              <button
+                onClick={openPopup}
+                className="flex items-center justify-center bg-[#B4252A] text-white font-semibold py-2 px-5 rounded-lg hover:bg-[#8E1F22] shadow-md text-base sm:text-sm md:text-base lg:text-md h-10 w-36 sm:w-32 md:w-36 lg:w-40"
+              >
+                <FaPlus className="mr-2" /> New Plan
+              </button>
+            )}
           </div>
 
           <div className="space-y-4">
