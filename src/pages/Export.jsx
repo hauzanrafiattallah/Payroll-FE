@@ -214,7 +214,7 @@ const Export = () => {
 
       {/* Overlay loading saat proses */}
       {loading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-10">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-10 ml-52">
           <ReactLoading type="spin" color="#B4252A" height={50} width={50} />
         </div>
       )}
