@@ -54,6 +54,7 @@ const Dashboard = () => {
     useState(false);
   const barChartDropdownRef = useRef(null);
   const pieChartDropdownRef = useRef(null);
+  const years = [2025, 2024, 2023, 2022, 2021];
 
   const handleClickOutside = (e) => {
     if (
@@ -88,8 +89,6 @@ const Dashboard = () => {
       return "bg-white text-black";
     }
   };
-
-  const years = [2025, 2024, 2023, 2022, 2021];
 
   useEffect(() => {
     const fetchBarChartData = async () => {
@@ -590,7 +589,7 @@ const Dashboard = () => {
                   )}
                 </div>
               </div>
-
+              
               <div className="mb-6">
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart
@@ -631,8 +630,8 @@ const Dashboard = () => {
                 </ResponsiveContainer>
               </div>
 
+              {/* Planning Section */}
               <div className="grid grid-cols-1 gap-6 mb-6 sm:grid-cols-2">
-                {/* Planning Section */}
                 <div>
                   <h1 className="mb-6 text-2xl font-bold text-center lg:text-left mt-10">
                     Planning
