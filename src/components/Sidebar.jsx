@@ -132,20 +132,6 @@ const Sidebar = () => {
             </li>
           </Link>
 
-          {/* Export Link */}
-          <Link to="/export">
-            <li
-              className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
-                location.pathname === "/export"
-                  ? "bg-[#FDE8E8] text-[#B4252A]"
-                  : "text-gray-700 hover:bg-gray-100 hover:text-[#B4252A]"
-              }`}
-            >
-              <FaUpload className="mr-3 text-lg" />
-              <span>Export</span>
-            </li>
-          </Link>
-
           {/* Compare Link */}
           <Link to="/compare">
             <li
@@ -157,6 +143,20 @@ const Sidebar = () => {
             >
               <BiGitCompare className="mr-3 text-2xl" />
               <span>Compare</span>
+            </li>
+          </Link>
+
+          {/* Export Link */}
+          <Link to="/export">
+            <li
+              className={`flex items-center rounded-lg p-2 transition-colors duration-200 mt-4 ${
+                location.pathname === "/export"
+                  ? "bg-[#FDE8E8] text-[#B4252A]"
+                  : "text-gray-700 hover:bg-gray-100 hover:text-[#B4252A]"
+              }`}
+            >
+              <FaUpload className="mr-3 text-lg" />
+              <span>Export</span>
             </li>
           </Link>
 
