@@ -32,8 +32,8 @@ const Approval = () => {
         activeTab === "planning"
           ? `${
               import.meta.env.VITE_API_URL
-            }/planning-approve?page=${page}&limit=5`
-          : `${import.meta.env.VITE_API_URL}/pending?page=${page}&limit=5`;
+            }/planning-approve?page=${page}&limit=1`
+          : `${import.meta.env.VITE_API_URL}/pending?page=${page}&limit=1`;
 
       const response = await axios.get(endpoint, {
         headers: {
@@ -140,7 +140,7 @@ const Approval = () => {
           key={1}
           className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
           onClick={() => handlePageChange(1)}
-          disabled={isLoading} // Disable jika sedang loading
+          disabled={isLoading || loading} 
         >
           1
         </button>
@@ -162,7 +162,7 @@ const Approval = () => {
               : "text-gray-600 bg-white hover:bg-gray-100"
           }`}
           onClick={() => handlePageChange(i)}
-          disabled={isLoading} // Disable jika sedang loading
+          disabled={isLoading || loading} 
         >
           {i}
         </button>
@@ -176,7 +176,7 @@ const Approval = () => {
           key={lastPage}
           className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
           onClick={() => handlePageChange(lastPage)}
-          disabled={isLoading} // Disable jika sedang loading
+          disabled={isLoading || loading} 
         >
           {lastPage}
         </button>
@@ -440,7 +440,7 @@ const Approval = () => {
 
           {/* Overlay Loading */}
           {isLoading && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-10">
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-10 ml-20">
               <ReactLoading
                 type="spin"
                 color="#B4252A"
@@ -456,7 +456,7 @@ const Approval = () => {
               <button
                 className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
                 onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1 || isLoading}
+                disabled={currentPage === 1 || isLoading || loading}
               >
                 &lt;
               </button>
@@ -464,7 +464,7 @@ const Approval = () => {
               <button
                 className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
                 onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === lastPage || isLoading}
+                disabled={currentPage === lastPage || isLoading || loading}
               >
                 &gt;
               </button>
