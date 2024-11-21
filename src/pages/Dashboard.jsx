@@ -8,6 +8,10 @@ import FilterPopup from "../components/FilterPopup";
 import TransactionPopUp from "../components/TransactionPopUp";
 import Skeleton from "react-loading-skeleton";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { FaTrash } from "react-icons/fa";
+import ReactLoading from "react-loading";
 import "react-loading-skeleton/dist/skeleton.css";
 import {
   BarChart,
@@ -49,6 +53,9 @@ const Dashboard = () => {
   const authToken = localStorage.getItem("token");
   const [selectedYearBarChart, setSelectedYearBarChart] = useState(2024);
   const [selectedYearPieChart, setSelectedYearPieChart] = useState(2024);
+  const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const [showYearDropdownBarChart, setShowYearDropdownBarChart] =
     useState(false);
   const [showYearDropdownPieChart, setShowYearDropdownPieChart] =
@@ -212,6 +219,47 @@ const Dashboard = () => {
   const handleTransactionClick = (transactionId) => {
     setSelectedTransactionId(transactionId);
     setIsTransactionPopupOpen(true);
+  };
+
+  const openDeletePopup = (transactionId) => {
+    setSelectedTransactionId(transactionId);
+    setIsDeletePopupOpen(true);
+  };
+
+  const closeDeletePopup = () => {
+    setIsDeletePopupOpen(false);
+    setSelectedTransactionId(null);
+  };
+
+  const handleDelete = async (transactionId) => {
+    setIsDeleting(true);
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_API_URL}/finance/${transactionId}`,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+
+      toast.success("Transaction deleted successfully!");
+      // Update daftar transaksi
+      setDashboardData((prevData) => ({
+        ...prevData,
+        transactionList: prevData.transactionList.filter(
+          (transaction) => transaction.id !== transactionId
+        ),
+      }));
+
+      closeDeletePopup();
+    } catch (error) {
+      console.error("Error deleting transaction:", error);
+      toast.error("Failed to delete transaction!");
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const handlePageChange = (newPage) => {
@@ -667,22 +715,16 @@ const Dashboard = () => {
                           )}
                         </Pie>
                         <Legend
-                          align={window.innerWidth < 640 ? "center" : "right"}
-                          verticalAlign={
-                            window.innerWidth < 640 ? "bottom" : "middle"
-                          }
-                          layout={
-                            window.innerWidth < 640 ? "horizontal" : "vertical"
-                          }
+                          className="cursor-pointer"
+                          align="right"
+                          verticalAlign="middle"
+                          layout="vertical"
                           iconSize={0}
                           wrapperStyle={{
-                            display: "flex",
-                            flexDirection:
-                              window.innerWidth < 640 ? "row" : "column",
-                            alignItems:
-                              window.innerWidth < 640 ? "center" : "flex-start",
-                            marginTop: window.innerWidth < 640 ? "1rem" : "0",
-                            gap: window.innerWidth < 640 ? "0.5rem" : "0",
+                            maxHeight: "250px", // Batasi tinggi maksimal
+                            overflowY: "auto", // Aktifkan scroll ketika melebihi batas
+                            paddingRight: "10px", // Tambahkan jarak
+                            scrollbarWidth: "none",
                           }}
                           formatter={(value, entry, index) => {
                             const item =
@@ -788,20 +830,15 @@ const Dashboard = () => {
                           )}
                         </Pie>
                         <Legend
-                          align={window.innerWidth < 640 ? "center" : "right"}
-                          verticalAlign={
-                            window.innerWidth < 640 ? "bottom" : "middle"
-                          }
-                          layout={
-                            window.innerWidth < 640 ? "horizontal" : "vertical"
-                          }
+                          align="right"
+                          verticalAlign="middle"
+                          layout="vertical"
                           iconSize={0}
                           wrapperStyle={{
-                            display: "flex",
-                            flexDirection:
-                              window.innerWidth < 640 ? "row" : "column",
-                            alignItems: "center",
-                            marginTop: window.innerWidth < 640 ? "1rem" : "0",
+                            maxHeight: "250px", // Batasi tinggi maksimal
+                            overflowY: "auto", // Aktifkan scroll ketika melebihi batas
+                            paddingRight: "10px", // Tambahkan jarak
+                            scrollbarWidth: "none",
                           }}
                           formatter={(value, entry, index) => {
                             const item =
@@ -876,6 +913,7 @@ const Dashboard = () => {
                       <th className="px-4 py-2 text-center">Amount</th>
                       <th className="px-4 py-2 text-center">Type</th>
                       <th className="px-4 py-2 text-center">Status</th>
+                      <th className="px-4 py-2 text-center">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -921,11 +959,55 @@ const Dashboard = () => {
                             {item.status || "Unknown"}
                           </span>
                         </td>
+
+                        <td className="px-4 py-2 text-center">
+                          <button
+                            className="p-2 text-white bg-[#B4252A] rounded-lg hover:bg-red-800 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                            onClick={(e) => {
+                              e.stopPropagation(); // Mencegah event klik pada tombol merambat ke elemen lain
+                              openDeletePopup(item.id);
+                            }}
+                            disabled={
+                              isDeleting && selectedTransactionId === item.id
+                            }
+                          >
+                            <FaTrash size={17} />
+                          </button>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
+
+              {isDeletePopupOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                  <div className="bg-white p-8 rounded-lg shadow-lg popup-content w-[90%] max-w-md min-h-[200px]">
+                    <div className="flex flex-col items-center space-y-6">
+                      <h2 className="text-xl font-bold">Delete Confirmation</h2>
+                      <p className="text-center text-gray-500">
+                        Apakah anda yakin untuk menghapus transaksi ini?
+                      </p>
+                      <div className="flex justify-center space-x-4">
+                        <button
+                          className="px-6 py-2 text-red-600 bg-red-100 rounded-md hover:bg-red-200 w-32"
+                          onClick={closeDeletePopup}
+                          disabled={isDeleting}
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          className="px-6 py-2 text-white bg-[#B4252A] rounded-md hover:bg-[#8E1F22] w-32"
+                          onClick={() => handleDelete(selectedTransactionId)}
+                          disabled={isDeleting}
+                        >
+                          Confirm
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Pagination */}
               <div className="flex justify-end mt-6">
@@ -951,6 +1033,12 @@ const Dashboard = () => {
           )}
         </div>
       </div>
+
+      {isDeleting && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-10">
+          <ReactLoading type="spin" color="#B4252A" height={50} width={50} />
+        </div>
+      )}
 
       <FilterPopup
         isOpen={isFilterOpen}
