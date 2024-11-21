@@ -55,6 +55,8 @@ const Dashboard = () => {
   const [selectedYearPieChart, setSelectedYearPieChart] = useState(2024);
   const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [role, setRole] = useState(localStorage.getItem("role")); // Stores the user's role
+  const deletePopupRef = useRef(null);
 
   const [showYearDropdownBarChart, setShowYearDropdownBarChart] =
     useState(false);
@@ -97,6 +99,36 @@ const Dashboard = () => {
       return "bg-white text-black";
     }
   };
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      if (!role) {
+        try {
+          const authToken = localStorage.getItem("token"); // Retrieve authentication token
+
+          // Request user data from the API
+          const response = await axios.get(
+            `${import.meta.env.VITE_API_URL}/user`,
+            {
+              headers: {
+                Authorization: `Bearer ${authToken}`,
+                Accept: "application/json",
+              },
+            }
+          );
+
+          const userRole = response.data.role;
+          setRole(userRole); // Store role in state
+          localStorage.setItem("role", userRole); // Cache role in localStorage
+        } catch (error) {
+          console.error("Error fetching user role:", error);
+          toast.error("Gagal mendapatkan data pengguna."); // Notify user about the error
+        }
+      }
+    };
+
+    fetchUserRole();
+  }, [role]);
 
   useEffect(() => {
     const fetchBarChartData = async () => {
@@ -230,6 +262,23 @@ const Dashboard = () => {
     setIsDeletePopupOpen(false);
     setSelectedTransactionId(null);
   };
+
+  // Event listener untuk mendeteksi klik di luar pop-up
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        isDeletePopupOpen &&
+        deletePopupRef.current &&
+        !deletePopupRef.current.contains(event.target)
+      ) {
+        closeDeletePopup(); // Tutup pop-up jika klik di luar
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isDeletePopupOpen]);
 
   const handleDelete = async (transactionId) => {
     setIsDeleting(true);
@@ -959,20 +1008,23 @@ const Dashboard = () => {
                             {item.status || "Unknown"}
                           </span>
                         </td>
-
                         <td className="px-4 py-2 text-center">
-                          <button
-                            className="p-2 text-white bg-[#B4252A] rounded-lg hover:bg-red-800 disabled:bg-gray-300 disabled:cursor-not-allowed"
-                            onClick={(e) => {
-                              e.stopPropagation(); // Mencegah event klik pada tombol merambat ke elemen lain
-                              openDeletePopup(item.id);
-                            }}
-                            disabled={
-                              isDeleting && selectedTransactionId === item.id
-                            }
-                          >
-                            <FaTrash size={17} />
-                          </button>
+                          {role === "admin" && item.status === "approve" ? (
+                            <span className="text-gray-600">Not Allowed</span> // Admin tidak bisa menghapus transaksi "approve"
+                          ) : (
+                            <button
+                              className="p-2 text-white bg-[#B4252A] rounded-lg hover:bg-red-800 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openDeletePopup(item.id);
+                              }}
+                              disabled={
+                                isDeleting && selectedTransactionId === item.id // Nonaktifkan tombol saat sedang menghapus
+                              }
+                            >
+                              <FaTrash size={17} />
+                            </button>
+                          )}
                         </td>
                       </tr>
                     ))}
@@ -982,7 +1034,10 @@ const Dashboard = () => {
 
               {isDeletePopupOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                  <div className="bg-white p-8 rounded-lg shadow-lg popup-content w-[90%] max-w-md min-h-[200px]">
+                  <div
+                    ref={deletePopupRef}
+                    className="bg-white p-8 rounded-lg shadow-lg popup-content w-[90%] max-w-md min-h-[200px]"
+                  >
                     <div className="flex flex-col items-center space-y-6">
                       <h2 className="text-xl font-bold">Delete Confirmation</h2>
                       <p className="text-center text-gray-500">
