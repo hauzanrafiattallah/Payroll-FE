@@ -54,7 +54,7 @@ const Dashboard = () => {
     useState(false);
   const barChartDropdownRef = useRef(null);
   const pieChartDropdownRef = useRef(null);
-  const years = [2025, 2024, 2023, 2022, 2021];
+  const years = [2026, 2025, 2024, 2023];
 
   const handleClickOutside = (e) => {
     if (

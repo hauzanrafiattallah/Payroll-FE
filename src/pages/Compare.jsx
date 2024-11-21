@@ -14,7 +14,7 @@ const Compare = () => {
   const [lastPage, setLastPage] = useState(1);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [availableYears, setAvailableYears] = useState([
-    2026, 2025, 2024, 2023, 2022, 2021, 2020,
+    2026, 2025, 2024,2023
   ]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
