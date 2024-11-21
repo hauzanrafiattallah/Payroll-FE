@@ -21,6 +21,9 @@ const Approval = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [selectedPlanningId, setSelectedPlanningId] = useState(null);
   const authToken = localStorage.getItem("token");
+  const [isApprovePopupOpen, setIsApprovePopupOpen] = useState(false);
+  const [isDeclinePopupOpen, setIsDeclinePopupOpen] = useState(false);
+  const [selectedApprovalId, setSelectedApprovalId] = useState(null);
 
   useEffect(() => {
     fetchApprovalData(currentPage);
@@ -55,7 +58,9 @@ const Approval = () => {
   };
 
   const handleTabClick = (tab) => {
+    if (loading) return; // Jangan ganti tab jika sedang loading
     setActiveTab(tab);
+    setApprovalData([]); // Reset data sebelumnya
     setCurrentPage(1);
   };
 
@@ -80,6 +85,7 @@ const Approval = () => {
       if (response.data.status) {
         toast.success("Item approved successfully!");
         fetchApprovalData(currentPage);
+        closeApprovePopup(); // Tambahkan ini untuk menutup pop-up setelah berhasil
       }
     } catch (error) {
       console.error("Error approving item:", error);
@@ -110,6 +116,7 @@ const Approval = () => {
       if (response.data.status) {
         toast.success("Item rejected successfully!");
         fetchApprovalData(currentPage);
+        closeDeclinePopup(); // Tambahkan ini untuk menutup pop-up setelah berhasil
       }
     } catch (error) {
       console.error("Error rejecting item:", error);
@@ -187,6 +194,26 @@ const Approval = () => {
     return pageNumbers;
   };
 
+  const openApprovePopup = (id) => {
+    setSelectedApprovalId(id);
+    setIsApprovePopupOpen(true);
+  };
+
+  const closeApprovePopup = () => {
+    setSelectedApprovalId(null);
+    setIsApprovePopupOpen(false);
+  };
+
+  const openDeclinePopup = (id) => {
+    setSelectedApprovalId(id);
+    setIsDeclinePopupOpen(true);
+  };
+
+  const closeDeclinePopup = () => {
+    setSelectedApprovalId(null);
+    setIsDeclinePopupOpen(false);
+  };
+
   const renderSkeleton = () => (
     <div className="p-6 overflow-x-auto bg-white rounded-lg shadow-lg">
       <table className="min-w-full text-left border-collapse table-auto">
@@ -252,6 +279,7 @@ const Approval = () => {
                   ? "bg-[#B4252A] text-white"
                   : "bg-[#F3F3F3] text-black"
               }`}
+              disabled={loading}
               onClick={() => handleTabClick("planning")}
             >
               Planning
@@ -262,6 +290,7 @@ const Approval = () => {
                   ? "bg-[#B4252A] text-white"
                   : "bg-[#F3F3F3] text-black"
               }`}
+              disabled={loading}
               onClick={() => handleTabClick("transaction")}
             >
               Transaction
@@ -325,23 +354,17 @@ const Approval = () => {
                       <td className="px-4 py-2 text-center flex items-center justify-center space-x-2">
                         {/* Tombol Reject */}
                         <button
-                          onClick={() => handleReject(plan.id)}
+                          onClick={() => openDeclinePopup(plan.id)}
                           className="text-gray-500 hover:text-gray-700"
                         >
-                          <LiaTimesCircle
-                            size={36}
-                            className="text-gray-500 hover:text-gray-700"
-                          />
+                          <LiaTimesCircle size={36} />
                         </button>
                         {/* Tombol Approve */}
                         <button
-                          onClick={() => handleApprove(plan.id)}
+                          onClick={() => openApprovePopup(plan.id)}
                           className="text-[#B4252A] hover:text-red-600"
                         >
-                          <FaCheckCircle
-                            size={30}
-                            className="text-[#B4252A] hover:text-red-600"
-                          />
+                          <FaCheckCircle size={30} />
                         </button>
                       </td>
                     </tr>
@@ -396,7 +419,7 @@ const Approval = () => {
                           ? item.tax_amount.toLocaleString("id-ID")
                           : "0"}
                       </td>
-                      <td className="px-4 py-2 text-center ">
+                      <td className="px-4 py-2 text-center">
                         <a
                           href={`${import.meta.env.VITE_FILE_BASE_URL}/${
                             item.document_evidence
@@ -428,13 +451,13 @@ const Approval = () => {
                       </td>
                       <td className="px-4 py-2 text-center flex items-center justify-center space-x-2">
                         <button
-                          onClick={() => handleReject(item.id)}
+                          onClick={() => openDeclinePopup(item.id)} // Pastikan `item.id` benar
                           className="text-gray-500 hover:text-gray-700"
                         >
                           <LiaTimesCircle size={36} />
                         </button>
                         <button
-                          onClick={() => handleApprove(item.id)}
+                          onClick={() => openApprovePopup(item.id)} // Pastikan `item.id` benar
                           className="text-[#B4252A] hover:text-red-600"
                         >
                           <FaCheckCircle size={30} />
@@ -447,9 +470,83 @@ const Approval = () => {
             </div>
           )}
 
+          {isApprovePopupOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+              <div className="bg-white p-8 rounded-lg shadow-lg popup-content w-[90%] max-w-md min-h-[200px]">
+                <div className="flex flex-col items-center space-y-6">
+                  <h2 className="text-xl font-bold">
+                    {activeTab === "planning"
+                      ? "Approve Planning Confirmation"
+                      : "Approve Transaction Confirmation"}
+                  </h2>
+                  <p className="text-center text-gray-500">
+                    Apakah anda yakin menyetujui{" "}
+                    {activeTab === "planning"
+                      ? "planning ini"
+                      : "transaction ini"}
+                    ?
+                  </p>
+                  <div className="flex justify-center space-x-4">
+                    <button
+                      className="px-6 py-2 text-red-600 bg-red-100 rounded-md hover:bg-red-200 w-32"
+                      onClick={closeApprovePopup}
+                      disabled={isLoading}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      className="px-6 py-2 text-white bg-[#B4252A] rounded-md hover:bg-[#8E1F22] w-32"
+                      onClick={() => handleApprove(selectedApprovalId)}
+                      disabled={isLoading}
+                    >
+                      Confirm
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {isDeclinePopupOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+              <div className="bg-white p-8 rounded-lg shadow-lg popup-content w-[90%] max-w-md min-h-[200px]">
+                <div className="flex flex-col items-center space-y-6">
+                  <h2 className="text-xl font-bold">
+                    {activeTab === "planning"
+                      ? "Decline Planning Confirmation"
+                      : "Decline Transaction Confirmation"}
+                  </h2>
+                  <p className="text-center text-gray-500">
+                    Apakah anda yakin menolak{" "}
+                    {activeTab === "planning"
+                      ? "planning ini"
+                      : "transaction ini"}
+                    ?
+                  </p>
+                  <div className="flex justify-center space-x-4">
+                    <button
+                      className="px-6 py-2 text-red-600 bg-red-100 rounded-md hover:bg-red-200 w-32"
+                      onClick={closeDeclinePopup}
+                      disabled={isLoading}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      className="px-6 py-2 text-white bg-[#B4252A] rounded-md hover:bg-[#8E1F22] w-32"
+                      onClick={() => handleReject(selectedApprovalId)}
+                      disabled={isLoading}
+                    >
+                      Confirm
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Overlay Loading */}
           {isLoading && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-10 ml-20">
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-10">
               <ReactLoading
                 type="spin"
                 color="#B4252A"
