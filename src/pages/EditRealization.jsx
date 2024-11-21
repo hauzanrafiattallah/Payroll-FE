@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
@@ -11,7 +11,7 @@ import ReactLoading from "react-loading";
 const EditRealization = () => {
   const { id: realizationId } = useParams();
   const navigate = useNavigate();
-
+  const deletePopupRef = useRef(null);
   const [items, setItems] = useState([]);
   const [title, setTitle] = useState("Realization Title");
   const [startDate, setStartDate] = useState("");
@@ -20,6 +20,9 @@ const EditRealization = () => {
   const [isAddItemMode, setIsAddItemMode] = useState(false);
   const [editModeItemId, setEditModeItemId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingDelete, setIsLoadingDelete] = useState(false);
+  const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
 
   useEffect(() => {
     const fetchRealization = async () => {
@@ -231,30 +234,60 @@ const EditRealization = () => {
     setEditModeItemId(null);
   };
 
-  const removeItem = async (itemId) => {
-    setIsLoading(true);
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.delete(
-        `${import.meta.env.VITE_API_URL}/item/${itemId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.data.status) {
-        toast.success("Item deleted successfully!");
-        setItems(items.filter((item) => item.id !== itemId));
-      }
-    } catch (error) {
-      console.error("Error deleting item:", error);
-      toast.error("Failed to delete item. Please try again.");
-    } finally {
-      setIsLoading(false); // Set isLoading ke false setelah delete selesai
-    }
-    d;
+  const openDeletePopup = (itemId) => {
+    setItemToDelete(itemId);
+    setIsDeletePopupOpen(true);
   };
+
+  const closeDeletePopup = () => {
+    setItemToDelete(null);
+    setIsDeletePopupOpen(false);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (itemToDelete) {
+      setIsLoadingDelete(true);
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.delete(
+          `${import.meta.env.VITE_API_URL}/item/${itemToDelete}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (response.data.status) {
+          toast.success("Item deleted successfully!");
+          setItems(items.filter((item) => item.id !== itemToDelete));
+        }
+      } catch (error) {
+        console.error("Error deleting item:", error);
+        toast.error("Failed to delete item. Please try again.");
+      } finally {
+        setIsLoadingDelete(false);
+        closeDeletePopup();
+      }
+    }
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        isDeletePopupOpen &&
+        deletePopupRef.current &&
+        !deletePopupRef.current.contains(event.target)
+      ) {
+        closeDeletePopup();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isDeletePopupOpen]);
 
   const handleClose = () => {
     navigate(-1);
@@ -482,7 +515,7 @@ const EditRealization = () => {
                                         <FaEdit />
                                       </button>
                                       <button
-                                        onClick={() => removeItem(item.id)}
+                                        onClick={() => openDeletePopup(item.id)}
                                         className="bg-[#B4252A] text-white rounded-md p-2 w-10 h-10 flex items-center justify-center hover:bg-[#8E1F22] shadow-md"
                                       >
                                         <FaTrash />
@@ -629,6 +662,38 @@ const EditRealization = () => {
           </div>
         </div>
       </div>
+
+      {isDeletePopupOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div
+            ref={deletePopupRef}
+            className="bg-white p-8 rounded-lg shadow-lg popup-content w-[90%] max-w-md min-h-[200px]"
+          >
+            <div className="flex flex-col items-center space-y-6">
+              <h2 className="text-xl font-bold">Delete Confirmation</h2>
+              <p className="text-center text-gray-500">
+                Are you sure you want to delete this item?
+              </p>
+              <div className="flex justify-center space-x-4">
+                <button
+                  className="px-6 py-2 text-red-600 bg-red-100 rounded-md hover:bg-red-200 w-32"
+                  onClick={closeDeletePopup}
+                  disabled={isLoadingDelete}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="px-6 py-2 text-white bg-[#B4252A] rounded-md hover:bg-[#8E1F22] w-32"
+                  onClick={handleConfirmDelete}
+                  disabled={isLoadingDelete}
+                >
+                  Confirm
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {isLoading && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-10 ml-52">

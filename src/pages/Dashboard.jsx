@@ -1010,7 +1010,7 @@ const Dashboard = () => {
                         </td>
                         <td className="px-4 py-2 text-center">
                           {role === "admin" && item.status === "approve" ? (
-                            <span className="text-gray-600">Not Allowed</span> // Admin tidak bisa menghapus transaksi "approve"
+                            <p></p>
                           ) : (
                             <button
                               className="p-2 text-white bg-[#B4252A] rounded-lg hover:bg-red-800 disabled:bg-gray-300 disabled:cursor-not-allowed"
