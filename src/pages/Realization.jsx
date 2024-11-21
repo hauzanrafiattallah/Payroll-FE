@@ -18,7 +18,7 @@ const Realization = () => {
   const navigate = useNavigate();
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [availableYears, setAvailableYears] = useState([
-    2026, 2025, 2024, 2023
+    2026, 2025, 2024, 2023,
   ]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -250,6 +250,23 @@ const Realization = () => {
                         </div>
                         <Skeleton width={100} height={20} />
                         <Skeleton width={150} height={20} />
+                      </div>
+                    </div>
+                    <div className="flex space-x-4 mt-4 md:mt-0 justify-center w-full md:w-auto">
+                      <div className="flex flex-col items-center text-center">
+                        <Skeleton width={50} height={15} />
+                        <div className="rounded-lg border border-gray-200 p-3 shadow-inner">
+                          <Skeleton width={30} height={20} />
+                          <Skeleton width={40} height={30} />
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col items-center text-center">
+                        <Skeleton width={50} height={15} />
+                        <div className="rounded-lg border border-gray-200 p-3 shadow-inner bg-gray-50">
+                          <Skeleton width={30} height={20} />
+                          <Skeleton width={40} height={30} />
+                        </div>
                       </div>
                     </div>
                   </div>

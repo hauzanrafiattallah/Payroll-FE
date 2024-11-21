@@ -962,7 +962,6 @@ const Dashboard = () => {
                       <th className="px-4 py-2 text-center">Amount</th>
                       <th className="px-4 py-2 text-center">Type</th>
                       <th className="px-4 py-2 text-center">Status</th>
-                      <th className="px-4 py-2 text-center">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
