@@ -6,9 +6,10 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import { FaCheckCircle } from "react-icons/fa";
 import ReactLoading from "react-loading";
 import ItemDetailPopUp from "../components/ItemDetailPopUp";
+import { LiaTimesCircle } from "react-icons/lia";
 
 const Approval = () => {
   const [activeTab, setActiveTab] = useState("planning");
@@ -32,8 +33,8 @@ const Approval = () => {
         activeTab === "planning"
           ? `${
               import.meta.env.VITE_API_URL
-            }/planning-approve?page=${page}&limit=1`
-          : `${import.meta.env.VITE_API_URL}/pending?page=${page}&limit=1`;
+            }/planning-approve?page=${page}&limit=5`
+          : `${import.meta.env.VITE_API_URL}/pending?page=${page}&limit=5`;
 
       const response = await axios.get(endpoint, {
         headers: {
@@ -140,7 +141,7 @@ const Approval = () => {
           key={1}
           className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
           onClick={() => handlePageChange(1)}
-          disabled={isLoading || loading} 
+          disabled={isLoading || loading}
         >
           1
         </button>
@@ -162,7 +163,7 @@ const Approval = () => {
               : "text-gray-600 bg-white hover:bg-gray-100"
           }`}
           onClick={() => handlePageChange(i)}
-          disabled={isLoading || loading} 
+          disabled={isLoading || loading}
         >
           {i}
         </button>
@@ -176,7 +177,7 @@ const Approval = () => {
           key={lastPage}
           className="px-3 py-1 text-gray-600 bg-white rounded-full hover:bg-gray-100"
           onClick={() => handlePageChange(lastPage)}
-          disabled={isLoading || loading} 
+          disabled={isLoading || loading}
         >
           {lastPage}
         </button>
@@ -249,7 +250,7 @@ const Approval = () => {
               className={`px-4 py-2 rounded-full ${
                 activeTab === "planning"
                   ? "bg-[#B4252A] text-white"
-                  : "bg-gray-200 text-black"
+                  : "bg-[#F3F3F3] text-black"
               }`}
               onClick={() => handleTabClick("planning")}
             >
@@ -259,7 +260,7 @@ const Approval = () => {
               className={`px-4 py-2 rounded-full ${
                 activeTab === "transaction"
                   ? "bg-[#B4252A] text-white"
-                  : "bg-gray-200 text-black"
+                  : "bg-[#F3F3F3] text-black"
               }`}
               onClick={() => handleTabClick("transaction")}
             >
@@ -322,17 +323,25 @@ const Approval = () => {
                         ).toLocaleString("id-ID")}
                       </td>
                       <td className="px-4 py-2 text-center flex items-center justify-center space-x-2">
+                        {/* Tombol Reject */}
                         <button
                           onClick={() => handleReject(plan.id)}
                           className="text-gray-500 hover:text-gray-700"
                         >
-                          <FaTimesCircle size={25} />
+                          <LiaTimesCircle
+                            size={36}
+                            className="text-gray-500 hover:text-gray-700"
+                          />
                         </button>
+                        {/* Tombol Approve */}
                         <button
                           onClick={() => handleApprove(plan.id)}
                           className="text-[#B4252A] hover:text-red-600"
                         >
-                          <FaCheckCircle size={25} />
+                          <FaCheckCircle
+                            size={30}
+                            className="text-[#B4252A] hover:text-red-600"
+                          />
                         </button>
                       </td>
                     </tr>
@@ -422,13 +431,13 @@ const Approval = () => {
                           onClick={() => handleReject(item.id)}
                           className="text-gray-500 hover:text-gray-700"
                         >
-                          <FaTimesCircle size={25} />
+                          <LiaTimesCircle size={36} />
                         </button>
                         <button
                           onClick={() => handleApprove(item.id)}
                           className="text-[#B4252A] hover:text-red-600"
                         >
-                          <FaCheckCircle size={25} />
+                          <FaCheckCircle size={30} />
                         </button>
                       </td>
                     </tr>
