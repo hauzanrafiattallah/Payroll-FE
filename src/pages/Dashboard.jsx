@@ -7,6 +7,7 @@ import { FaCalendarAlt } from "react-icons/fa";
 import FilterPopup from "../components/FilterPopup";
 import TransactionPopUp from "../components/TransactionPopUp";
 import Skeleton from "react-loading-skeleton";
+import { Link } from "react-router-dom";
 import "react-loading-skeleton/dist/skeleton.css";
 import {
   BarChart,
@@ -589,7 +590,7 @@ const Dashboard = () => {
                   )}
                 </div>
               </div>
-              
+
               <div className="mb-6">
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart
@@ -843,6 +844,16 @@ const Dashboard = () => {
                     </ResponsiveContainer>
                   </div>
                 </div>
+              </div>
+
+              {/* Compare Event Button */}
+              <div className="flex justify-center mt-6">
+                <Link
+                  to="/compare"
+                  className="px-6 py-3 text-white bg-[#B4252A] rounded-full shadow-md hover:bg-[#8E1F22] focus:outline-none"
+                >
+                  Compare Event
+                </Link>
               </div>
 
               {/* Transaction List */}
