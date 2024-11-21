@@ -134,7 +134,13 @@ const Topbar = () => {
             userData?.role === "superAdmin" ? "flex" : "hidden lg:flex md:flex"
           } ml-2 sm:ml-4 lg:ml-14`}
         >
-          <img src="/header2.png" alt="Logo" className="mr-3 h-10 lg:h-12" />
+          <Link to="/">
+            <img
+              src="/header2.png"
+              alt="Logo"
+              className="mr-3 h-10 lg:h-12 cursor-pointer"
+            />
+          </Link>
         </div>
 
         {/* Action Buttons and User Dropdown */}
