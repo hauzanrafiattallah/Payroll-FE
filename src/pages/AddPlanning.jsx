@@ -6,22 +6,25 @@ import { FaPlus, FaTrash } from "react-icons/fa";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ReactLoading from "react-loading";
+
 
 const AddPlanning = () => {
   const location = useLocation();
   const planningId = location.state?.planningId;
   const navigate = useNavigate();
-
   const [items, setItems] = useState([]);
   const [title, setTitle] = useState("Planning Title");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [tempItem, setTempItem] = useState(null);
   const [isAddItemMode, setIsAddItemMode] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // State tunggal untuk loading
 
   // Fetch existing items when the component mounts
   useEffect(() => {
     const fetchItems = async () => {
+      setIsLoading(true); // Start loading
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
@@ -42,6 +45,8 @@ const AddPlanning = () => {
       } catch (error) {
         console.error("Error fetching items:", error);
         toast.error("Gagal mengambil items.");
+      } finally {
+        setIsLoading(false); // End loading
       }
     };
 
@@ -84,6 +89,7 @@ const AddPlanning = () => {
 
   const handleSave = async () => {
     if (tempItem) {
+      setIsLoading(true); // Start loading
       try {
         const token = localStorage.getItem("token");
         const response = await axios.post(
@@ -113,6 +119,8 @@ const AddPlanning = () => {
       } catch (error) {
         console.error("Error adding item:", error);
         toast.error("Failed to add item. Please try again.");
+      } finally {
+        setIsLoading(false); // End loading
       }
     }
     setTempItem(null);
@@ -125,6 +133,7 @@ const AddPlanning = () => {
   };
 
   const removeItem = async (itemId) => {
+    setIsLoading(true);
     try {
       const token = localStorage.getItem("token");
       const response = await axios.delete(
@@ -142,6 +151,8 @@ const AddPlanning = () => {
     } catch (error) {
       console.error("Error deleting item:", error);
       toast.error("Failed to delete item. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -201,6 +212,7 @@ const AddPlanning = () => {
               <h3 className="text-xl font-bold">Add Items</h3>
               {!isAddItemMode && (
                 <button
+                  disabled={isLoading}
                   onClick={addItem}
                   className="bg-[#B4252A] text-white font-semibold py-2 px-4 rounded-md hover:bg-[#8E1F22] flex items-center space-x-2"
                 >
@@ -257,6 +269,7 @@ const AddPlanning = () => {
                             <td className="py-2 px-4">{item.category}</td>
                             <td className="py-2 px-4 text-right">
                               <button
+                                disabled={isLoading}
                                 onClick={() => removeItem(item.id)}
                                 className="bg-[#B4252A] text-white rounded-md p-2 w-10 h-10 flex items-center justify-center hover:bg-[#8E1F22] shadow-md"
                               >
@@ -376,12 +389,14 @@ const AddPlanning = () => {
               {isAddItemMode ? (
                 <>
                   <button
+                    disabled={isLoading}
                     onClick={handleCloseAddItemMode}
                     className="bg-[#F5C6C7] text-[#B4252A] font-semibold py-2 px-8 rounded-lg hover:bg-[#F1B0B1]"
                   >
                     Cancel
                   </button>
                   <button
+                    disabled={isLoading}
                     onClick={handleSave}
                     className="bg-[#B4252A] text-white font-semibold py-2 px-8 rounded-lg hover:bg-[#8E1F22]"
                   >
@@ -390,6 +405,7 @@ const AddPlanning = () => {
                 </>
               ) : (
                 <button
+                  disabled={isLoading}
                   onClick={handleClose}
                   className="bg-[#F5C6C7] text-[#B4252A] font-semibold py-2 px-8 rounded-lg hover:bg-[#F1B0B1]"
                 >
@@ -400,6 +416,12 @@ const AddPlanning = () => {
           </div>
         </div>
       </div>
+
+      {isLoading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-10 ml-64">
+          <ReactLoading type="spin" color="#B4252A" height={50} width={50} />
+        </div>
+      )}
     </>
   );
 };
