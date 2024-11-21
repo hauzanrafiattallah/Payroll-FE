@@ -18,6 +18,8 @@ const Planning = () => {
   const [loading, setLoading] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
+  const [selectedPlanId, setSelectedPlanId] = useState(null);
   const [deletingPlanId, setDeletingPlanId] = useState(null);
   const [role, setRole] = useState(localStorage.getItem("role"));
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
@@ -81,9 +83,8 @@ const Planning = () => {
   };
 
   const handleDelete = async (planId) => {
-    setIsDeleting(true);
     setDeletingPlanId(planId);
-
+    setIsDeleting(true);
     try {
       const token = localStorage.getItem("token");
       const response = await axios.delete(
@@ -94,7 +95,6 @@ const Planning = () => {
       );
 
       if (response.status === 200) {
-        // Berhasil menghapus
         setPlans((prevPlans) => prevPlans.filter((plan) => plan.id !== planId));
         toast.success("Plan berhasil dihapus!");
       }
@@ -103,7 +103,8 @@ const Planning = () => {
       toast.error("Gagal menghapus plan. Coba lagi nanti.");
     } finally {
       setIsDeleting(false);
-      setDeletingPlanId(null);
+      setSelectedPlanId(null);
+      setIsDeletePopupOpen(false); // Close popup after deletion
     }
   };
 
@@ -216,6 +217,16 @@ const Planning = () => {
     setSelectedYear(year);
     setCurrentPage(1); // Reset ke halaman pertama setiap kali tahun diubah
     setIsDropdownOpen(false);
+  };
+
+  const openDeletePopup = (planId) => {
+    setSelectedPlanId(planId);
+    setIsDeletePopupOpen(true);
+  };
+
+  const closeDeletePopup = () => {
+    setSelectedPlanId(null);
+    setIsDeletePopupOpen(false);
   };
 
   return (
@@ -396,7 +407,7 @@ const Planning = () => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation(); // Prevent navigation
-                            handleDelete(plan.id);
+                            openDeletePopup(plan.id); // Open delete confirmation popup
                           }}
                           className="bg-[#B4252A] hover:bg-red-800 text-white w-10 h-10 flex items-center justify-center rounded-lg shadow-md transition ml-2"
                           title="Delete"
@@ -408,6 +419,35 @@ const Planning = () => {
                   </div>
                 ))}
           </div>
+
+          {isDeletePopupOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+              <div className="bg-white p-8 rounded-lg shadow-lg popup-content w-[90%] max-w-md min-h-[200px]">
+                <div className="flex flex-col items-center space-y-6">
+                  <h2 className="text-xl font-bold">Delete Confirmation</h2>
+                  <p className="text-center text-gray-500">
+                    Apakah anda yakin untuk menghapus Planning ini?
+                  </p>
+                  <div className="flex justify-center space-x-4">
+                    <button
+                      className="px-6 py-2 text-red-600 bg-red-100 rounded-md hover:bg-red-200 w-32"
+                      onClick={closeDeletePopup}
+                      disabled={isDeleting}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      className="px-6 py-2 text-white bg-[#B4252A] rounded-md hover:bg-[#8E1F22] w-32"
+                      onClick={() => handleDelete(selectedPlanId)}
+                      disabled={isDeleting}
+                    >
+                      Confirm
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="flex justify-end mt-6">
             <div className="flex items-center px-4 py-2 space-x-2 bg-white rounded-full shadow-md">
@@ -432,7 +472,7 @@ const Planning = () => {
       </div>
 
       {/* Overlay Loading */}
-      {isDeleting && deletingPlanId && (
+      {isDeleting && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-10">
           <ReactLoading type="spin" color="#B4252A" height={50} width={50} />
         </div>
