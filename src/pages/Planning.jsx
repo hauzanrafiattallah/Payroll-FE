@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { FaPlus, FaCalendarAlt } from "react-icons/fa";
+import { FaPlus, FaCalendarAlt, FaTrashAlt } from "react-icons/fa";
 import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
@@ -7,6 +7,8 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useNavigate } from "react-router-dom";
 import AddPlanningPopUp from "../components/AddPlanningPopUp";
+import ReactLoading from "react-loading";
+import { toast } from "react-toastify";
 
 const Planning = () => {
   const [plans, setPlans] = useState([]);
@@ -15,10 +17,12 @@ const Planning = () => {
   const [lastPage, setLastPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deletingPlanId, setDeletingPlanId] = useState(null);
   const [role, setRole] = useState(localStorage.getItem("role"));
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [availableYears, setAvailableYears] = useState([
-    2026, 2025, 2024, 2023
+    2026, 2025, 2024, 2023,
   ]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -73,6 +77,33 @@ const Planning = () => {
       console.error("Error mengambil data rencana:", error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleDelete = async (planId) => {
+    setIsDeleting(true);
+    setDeletingPlanId(planId);
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.delete(
+        `${import.meta.env.VITE_API_URL}/planning/${planId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (response.status === 200) {
+        // Berhasil menghapus
+        setPlans((prevPlans) => prevPlans.filter((plan) => plan.id !== planId));
+        toast.success("Plan berhasil dihapus!");
+      }
+    } catch (error) {
+      console.error("Error saat menghapus:", error);
+      toast.error("Gagal menghapus plan. Coba lagi nanti.");
+    } finally {
+      setIsDeleting(false);
+      setDeletingPlanId(null);
     }
   };
 
@@ -323,7 +354,9 @@ const Planning = () => {
                         </p>
                       </div>
                     </div>
-                    <div className="flex space-x-4 mt-4 md:mt-0 justify-center w-full md:w-auto">
+
+                    <div className="flex items-center justify-end space-x-4">
+                      {/* Start Section */}
                       <div className="flex flex-col items-center text-center">
                         <span className="text-xs font-medium text-gray-700 mb-1">
                           Start
@@ -341,6 +374,7 @@ const Planning = () => {
                         </div>
                       </div>
 
+                      {/* End Section */}
                       <div className="flex flex-col items-center text-center">
                         <span className="text-xs font-medium text-gray-700 mb-1">
                           End
@@ -356,6 +390,20 @@ const Planning = () => {
                           </span>
                         </div>
                       </div>
+
+                      {/* Trash Button */}
+                      {role === "superAdmin" && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevent navigation
+                            handleDelete(plan.id);
+                          }}
+                          className="bg-[#B4252A] hover:bg-red-800 text-white w-10 h-10 flex items-center justify-center rounded-lg shadow-md transition ml-2"
+                          title="Delete"
+                        >
+                          <FaTrashAlt size={16} />
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -382,6 +430,13 @@ const Planning = () => {
           </div>
         </div>
       </div>
+
+      {/* Overlay Loading */}
+      {isDeleting && deletingPlanId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-10">
+          <ReactLoading type="spin" color="#B4252A" height={50} width={50} />
+        </div>
+      )}
 
       {showPopup && (
         <AddPlanningPopUp isOpen={showPopup} onClose={closePopup} />
