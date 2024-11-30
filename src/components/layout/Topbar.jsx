@@ -8,8 +8,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { PiHandDepositBold, PiHandWithdrawBold } from "react-icons/pi";
 import { FaSignOutAlt } from "react-icons/fa";
-import AddIncomePopUp from "./AddIncomePopUp";
-import AddExpensesPopUp from "./AddExpensesPopUp";
+import AddIncomePopUp from "../popups/income/AddIncomePopUp";
+import AddExpensesPopUp from "../popups/expenses/AddExpensesPopUp";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Sidebar from "../components/Sidebar";
-import Topbar from "../components/Topbar";
+import Sidebar from "../../components/layout/Sidebar";
+import Topbar from "../../components/layout/Topbar";
 import ReactLoading from "react-loading";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
