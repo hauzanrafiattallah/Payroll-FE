@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Sidebar from "../components/Sidebar";
-import Topbar from "../components/Topbar";
+import Sidebar from "../../components/layout/Sidebar";
+import Topbar from "../../components/layout/Topbar";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { FaCheckCircle } from "react-icons/fa";
 import ReactLoading from "react-loading";
-import ItemDetailPopUp from "../components/ItemDetailPopUp";
+import ItemDetailPopUp from "../../components/popups/details/ItemDetailPopUp";
 import { LiaTimesCircle } from "react-icons/lia";
 
 const Approval = () => {

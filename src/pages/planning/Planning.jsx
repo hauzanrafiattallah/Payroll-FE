@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FaPlus, FaCalendarAlt, FaTrashAlt } from "react-icons/fa";
 import axios from "axios";
-import Sidebar from "../components/Sidebar";
-import Topbar from "../components/Topbar";
+import Sidebar from "../../components/layout/Sidebar";
+import Topbar from "../../components/layout/Topbar";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useNavigate } from "react-router-dom";
-import AddPlanningPopUp from "../components/AddPlanningPopUp";
+import AddPlanningPopUp from "../../components/popups/planning/AddPlanningPopUp";
 import ReactLoading from "react-loading";
 import { toast } from "react-toastify";
 

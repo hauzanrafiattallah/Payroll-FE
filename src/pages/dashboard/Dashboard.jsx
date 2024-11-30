@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import Sidebar from "../components/Sidebar";
-import Topbar from "../components/Topbar";
+import Sidebar from "../../components/layout/Sidebar";
+import Topbar from "../../components/layout/Topbar";
 import { FaSlidersH } from "react-icons/fa";
 import { FaCalendarAlt } from "react-icons/fa";
-import FilterPopup from "../components/FilterPopup";
-import TransactionPopUp from "../components/TransactionPopUp";
+import FilterPopup from "../../components/popups/filter/FilterPopup";
+import TransactionPopUp from "../../components/popups/transactions/TransactionPopUp";
 import Skeleton from "react-loading-skeleton";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
