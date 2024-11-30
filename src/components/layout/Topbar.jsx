@@ -136,7 +136,7 @@ const Topbar = () => {
         >
           <Link to="/">
             <img
-              src="/header2.png"
+              src="/logo/logoTopBar.png"
               alt="Logo"
               className="mr-3 h-10 lg:h-12 cursor-pointer"
             />
@@ -216,7 +216,7 @@ const Topbar = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg popup-content w-[90%] max-w-md">
             <div className="flex flex-col items-center space-y-4">
-              <img src="/door.gif" alt="Logout" className="w-48 h-48" />
+              <img src="/gif/door.gif" alt="Logout" className="w-48 h-48" />
               <p className="text-lg font-semibold text-center">
                 Apakah anda yakin untuk Log Out?
               </p>

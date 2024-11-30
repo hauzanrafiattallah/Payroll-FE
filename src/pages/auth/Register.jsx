@@ -97,7 +97,7 @@ const Register = () => {
             {/* Logo */}
             <div className="relative z-10 flex justify-center mb-8">
               <img
-                src="/header.png"
+                src="/logo/logoAuth.png"
                 alt="Humic Payroll"
                 className="h-16 sm:h-18 lg:h-20"
               />

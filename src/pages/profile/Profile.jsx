@@ -225,7 +225,7 @@ const Profile = () => {
             <div className="bg-white rounded-lg shadow-lg">
               <div className="relative h-32 sm:h-40">
                 <img
-                  src="/background_profile.jpeg"
+                  src="/images/background_profile.jpeg"
                   alt="Profile Background"
                   className="absolute top-0 left-0 object-cover w-full h-full rounded-t-lg"
                 />
@@ -238,7 +238,7 @@ const Profile = () => {
                     src={
                       userData?.image
                         ? `${baseImageUrl}${userData.image}` // Menggunakan image dari backend
-                        : "/image_placeholder.png"
+                        : "/images/image_placeholder.png"
                     }
                     alt="Profile"
                     className="relative z-10 w-20 h-20 border-4 border-white rounded-full sm:w-28 sm:h-28"
