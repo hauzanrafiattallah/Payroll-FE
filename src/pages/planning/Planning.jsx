@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { FaPlus, FaCalendarAlt, FaTrashAlt } from "react-icons/fa";
+import { FaPlus, FaCalendarAlt, FaTrashAlt, FaEdit } from "react-icons/fa";
 import axios from "axios";
 import Sidebar from "../../components/layout/Sidebar";
 import Topbar from "../../components/layout/Topbar";
@@ -412,7 +412,7 @@ const Planning = () => {
                           className="bg-[#B4252A] hover:bg-red-800 text-white w-10 h-10 flex items-center justify-center rounded-lg shadow-md transition ml-2"
                           title="Edit"
                         >
-                          <FaPlus size={16} />
+                          <FaEdit size={16} />
                         </button>
                       )}
 
