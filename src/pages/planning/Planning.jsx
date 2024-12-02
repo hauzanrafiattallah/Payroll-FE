@@ -409,7 +409,7 @@ const Planning = () => {
                             e.stopPropagation(); // Prevent navigation
                             navigate(`/addPlanning/${plan.id}`); // Navigate to the AddPlanning page with the plan ID
                           }}
-                          className="bg-blue-500 hover:bg-blue-600 text-white w-10 h-10 flex items-center justify-center rounded-lg shadow-md transition ml-2"
+                          className="bg-[#B4252A] hover:bg-red-800 text-white w-10 h-10 flex items-center justify-center rounded-lg shadow-md transition ml-2"
                           title="Edit"
                         >
                           <FaPlus size={16} />
