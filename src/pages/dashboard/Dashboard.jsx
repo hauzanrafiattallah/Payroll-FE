@@ -699,6 +699,7 @@ const Dashboard = () => {
                       tickFormatter={(value) =>
                         `${value.toLocaleString("id-ID")}`
                       }
+                      tick={{ fontSize: 12 }} 
                     />
                     <Tooltip
                       formatter={(value) => `${value.toLocaleString("id-ID")}`}

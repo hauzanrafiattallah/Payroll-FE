@@ -89,7 +89,7 @@ const AddPlanningPopUp = ({ isOpen, onClose }) => {
 
   return (
     <>
-      // Modal background with conditional opacity and event handling
+      {/* Modal background with conditional opacity and event handling */}
       <div
         id="popup-background"
         className={`fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center transition-opacity duration-200 ${

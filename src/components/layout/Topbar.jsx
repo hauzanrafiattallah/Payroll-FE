@@ -178,7 +178,7 @@ const Topbar = () => {
                 src={
                   userData?.image
                     ? `${baseImageUrl}${userData.image}`
-                    : "/image_placeholder.png"
+                    : "/images/image_placeholder.png"
                 }
                 alt="User"
                 className="w-12 h-12 rounded-full"

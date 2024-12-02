@@ -18,8 +18,8 @@ const AddPlanning = () => {
   const [endDate, setEndDate] = useState("");
   const [tempItem, setTempItem] = useState(null);
   const [isAddItemMode, setIsAddItemMode] = useState(false);
-  const [isLoading, setIsLoading] = useState(false); // State tunggal untuk loading
-  const [isLoadingDelete, setIsLoadingDelete] = useState(false); // State tunggal untuk loading
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingDelete, setIsLoadingDelete] = useState(false);
   const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
   const deletePopupRef = useRef(null);
@@ -74,7 +74,6 @@ const AddPlanning = () => {
     });
     setIsAddItemMode(true);
   };
-
   // Function to format currency input
   const formatCurrency = (value) => {
     return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
