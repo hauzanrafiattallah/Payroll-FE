@@ -11,7 +11,6 @@ import { useParams } from "react-router-dom";
 
 
 const AddPlanning = () => {
-  const location = useLocation();
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [title, setTitle] = useState("Planning Title");
