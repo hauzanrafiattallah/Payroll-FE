@@ -23,6 +23,11 @@ const EditRealization = () => {
   const [isLoadingDelete, setIsLoadingDelete] = useState(false);
   const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
+  const [oldDocumentEvidence, setOldDocumentEvidence] = useState(null);
+  const [oldImageEvidence, setOldImageEvidence] = useState(null);
+  const totalBruto = items.reduce((sum, item) => sum + item.bruto_amount, 0);
+  const totalTax = items.reduce((sum, item) => sum + item.tax_amount, 0);
+  const totalNetto = items.reduce((sum, item) => sum + item.netto_amount, 0);
 
   useEffect(() => {
     const fetchRealization = async () => {
@@ -57,10 +62,6 @@ const EditRealization = () => {
     }
   }, [realizationId]);
 
-  const totalBruto = items.reduce((sum, item) => sum + item.bruto_amount, 0);
-  const totalTax = items.reduce((sum, item) => sum + item.tax_amount, 0);
-  const totalNetto = items.reduce((sum, item) => sum + item.netto_amount, 0);
-
   const addItem = () => {
     setTempItem({
       date: "",
@@ -81,14 +82,38 @@ const EditRealization = () => {
     return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   };
 
+  // Menyimpan file lama ketika item dimuat untuk pertama kali (dalam edit mode)
+  useEffect(() => {
+    if (editModeItemId) {
+      const itemToEdit = items.find((item) => item.id === editModeItemId);
+      if (itemToEdit) {
+        setTempItem({
+          ...itemToEdit,
+          // Menyimpan file lama untuk dikirimkan jika tidak ada perubahan
+          document_evidence:
+            itemToEdit.document_evidence || oldDocumentEvidence,
+          image_evidence: itemToEdit.image_evidence || oldImageEvidence,
+        });
+        setOldDocumentEvidence(itemToEdit.document_evidence);
+        setOldImageEvidence(itemToEdit.image_evidence);
+      }
+    }
+  }, [editModeItemId, items, oldDocumentEvidence, oldImageEvidence]);
+
   const handleTempItemChange = (field, value) => {
-    const formattedValue =
-      field === "bruto_amount" ||
-      field === "tax_amount" ||
-      field === "netto_amount"
-        ? formatCurrency(value)
-        : value;
-    setTempItem((prev) => ({ ...prev, [field]: formattedValue }));
+    if (field === "document_evidence" || field === "image_evidence") {
+      // Jika file diubah, simpan file baru
+      setTempItem((prev) => ({ ...prev, [field]: value }));
+    } else {
+      // Format nilai untuk amount
+      const formattedValue =
+        field === "bruto_amount" ||
+        field === "tax_amount" ||
+        field === "netto_amount"
+          ? formatCurrency(value)
+          : value;
+      setTempItem((prev) => ({ ...prev, [field]: formattedValue }));
+    }
   };
 
   const handleSave = async () => {
@@ -135,7 +160,7 @@ const EditRealization = () => {
         }
       } catch (error) {
         console.error("Error adding item:", error);
-        toast.error("Failed to add item. Please try again.");
+        toast.error("Semua field harus diisi!");
       } finally {
         setIsLoading(false);
       }
@@ -174,33 +199,53 @@ const EditRealization = () => {
       setIsLoading(true);
       const originalItem = items.find((item) => item.id === editModeItemId);
 
-      const payload = {
-        planning_id: realizationId,
-        date: tempItem.date || originalItem.date,
-        information: tempItem.information || originalItem.information,
-        bruto_amount:
-          tempItem.bruto_amount != null
-            ? typeof tempItem.bruto_amount === "string"
-              ? parseInt(tempItem.bruto_amount.replace(/\./g, ""))
-              : tempItem.bruto_amount
-            : originalItem.bruto_amount,
-        tax_amount:
-          tempItem.tax_amount != null
-            ? typeof tempItem.tax_amount === "string"
-              ? parseInt(tempItem.tax_amount.replace(/\./g, ""))
-              : tempItem.tax_amount
-            : originalItem.tax_amount,
-        netto_amount:
-          tempItem.netto_amount != null
-            ? typeof tempItem.netto_amount === "string"
-              ? parseInt(tempItem.netto_amount.replace(/\./g, ""))
-              : tempItem.netto_amount
-            : originalItem.netto_amount,
-        category: tempItem.category || originalItem.category,
-        isAddition: 1,
-        document_evidence: tempItem.document_evidence, // Add document_evidence
-        image_evidence: tempItem.image_evidence, // Add image_evidence
-      };
+      // Menyusun payload untuk update item
+      const payload = new FormData();
+      payload.append("planning_id", realizationId);
+      payload.append("date", tempItem.date || originalItem.date);
+      payload.append(
+        "information",
+        tempItem.information || originalItem.information
+      );
+      payload.append(
+        "bruto_amount",
+        tempItem.bruto_amount != null
+          ? typeof tempItem.bruto_amount === "string"
+            ? parseInt(tempItem.bruto_amount.replace(/\./g, ""))
+            : tempItem.bruto_amount
+          : originalItem.bruto_amount
+      );
+      payload.append(
+        "tax_amount",
+        tempItem.tax_amount != null
+          ? typeof tempItem.tax_amount === "string"
+            ? parseInt(tempItem.tax_amount.replace(/\./g, ""))
+            : tempItem.tax_amount
+          : originalItem.tax_amount
+      );
+      payload.append(
+        "netto_amount",
+        tempItem.netto_amount != null
+          ? typeof tempItem.netto_amount === "string"
+            ? parseInt(tempItem.netto_amount.replace(/\./g, ""))
+            : tempItem.netto_amount
+          : originalItem.netto_amount
+      );
+      payload.append("category", tempItem.category || originalItem.category);
+      payload.append("isAddition", 1);
+
+      // Kirim file lama jika tidak ada perubahan, atau file baru jika diubah
+      if (tempItem.document_evidence) {
+        payload.append("document_evidence", tempItem.document_evidence);
+      } else if (oldDocumentEvidence) {
+        payload.append("document_evidence", oldDocumentEvidence);
+      }
+
+      if (tempItem.image_evidence) {
+        payload.append("image_evidence", tempItem.image_evidence);
+      } else if (oldImageEvidence) {
+        payload.append("image_evidence", oldImageEvidence);
+      }
 
       try {
         const token = localStorage.getItem("token");
@@ -210,6 +255,7 @@ const EditRealization = () => {
           {
             headers: {
               Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
             },
           }
         );
@@ -228,7 +274,7 @@ const EditRealization = () => {
         }
       } catch (error) {
         console.error("Error updating item:", error);
-        toast.error("Failed to update item. Please try again.");
+        toast.error("Semua field harus diisi!");
       } finally {
         setIsLoading(false);
       }
