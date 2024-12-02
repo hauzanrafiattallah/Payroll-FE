@@ -117,6 +117,38 @@ const EditRealization = () => {
   };
 
   const handleSave = async () => {
+    // Validasi apakah file sudah diisi dan tipe file valid
+    if (!tempItem.document_evidence || !tempItem.image_evidence) {
+      toast.error("Dokumen bukti dan gambar bukti harus diisi.");
+      return;
+    }
+
+    // Validasi jenis file untuk laporan (Excel/PDF) dan bukti (JPG, JPEG, PNG)
+    const validDocumentTypes = [
+      "application/pdf",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "application/vnd.ms-excel",
+    ];
+    const validImageTypes = ["image/jpeg", "image/png", "image/jpg"];
+
+    if (
+      tempItem.document_evidence &&
+      !validDocumentTypes.includes(tempItem.document_evidence.type)
+    ) {
+      toast.error(
+        "Laporan harus berupa file Excel (.xls, .xlsx) atau PDF (.pdf)."
+      );
+      return;
+    }
+
+    if (
+      tempItem.image_evidence &&
+      !validImageTypes.includes(tempItem.image_evidence.type)
+    ) {
+      toast.error("Bukti harus berupa file gambar (JPG, JPEG, PNG).");
+      return;
+    }
+
     if (tempItem) {
       setIsLoading(true);
       try {
@@ -139,10 +171,14 @@ const EditRealization = () => {
         );
         formData.append("category", tempItem.category);
         formData.append("isAddition", 1);
-        if (tempItem.document_evidence)
+
+        // Kirim file jika ada
+        if (tempItem.document_evidence) {
           formData.append("document_evidence", tempItem.document_evidence);
-        if (tempItem.image_evidence)
+        }
+        if (tempItem.image_evidence) {
           formData.append("image_evidence", tempItem.image_evidence);
+        }
 
         const response = await axios.post(
           `${import.meta.env.VITE_API_URL}/item`,
@@ -154,13 +190,14 @@ const EditRealization = () => {
             },
           }
         );
+
         if (response.data.status) {
-          toast.success("Item added successfully!");
+          toast.success("Item berhasil ditambahkan!");
           setItems([...items, response.data.planning]);
         }
       } catch (error) {
         console.error("Error adding item:", error);
-        toast.error("Semua field harus diisi!");
+        toast.error("Gagal menambahkan item. Silakan coba lagi.");
       } finally {
         setIsLoading(false);
       }
@@ -195,6 +232,38 @@ const EditRealization = () => {
   };
 
   const handleSaveEdit = async () => {
+    // Validasi apakah file sudah diisi dan tipe file valid
+    if (!tempItem.document_evidence || !tempItem.image_evidence) {
+      toast.error("Dokumen bukti dan gambar bukti harus diisi.");
+      return;
+    }
+
+    // Validasi jenis file untuk laporan (Excel/PDF) dan bukti (JPG, JPEG, PNG)
+    const validDocumentTypes = [
+      "application/pdf",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "application/vnd.ms-excel",
+    ];
+    const validImageTypes = ["image/jpeg", "image/png", "image/jpg"];
+
+    if (
+      tempItem.document_evidence &&
+      !validDocumentTypes.includes(tempItem.document_evidence.type)
+    ) {
+      toast.error(
+        "Laporan harus berupa file Excel (.xls, .xlsx) atau PDF (.pdf)."
+      );
+      return;
+    }
+
+    if (
+      tempItem.image_evidence &&
+      !validImageTypes.includes(tempItem.image_evidence.type)
+    ) {
+      toast.error("Bukti harus berupa file gambar (JPG, JPEG, PNG).");
+      return;
+    }
+
     if (tempItem && editModeItemId) {
       setIsLoading(true);
       const originalItem = items.find((item) => item.id === editModeItemId);
@@ -261,7 +330,7 @@ const EditRealization = () => {
         );
 
         if (response.data.status) {
-          toast.success("Item updated successfully!");
+          toast.success("Item berhasil diperbarui!");
           setItems(
             items.map((item) =>
               item.id === editModeItemId
@@ -274,7 +343,7 @@ const EditRealization = () => {
         }
       } catch (error) {
         console.error("Error updating item:", error);
-        toast.error("Semua field harus diisi!");
+        toast.error("Gagal memperbarui item. Silakan coba lagi.");
       } finally {
         setIsLoading(false);
       }
