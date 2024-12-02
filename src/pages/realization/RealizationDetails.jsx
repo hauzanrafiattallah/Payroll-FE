@@ -75,7 +75,8 @@ const RealizationDetails = () => {
         <Sidebar />
         <div className="w-full p-8 mx-auto mt-2 lg:max-w-full lg:ml-72">
           <h1 className="mb-6 text-2xl font-bold text-center lg:text-left">
-            <span className="text-gray-600">Realization /</span> Realization Details
+            <span className="text-gray-600">Realization /</span> Realization
+            Details
           </h1>
 
           {/* Information Section */}
@@ -93,11 +94,14 @@ const RealizationDetails = () => {
               </div>
               <div className="text-right">
                 <h2 className="text-lg font-bold">
-                  {new Date(realization.start_date).toLocaleDateString("id-ID", {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                  })}
+                  {new Date(realization.start_date).toLocaleDateString(
+                    "id-ID",
+                    {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    }
+                  )}
                 </h2>
               </div>
 
@@ -129,8 +133,12 @@ const RealizationDetails = () => {
                       <th className="py-2 px-4">Nilai Bruto</th>
                       <th className="py-2 px-4">Nilai Pajak</th>
                       <th className="py-2 px-4">Nilai Netto</th>
+                      <th className="py-2 px-4">Laporan</th>{" "}
+                      {/* Kolom Laporan */}
+                      <th className="py-2 px-4">Bukti</th> {/* Kolom Bukti */}
                     </tr>
                   </thead>
+
                   <tbody>
                     {realization.item.map((item) => (
                       <tr key={item.id} className="text-gray-900">
@@ -153,6 +161,42 @@ const RealizationDetails = () => {
                         <td className="py-2 px-4">
                           Rp.{item.netto_amount.toLocaleString("id-ID")}
                         </td>
+
+                        {/* Kolom Laporan */}
+                        <td className="py-2 px-4 text-gray-600">
+                          {item.document_evidence ? (
+                            <a
+                              href={`${import.meta.env.VITE_FILE_BASE_URL}${
+                                item.document_evidence
+                              }`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="hover:underline"
+                            >
+                              Lihat Laporan
+                            </a>
+                          ) : (
+                            <span className="text-gray-400">Tidak Ada</span>
+                          )}
+                        </td>
+
+                        {/* Kolom Bukti */}
+                        <td className="py-2 px-4 text-gray-600">
+                          {item.image_evidence ? (
+                            <a
+                              href={`${import.meta.env.VITE_FILE_BASE_URL}${
+                                item.image_evidence
+                              }`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="hover:underline"
+                            >
+                              Lihat Bukti
+                            </a>
+                          ) : (
+                            <span className="text-gray-400">Tidak Ada</span>
+                          )}
+                        </td>
                       </tr>
                     ))}
                     <tr className="font-semibold text-red-600">
@@ -168,6 +212,7 @@ const RealizationDetails = () => {
                       <td className="py-2 px-4">
                         Rp.{totalNetto.toLocaleString("id-ID")}
                       </td>
+                      <td colSpan="2"></td>
                     </tr>
                   </tbody>
                 </table>
