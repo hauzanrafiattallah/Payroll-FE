@@ -11,6 +11,24 @@ const CompareDetail = () => {
   const [compareData, setCompareData] = useState(null);
   const [loading, setLoading] = useState(true);
   const authToken = localStorage.getItem("token");
+  const FILE_BASE_URL = import.meta.env.VITE_FILE_BASE_URL;
+
+  const renderFileLink = (filePath) => {
+    if (filePath) {
+      const fileUrl = `${FILE_BASE_URL}${filePath}`;
+      return (
+        <a
+          href={fileUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:underline"
+        >
+          Lihat
+        </a>
+      );
+    }
+    return <span>-</span>;
+  };
 
   const fetchCompareData = async () => {
     try {
@@ -58,7 +76,9 @@ const CompareDetail = () => {
 
   const formatCurrency = (value) => {
     const parsedValue = parseInt(value);
-    return isNaN(parsedValue) ? "Rp.0" : `Rp.${parsedValue.toLocaleString("id-ID")}`;
+    return isNaN(parsedValue)
+      ? "Rp.0"
+      : `Rp.${parsedValue.toLocaleString("id-ID")}`;
   };
 
   return (
@@ -86,7 +106,9 @@ const CompareDetail = () => {
             <div className="col-span-2 bg-white p-6 rounded-lg shadow-lg">
               <h2 className="text-lg font-bold mb-4">Planning</h2>
               <div className="text-gray-700 mb-6 space-y-3">
-                <p>{new Date(planning.start_date).toLocaleDateString("id-ID")}</p>
+                <p>
+                  {new Date(planning.start_date).toLocaleDateString("id-ID")}
+                </p>
                 <p>{new Date(planning.end_date).toLocaleDateString("id-ID")}</p>
                 <p>{formatCurrency(planning.item_sum_bruto_amount)}</p>
                 <p>{formatCurrency(planning.item_sum_tax_amount)}</p>
@@ -107,11 +129,19 @@ const CompareDetail = () => {
                   <tbody>
                     {planning.item.map((item) => (
                       <tr key={item.id} className="text-gray-900">
-                        <td className="py-3 px-3">{new Date(item.date).toLocaleDateString("id-ID")}</td>
+                        <td className="py-3 px-3">
+                          {new Date(item.date).toLocaleDateString("id-ID")}
+                        </td>
                         <td className="py-3 px-3">{item.information}</td>
-                        <td className="py-3 px-3">{formatCurrency(item.bruto_amount)}</td>
-                        <td className="py-3 px-3">{formatCurrency(item.tax_amount)}</td>
-                        <td className="py-3 px-3">{formatCurrency(item.netto_amount)}</td>
+                        <td className="py-3 px-3">
+                          {formatCurrency(item.bruto_amount)}
+                        </td>
+                        <td className="py-3 px-3">
+                          {formatCurrency(item.tax_amount)}
+                        </td>
+                        <td className="py-3 px-3">
+                          {formatCurrency(item.netto_amount)}
+                        </td>
                         <td className="py-3 px-3">{item.category}</td>
                       </tr>
                     ))}
@@ -124,8 +154,12 @@ const CompareDetail = () => {
             <div className="col-span-2 bg-white p-6 rounded-lg shadow-lg">
               <h2 className="text-lg font-bold mb-4">Realization</h2>
               <div className="text-gray-700 mb-6 space-y-3">
-                <p>{new Date(realization.start_date).toLocaleDateString("id-ID")}</p>
-                <p>{new Date(realization.end_date).toLocaleDateString("id-ID")}</p>
+                <p>
+                  {new Date(realization.start_date).toLocaleDateString("id-ID")}
+                </p>
+                <p>
+                  {new Date(realization.end_date).toLocaleDateString("id-ID")}
+                </p>
                 <p>{formatCurrency(realization.item_sum_bruto_amount)}</p>
                 <p>{formatCurrency(realization.item_sum_tax_amount)}</p>
                 <p>{formatCurrency(realization.item_sum_netto_amount)}</p>
@@ -140,17 +174,36 @@ const CompareDetail = () => {
                       <th className="py-2 px-3">Nilai Pajak</th>
                       <th className="py-2 px-3">Nilai Netto</th>
                       <th className="py-2 px-3">Kategori</th>
+                      <th className="py-2 px-3">Laporan</th>{" "}
+                      {/* Kolom Laporan */}
+                      <th className="py-2 px-3">Bukti</th> {/* Kolom Bukti */}
                     </tr>
                   </thead>
                   <tbody>
                     {realization.item.map((item) => (
                       <tr key={item.id} className="text-gray-900">
-                        <td className="py-3 px-3">{new Date(item.date).toLocaleDateString("id-ID")}</td>
+                        <td className="py-3 px-3">
+                          {new Date(item.date).toLocaleDateString("id-ID")}
+                        </td>
                         <td className="py-3 px-3">{item.information}</td>
-                        <td className="py-3 px-3">{formatCurrency(item.bruto_amount)}</td>
-                        <td className="py-3 px-3">{formatCurrency(item.tax_amount)}</td>
-                        <td className="py-3 px-3">{formatCurrency(item.netto_amount)}</td>
+                        <td className="py-3 px-3">
+                          {formatCurrency(item.bruto_amount)}
+                        </td>
+                        <td className="py-3 px-3">
+                          {formatCurrency(item.tax_amount)}
+                        </td>
+                        <td className="py-3 px-3">
+                          {formatCurrency(item.netto_amount)}
+                        </td>
                         <td className="py-3 px-3">{item.category}</td>
+                        <td className="py-3 px-3">
+                          {renderFileLink(item.document_evidence)}
+                        </td>{" "}
+                        {/* Render Laporan */}
+                        <td className="py-3 px-3">
+                          {renderFileLink(item.image_evidence)}
+                        </td>{" "}
+                        {/* Render Bukti */}
                       </tr>
                     ))}
                   </tbody>
