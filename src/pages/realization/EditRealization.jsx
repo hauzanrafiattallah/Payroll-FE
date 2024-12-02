@@ -69,6 +69,8 @@ const EditRealization = () => {
       tax_amount: 0,
       netto_amount: 0,
       category: "internal",
+      document_evidence: "",
+      image_evidence: "",
       isAddition: 1,
     });
     setIsAddItemMode(true);
@@ -94,23 +96,36 @@ const EditRealization = () => {
       setIsLoading(true);
       try {
         const token = localStorage.getItem("token");
+        const formData = new FormData();
+        formData.append("planning_id", realizationId);
+        formData.append("date", tempItem.date);
+        formData.append("information", tempItem.information);
+        formData.append(
+          "bruto_amount",
+          parseInt(tempItem.bruto_amount.replace(/\./g, "")) || 0
+        );
+        formData.append(
+          "tax_amount",
+          parseInt(tempItem.tax_amount.replace(/\./g, "")) || 0
+        );
+        formData.append(
+          "netto_amount",
+          parseInt(tempItem.netto_amount.replace(/\./g, "")) || 0
+        );
+        formData.append("category", tempItem.category);
+        formData.append("isAddition", 1);
+        if (tempItem.document_evidence)
+          formData.append("document_evidence", tempItem.document_evidence);
+        if (tempItem.image_evidence)
+          formData.append("image_evidence", tempItem.image_evidence);
+
         const response = await axios.post(
           `${import.meta.env.VITE_API_URL}/item`,
-          {
-            planning_id: realizationId,
-            date: tempItem.date,
-            information: tempItem.information,
-            bruto_amount:
-              parseInt(tempItem.bruto_amount.replace(/\./g, "")) || 0,
-            tax_amount: parseInt(tempItem.tax_amount.replace(/\./g, "")) || 0,
-            netto_amount:
-              parseInt(tempItem.netto_amount.replace(/\./g, "")) || 0,
-            category: tempItem.category,
-            isAddition: tempItem.isAddition,
-          },
+          formData,
           {
             headers: {
               Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
             },
           }
         );
@@ -122,7 +137,7 @@ const EditRealization = () => {
         console.error("Error adding item:", error);
         toast.error("Failed to add item. Please try again.");
       } finally {
-        setIsLoading(false); // Set isLoading ke false setelah POST selesai
+        setIsLoading(false);
       }
     }
     setTempItem(null);
@@ -159,7 +174,6 @@ const EditRealization = () => {
       setIsLoading(true);
       const originalItem = items.find((item) => item.id === editModeItemId);
 
-      // Buat payload dengan semua field yang diharapkan server
       const payload = {
         planning_id: realizationId,
         date: tempItem.date || originalItem.date,
@@ -184,12 +198,14 @@ const EditRealization = () => {
             : originalItem.netto_amount,
         category: tempItem.category || originalItem.category,
         isAddition: 1,
+        document_evidence: tempItem.document_evidence, // Add document_evidence
+        image_evidence: tempItem.image_evidence, // Add image_evidence
       };
 
       try {
         const token = localStorage.getItem("token");
         const response = await axios.post(
-          `${import.meta.env.VITE_API_URL}/item/${editModeItemId}`, // Pastikan ID disertakan dalam URL
+          `${import.meta.env.VITE_API_URL}/item/${editModeItemId}`,
           payload,
           {
             headers: {
@@ -200,8 +216,6 @@ const EditRealization = () => {
 
         if (response.data.status) {
           toast.success("Item updated successfully!");
-
-          // Update item dalam state tanpa mengganti ID
           setItems(
             items.map((item) =>
               item.id === editModeItemId
@@ -209,21 +223,14 @@ const EditRealization = () => {
                 : item
             )
           );
-
           setEditModeItemId(null);
           setTempItem(null);
         }
       } catch (error) {
         console.error("Error updating item:", error);
-        console.error(
-          "Response data:",
-          error.response?.data?.message || error.response?.data
-        );
-        toast.error(
-          `Error: ${error.response?.data?.message || "Gagal memperbarui item."}`
-        );
+        toast.error("Failed to update item. Please try again.");
       } finally {
-        setIsLoading(false); // Set isLoading ke false setelah update selesai
+        setIsLoading(false);
       }
     }
   };
@@ -368,6 +375,8 @@ const EditRealization = () => {
                       <th className="py-2 px-4">Nilai Pajak</th>
                       <th className="py-2 px-4">Nilai Netto</th>
                       <th className="py-2 px-4">Kategori</th>
+                      <th className="py-2 px-4">Laporan</th>
+                      <th className="py-2 px-4">Bukti</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -389,6 +398,7 @@ const EditRealization = () => {
                           >
                             {editModeItemId === item.id ? (
                               <>
+                                {/* Kolom edit mode */}
                                 <td className="py-2 px-4">
                                   <input
                                     type="date"
@@ -473,8 +483,33 @@ const EditRealization = () => {
                                     <option value="rka">RKA</option>
                                   </select>
                                 </td>
+                                {/* Kolom Laporan */}
+                                <td className="py-2 px-4">
+                                  <input
+                                    type="file"
+                                    onChange={(e) =>
+                                      handleTempItemChange(
+                                        "document_evidence",
+                                        e.target.files[0]
+                                      )
+                                    }
+                                    className="border rounded p-1 w-full"
+                                  />
+                                </td>
+                                {/* Kolom Bukti */}
+                                <td className="py-2 px-4">
+                                  <input
+                                    type="file"
+                                    onChange={(e) =>
+                                      handleTempItemChange(
+                                        "image_evidence",
+                                        e.target.files[0]
+                                      )
+                                    }
+                                    className="border rounded p-1 w-full"
+                                  />
+                                </td>
                                 <td className="py-2 px-4 text-right flex space-x-2">
-                                  {/* Tombol Close (Silang) */}
                                   <button
                                     onClick={() => handleCloseAddItemMode()}
                                     className="bg-red-600 text-white rounded-md p-2 w-10 h-10 flex items-center justify-center hover:bg-red-700 shadow-md"
@@ -491,6 +526,7 @@ const EditRealization = () => {
                               </>
                             ) : (
                               <>
+                                {/* Tampilan read-only */}
                                 <td className="py-2 px-4">{item.date}</td>
                                 <td className="py-2 px-4">
                                   {item.information}
@@ -505,6 +541,47 @@ const EditRealization = () => {
                                   Rp.{item.netto_amount.toLocaleString("id-ID")}
                                 </td>
                                 <td className="py-2 px-4">{item.category}</td>
+
+                                {/* Kolom Laporan */}
+                                <td className="py-2 px-4">
+                                  {item.document_evidence ? (
+                                    <a
+                                      href={`${
+                                        import.meta.env.VITE_FILE_BASE_URL
+                                      }${item.document_evidence}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className=" hover:underline"
+                                    >
+                                      Lihat Laporan
+                                    </a>
+                                  ) : (
+                                    <span className="text-gray-500">
+                                      Tidak Ada
+                                    </span>
+                                  )}
+                                </td>
+
+                                {/* Kolom Bukti */}
+                                <td className="py-2 px-4">
+                                  {item.image_evidence ? (
+                                    <a
+                                      href={`${
+                                        import.meta.env.VITE_FILE_BASE_URL
+                                      }${item.image_evidence}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className=" hover:underline"
+                                    >
+                                      Lihat Bukti
+                                    </a>
+                                  ) : (
+                                    <span className="text-gray-500">
+                                      Tidak Ada
+                                    </span>
+                                  )}
+                                </td>
+
                                 <td className="py-2 px-4 text-right flex space-x-2">
                                   {!isAddItemMode && (
                                     <>
@@ -609,6 +686,39 @@ const EditRealization = () => {
                                 <option value="eksternal">Eksternal</option>
                                 <option value="rka">RKA</option>
                               </select>
+                            </td>
+                            {/* Kolom Dokumen */}
+                            <td className="py-2 px-4">
+                              <label className="block text-sm font-medium text-gray-700">
+                                Dokumen
+                              </label>
+                              <input
+                                type="file"
+                                onChange={(e) =>
+                                  handleTempItemChange(
+                                    "document_evidence",
+                                    e.target.files[0]
+                                  )
+                                }
+                                className="border rounded p-1 w-full mt-1"
+                              />
+                            </td>
+
+                            {/* Kolom Gambar */}
+                            <td className="py-2 px-4">
+                              <label className="block text-sm font-medium text-gray-700">
+                                Gambar
+                              </label>
+                              <input
+                                type="file"
+                                onChange={(e) =>
+                                  handleTempItemChange(
+                                    "image_evidence",
+                                    e.target.files[0]
+                                  )
+                                }
+                                className="border rounded p-1 w-full mt-1"
+                              />
                             </td>
                           </tr>
                         )}
