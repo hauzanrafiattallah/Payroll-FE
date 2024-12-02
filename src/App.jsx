@@ -80,7 +80,7 @@ const App = () => {
           }
         />
         <Route
-          path="/add-planning"
+          path="/addPlanning/:id"
           element={
             <ProtectedRoute>
               <AddPlanning />

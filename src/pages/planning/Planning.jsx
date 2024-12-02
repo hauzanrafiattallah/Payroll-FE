@@ -402,6 +402,20 @@ const Planning = () => {
                         </div>
                       </div>
 
+                      {/* Edit Button (Only for Admin and Pending Status) */}
+                      {role === "admin" && plan.status === "pending" && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevent navigation
+                            navigate(`/addPlanning/${plan.id}`); // Navigate to the AddPlanning page with the plan ID
+                          }}
+                          className="bg-blue-500 hover:bg-blue-600 text-white w-10 h-10 flex items-center justify-center rounded-lg shadow-md transition ml-2"
+                          title="Edit"
+                        >
+                          <FaPlus size={16} />
+                        </button>
+                      )}
+
                       {/* Trash Button */}
                       {role === "superAdmin" && (
                         <button

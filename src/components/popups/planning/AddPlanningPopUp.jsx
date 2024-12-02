@@ -70,9 +70,9 @@ const AddPlanningPopUp = ({ isOpen, onClose }) => {
         toast.success("Planning Created Successfully"); // Show success message
         closePopup(); // Close the popup
         // Navigate to the next page with planning data
-        navigate("/add-planning", {
+        navigate(`/addPlanning/${response.data.planning.id}`, {
           state: {
-            planningId: response.data.planning.id, // Pass planning ID and other data
+            planningId: response.data.planning.id,
             title: title,
             startDate: startDate,
             endDate: endDate,

@@ -7,10 +7,11 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ReactLoading from "react-loading";
+import { useParams } from "react-router-dom";
+
 
 const AddPlanning = () => {
   const location = useLocation();
-  const planningId = location.state?.planningId;
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [title, setTitle] = useState("Planning Title");
@@ -23,6 +24,7 @@ const AddPlanning = () => {
   const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
   const deletePopupRef = useRef(null);
+  const { id: planningId } = useParams();
 
   // Fetch existing items when the component mounts
   useEffect(() => {
