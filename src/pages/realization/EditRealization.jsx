@@ -689,9 +689,6 @@ const EditRealization = () => {
                             </td>
                             {/* Kolom Dokumen */}
                             <td className="py-2 px-4">
-                              <label className="block text-sm font-medium text-gray-700">
-                                Dokumen
-                              </label>
                               <input
                                 type="file"
                                 onChange={(e) =>
@@ -706,9 +703,6 @@ const EditRealization = () => {
 
                             {/* Kolom Gambar */}
                             <td className="py-2 px-4">
-                              <label className="block text-sm font-medium text-gray-700">
-                                Gambar
-                              </label>
                               <input
                                 type="file"
                                 onChange={(e) =>
