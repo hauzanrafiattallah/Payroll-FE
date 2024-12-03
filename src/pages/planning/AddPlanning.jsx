@@ -1,34 +1,35 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Sidebar from "../../components/layout/Sidebar";
 import Topbar from "../../components/layout/Topbar";
-import { FaPlus, FaTrash } from "react-icons/fa";
+import { FaPlus, FaTrash, FaEdit, FaSave, FaTimes } from "react-icons/fa";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ReactLoading from "react-loading";
-import { useParams } from "react-router-dom";
-
 
 const AddPlanning = () => {
+  const { id: planningId } = useParams();
   const navigate = useNavigate();
+  const deletePopupRef = useRef(null);
   const [items, setItems] = useState([]);
   const [title, setTitle] = useState("Planning Title");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [tempItem, setTempItem] = useState(null);
   const [isAddItemMode, setIsAddItemMode] = useState(false);
+  const [editModeItemId, setEditModeItemId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingDelete, setIsLoadingDelete] = useState(false);
   const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
-  const deletePopupRef = useRef(null);
-  const { id: planningId } = useParams();
+  const totalBruto = items.reduce((sum, item) => sum + item.bruto_amount, 0);
+  const totalTax = items.reduce((sum, item) => sum + item.tax_amount, 0);
+  const totalNetto = items.reduce((sum, item) => sum + item.netto_amount, 0);
 
-  // Fetch existing items when the component mounts
   useEffect(() => {
-    const fetchItems = async () => {
-      setIsLoading(true); // Start loading
+    const fetchPlanning = async () => {
+      setIsLoading(true);
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
@@ -47,21 +48,17 @@ const AddPlanning = () => {
           setItems(planningData.item);
         }
       } catch (error) {
-        console.error("Error fetching items:", error);
-        toast.error("Gagal mengambil items.");
+        console.error("Error fetching planning:", error);
+        toast.error("Failed to fetch planning.");
       } finally {
-        setIsLoading(false); // End loading
+        setIsLoading(false); // Set isLoading ke false setelah fetch selesai
       }
     };
 
     if (planningId) {
-      fetchItems();
+      fetchPlanning();
     }
   }, [planningId]);
-
-  const totalBruto = items.reduce((sum, item) => sum + item.bruto_amount, 0);
-  const totalTax = items.reduce((sum, item) => sum + item.tax_amount, 0);
-  const totalNetto = items.reduce((sum, item) => sum + item.netto_amount, 0);
 
   const addItem = () => {
     setTempItem({
@@ -69,18 +66,32 @@ const AddPlanning = () => {
       information: "",
       bruto_amount: 0,
       tax_amount: 0,
-      netto_amount: 0, // Netto will be manually entered by the user
+      netto_amount: 0,
       category: "internal",
       isAddition: 0,
     });
     setIsAddItemMode(true);
+    setEditModeItemId(null);
   };
-  // Function to format currency input
+
   const formatCurrency = (value) => {
     return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   };
 
+  // Menyimpan file lama ketika item dimuat untuk pertama kali (dalam edit mode)
+  useEffect(() => {
+    if (editModeItemId) {
+      const itemToEdit = items.find((item) => item.id === editModeItemId);
+      if (itemToEdit) {
+        setTempItem({
+          ...itemToEdit,
+        });
+      }
+    }
+  }, [editModeItemId, items]);
+
   const handleTempItemChange = (field, value) => {
+    // Format nilai untuk amount
     const formattedValue =
       field === "bruto_amount" ||
       field === "tax_amount" ||
@@ -92,47 +103,156 @@ const AddPlanning = () => {
 
   const handleSave = async () => {
     if (tempItem) {
-      setIsLoading(true); // Start loading
+      setIsLoading(true);
       try {
         const token = localStorage.getItem("token");
+        const formData = new FormData();
+        formData.append("planning_id", planningId);
+        formData.append("date", tempItem.date);
+        formData.append("information", tempItem.information);
+        formData.append(
+          "bruto_amount",
+          parseInt(tempItem.bruto_amount.replace(/\./g, "")) || 0
+        );
+        formData.append(
+          "tax_amount",
+          parseInt(tempItem.tax_amount.replace(/\./g, "")) || 0
+        );
+        formData.append(
+          "netto_amount",
+          parseInt(tempItem.netto_amount.replace(/\./g, "")) || 0
+        );
+        formData.append("category", tempItem.category);
+        formData.append("isAddition", 1);
+
         const response = await axios.post(
           `${import.meta.env.VITE_API_URL}/item`,
-          {
-            planning_id: planningId,
-            date: tempItem.date,
-            information: tempItem.information,
-            bruto_amount:
-              parseInt(tempItem.bruto_amount.replace(/\./g, "")) || 0,
-            tax_amount: parseInt(tempItem.tax_amount.replace(/\./g, "")) || 0,
-            netto_amount:
-              parseInt(tempItem.netto_amount.replace(/\./g, "")) || 0,
-            category: tempItem.category,
-            isAddition: tempItem.isAddition,
-          },
+          formData,
           {
             headers: {
               Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
             },
           }
         );
+
         if (response.data.status) {
-          toast.success("Item added successfully!");
+          toast.success("Item berhasil ditambahkan!");
           setItems([...items, response.data.planning]);
         }
       } catch (error) {
         console.error("Error adding item:", error);
-        toast.error("Failed to add item. Please try again.");
+        toast.error("Gagal menambahkan item. Silakan coba lagi.");
       } finally {
-        setIsLoading(false); // End loading
+        setIsLoading(false);
       }
     }
     setTempItem(null);
     setIsAddItemMode(false);
   };
 
+  const handleEditMode = async (itemId) => {
+    setIsLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/item/${itemId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.data.status) {
+        setTempItem(response.data.data);
+        setEditModeItemId(itemId);
+        console.log("Edit mode item:", response.data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching item details:", error);
+      toast.error("Failed to fetch item data.");
+    } finally {
+      setIsLoading(false); // Set isLoading ke false setelah proses selesai
+    }
+  };
+
+  const handleSaveEdit = async () => {
+    if (tempItem && editModeItemId) {
+      setIsLoading(true);
+      const originalItem = items.find((item) => item.id === editModeItemId);
+      // Menyusun payload untuk update item
+      const payload = new FormData();
+      payload.append("planning_id", planningId);
+      payload.append("date", tempItem.date || originalItem.date);
+      payload.append(
+        "information",
+        tempItem.information || originalItem.information
+      );
+      payload.append(
+        "bruto_amount",
+        tempItem.bruto_amount != null
+          ? typeof tempItem.bruto_amount === "string"
+            ? parseInt(tempItem.bruto_amount.replace(/\./g, ""))
+            : tempItem.bruto_amount
+          : originalItem.bruto_amount
+      );
+      payload.append(
+        "tax_amount",
+        tempItem.tax_amount != null
+          ? typeof tempItem.tax_amount === "string"
+            ? parseInt(tempItem.tax_amount.replace(/\./g, ""))
+            : tempItem.tax_amount
+          : originalItem.tax_amount
+      );
+      payload.append(
+        "netto_amount",
+        tempItem.netto_amount != null
+          ? typeof tempItem.netto_amount === "string"
+            ? parseInt(tempItem.netto_amount.replace(/\./g, ""))
+            : tempItem.netto_amount
+          : originalItem.netto_amount
+      );
+      payload.append("category", tempItem.category || originalItem.category);
+      payload.append("isAddition", 0);
+
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/item/${editModeItemId}`,
+          payload,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        if (response.data.status) {
+          toast.success("Item berhasil diperbarui!");
+          setItems(
+            items.map((item) =>
+              item.id === editModeItemId
+                ? { ...item, ...response.data.planning }
+                : item
+            )
+          );
+          setEditModeItemId(null);
+          setTempItem(null);
+        }
+      } catch (error) {
+        console.error("Error updating item:", error);
+        toast.error("Gagal memperbarui item. Silakan coba lagi.");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
+
   const handleCloseAddItemMode = () => {
     setTempItem(null);
     setIsAddItemMode(false);
+    setEditModeItemId(null);
   };
 
   const openDeletePopup = (itemId) => {
@@ -202,7 +322,7 @@ const AddPlanning = () => {
         <div className="w-full p-8 mx-auto mt-2 lg:max-w-full lg:ml-72">
           <div className="bg-white p-8 rounded-lg shadow-lg mb-6">
             <h1 className="text-2xl font-bold text-center mb-6">
-              Add New Plan
+              Add Planning
             </h1>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8 mb-8">
@@ -243,10 +363,9 @@ const AddPlanning = () => {
             </div>
 
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-bold">Add Items</h3>
+              <h3 className="text-xl font-bold">Edit Items</h3>
               {!isAddItemMode && (
                 <button
-                  disabled={isLoading}
                   onClick={addItem}
                   className="bg-[#B4252A] text-white font-semibold py-2 px-4 rounded-md hover:bg-[#8E1F22] flex items-center space-x-2"
                 >
@@ -289,27 +408,145 @@ const AddPlanning = () => {
                             key={item.id}
                             className="text-gray-900 bg-white border rounded-lg shadow-md"
                           >
-                            <td className="py-2 px-4">{item.date}</td>
-                            <td className="py-2 px-4">{item.information}</td>
-                            <td className="py-2 px-4">
-                              Rp.{item.bruto_amount.toLocaleString("id-ID")}
-                            </td>
-                            <td className="py-2 px-4">
-                              Rp.{item.tax_amount.toLocaleString("id-ID")}
-                            </td>
-                            <td className="py-2 px-4">
-                              Rp.{item.netto_amount.toLocaleString("id-ID")}
-                            </td>
-                            <td className="py-2 px-4">{item.category}</td>
-                            <td className="py-2 px-4 text-right">
-                              <button
-                                disabled={isLoading}
-                                onClick={() => openDeletePopup(item.id)}
-                                className="bg-[#B4252A] text-white rounded-md p-2 w-10 h-10 flex items-center justify-center hover:bg-[#8E1F22] shadow-md"
-                              >
-                                <FaTrash />
-                              </button>
-                            </td>
+                            {editModeItemId === item.id ? (
+                              <>
+                                {/* Kolom edit mode */}
+                                <td className="py-2 px-4">
+                                  <input
+                                    type="date"
+                                    value={tempItem?.date || ""}
+                                    onChange={(e) =>
+                                      handleTempItemChange(
+                                        "date",
+                                        e.target.value
+                                      )
+                                    }
+                                    className="border rounded p-1 w-full"
+                                  />
+                                </td>
+                                <td className="py-2 px-4">
+                                  <input
+                                    type="text"
+                                    value={tempItem?.information || ""}
+                                    onChange={(e) =>
+                                      handleTempItemChange(
+                                        "information",
+                                        e.target.value
+                                      )
+                                    }
+                                    className="border rounded p-1 w-full"
+                                  />
+                                </td>
+                                <td className="py-2 px-4">
+                                  <input
+                                    type="text"
+                                    value={tempItem?.bruto_amount || ""}
+                                    onChange={(e) =>
+                                      handleTempItemChange(
+                                        "bruto_amount",
+                                        e.target.value
+                                      )
+                                    }
+                                    className="border rounded p-1 w-full"
+                                    placeholder="Rp"
+                                  />
+                                </td>
+                                <td className="py-2 px-4">
+                                  <input
+                                    type="text"
+                                    value={tempItem?.tax_amount || ""}
+                                    onChange={(e) =>
+                                      handleTempItemChange(
+                                        "tax_amount",
+                                        e.target.value
+                                      )
+                                    }
+                                    className="border rounded p-1 w-full"
+                                    placeholder="Rp"
+                                  />
+                                </td>
+                                <td className="py-2 px-4">
+                                  <input
+                                    type="text"
+                                    value={tempItem?.netto_amount || ""}
+                                    onChange={(e) =>
+                                      handleTempItemChange(
+                                        "netto_amount",
+                                        e.target.value
+                                      )
+                                    }
+                                    className="border rounded p-1 w-full"
+                                    placeholder="Rp"
+                                  />
+                                </td>
+                                <td className="py-2 px-4">
+                                  <select
+                                    value={tempItem?.category || "internal"}
+                                    onChange={(e) =>
+                                      handleTempItemChange(
+                                        "category",
+                                        e.target.value
+                                      )
+                                    }
+                                    className="border rounded p-1 w-full"
+                                  >
+                                    <option value="internal">Internal</option>
+                                    <option value="eksternal">Eksternal</option>
+                                    <option value="rka">RKA</option>
+                                  </select>
+                                </td>
+                                <td className="py-2 px-4 text-right flex space-x-2">
+                                  <button
+                                    onClick={() => handleCloseAddItemMode()}
+                                    className="bg-red-600 text-white rounded-md p-2 w-10 h-10 flex items-center justify-center hover:bg-red-700 shadow-md"
+                                  >
+                                    <FaTimes />
+                                  </button>
+                                  <button
+                                    onClick={handleSaveEdit}
+                                    className="bg-green-600 text-white rounded-md p-2 w-10 h-10 flex items-center justify-center hover:bg-green-700 shadow-md"
+                                  >
+                                    <FaSave />
+                                  </button>
+                                </td>
+                              </>
+                            ) : (
+                              <>
+                                {/* Tampilan read-only */}
+                                <td className="py-2 px-4">{item.date}</td>
+                                <td className="py-2 px-4">
+                                  {item.information}
+                                </td>
+                                <td className="py-2 px-4">
+                                  Rp.{item.bruto_amount.toLocaleString("id-ID")}
+                                </td>
+                                <td className="py-2 px-4">
+                                  Rp.{item.tax_amount.toLocaleString("id-ID")}
+                                </td>
+                                <td className="py-2 px-4">
+                                  Rp.{item.netto_amount.toLocaleString("id-ID")}
+                                </td>
+                                <td className="py-2 px-4">{item.category}</td>
+                                <td className="py-2 px-4 text-right flex space-x-2">
+                                  {!isAddItemMode && (
+                                    <>
+                                      <button
+                                        onClick={() => handleEditMode(item.id)}
+                                        className="bg-[#F5C6C7] text-[#B4252A] rounded-md p-2 w-10 h-10 flex items-center justify-center hover:bg-[#F1B0B1] shadow-md"
+                                      >
+                                        <FaEdit />
+                                      </button>
+                                      <button
+                                        onClick={() => openDeletePopup(item.id)}
+                                        className="bg-[#B4252A] text-white rounded-md p-2 w-10 h-10 flex items-center justify-center hover:bg-[#8E1F22] shadow-md"
+                                      >
+                                        <FaTrash />
+                                      </button>
+                                    </>
+                                  )}
+                                </td>
+                              </>
+                            )}
                           </tr>
                         ))}
                         {isAddItemMode && (
@@ -395,6 +632,33 @@ const AddPlanning = () => {
                                 <option value="rka">RKA</option>
                               </select>
                             </td>
+                            {/* Kolom Dokumen */}
+                            <td className="py-2 px-4">
+                              <input
+                                type="file"
+                                onChange={(e) =>
+                                  handleTempItemChange(
+                                    "document_evidence",
+                                    e.target.files[0]
+                                  )
+                                }
+                                className="border rounded p-1 w-full mt-1"
+                              />
+                            </td>
+
+                            {/* Kolom Gambar */}
+                            <td className="py-2 px-4">
+                              <input
+                                type="file"
+                                onChange={(e) =>
+                                  handleTempItemChange(
+                                    "image_evidence",
+                                    e.target.files[0]
+                                  )
+                                }
+                                className="border rounded p-1 w-full mt-1"
+                              />
+                            </td>
                           </tr>
                         )}
                         <tr className="font-semibold text-red-600">
@@ -423,14 +687,12 @@ const AddPlanning = () => {
               {isAddItemMode ? (
                 <>
                   <button
-                    disabled={isLoading}
                     onClick={handleCloseAddItemMode}
                     className="bg-[#F5C6C7] text-[#B4252A] font-semibold py-2 px-8 rounded-lg hover:bg-[#F1B0B1]"
                   >
                     Cancel
                   </button>
                   <button
-                    disabled={isLoading}
                     onClick={handleSave}
                     className="bg-[#B4252A] text-white font-semibold py-2 px-8 rounded-lg hover:bg-[#8E1F22]"
                   >
@@ -439,7 +701,6 @@ const AddPlanning = () => {
                 </>
               ) : (
                 <button
-                  disabled={isLoading}
                   onClick={handleClose}
                   className="bg-[#F5C6C7] text-[#B4252A] font-semibold py-2 px-8 rounded-lg hover:bg-[#F1B0B1]"
                 >
@@ -460,7 +721,7 @@ const AddPlanning = () => {
             <div className="flex flex-col items-center space-y-6">
               <h2 className="text-xl font-bold">Delete Confirmation</h2>
               <p className="text-center text-gray-500">
-                Apakah anda yakin untuk menghapus item ini?
+                Are you sure you want to delete this item?
               </p>
               <div className="flex justify-center space-x-4">
                 <button
