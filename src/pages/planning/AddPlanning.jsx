@@ -123,7 +123,7 @@ const AddPlanning = () => {
           parseInt(tempItem.netto_amount.replace(/\./g, "")) || 0
         );
         formData.append("category", tempItem.category);
-        formData.append("isAddition", 1);
+        formData.append("isAddition", 0);
 
         const response = await axios.post(
           `${import.meta.env.VITE_API_URL}/item`,
@@ -631,33 +631,6 @@ const AddPlanning = () => {
                                 <option value="eksternal">Eksternal</option>
                                 <option value="rka">RKA</option>
                               </select>
-                            </td>
-                            {/* Kolom Dokumen */}
-                            <td className="py-2 px-4">
-                              <input
-                                type="file"
-                                onChange={(e) =>
-                                  handleTempItemChange(
-                                    "document_evidence",
-                                    e.target.files[0]
-                                  )
-                                }
-                                className="border rounded p-1 w-full mt-1"
-                              />
-                            </td>
-
-                            {/* Kolom Gambar */}
-                            <td className="py-2 px-4">
-                              <input
-                                type="file"
-                                onChange={(e) =>
-                                  handleTempItemChange(
-                                    "image_evidence",
-                                    e.target.files[0]
-                                  )
-                                }
-                                className="border rounded p-1 w-full mt-1"
-                              />
                             </td>
                           </tr>
                         )}
