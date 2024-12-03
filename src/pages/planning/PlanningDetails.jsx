@@ -129,6 +129,7 @@ const PlanningDetails = () => {
                       <th className="py-2 px-4">Nilai Bruto</th>
                       <th className="py-2 px-4">Nilai Pajak</th>
                       <th className="py-2 px-4">Nilai Netto</th>
+                      <th className="py-2 px-4">Kategori</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -152,6 +153,9 @@ const PlanningDetails = () => {
                         </td>
                         <td className="py-2 px-4">
                           Rp.{item.netto_amount.toLocaleString("id-ID")}
+                        </td>
+                        <td className="py-2 px-4 text-gray-600">
+                          {item.category} {/* Menampilkan Kategori */}
                         </td>
                       </tr>
                     ))}

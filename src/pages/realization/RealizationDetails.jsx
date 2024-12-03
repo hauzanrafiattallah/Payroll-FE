@@ -133,6 +133,7 @@ const RealizationDetails = () => {
                       <th className="py-2 px-4">Nilai Bruto</th>
                       <th className="py-2 px-4">Nilai Pajak</th>
                       <th className="py-2 px-4">Nilai Netto</th>
+                      <th className="py-2 px-4">Kategori</th>
                       <th className="py-2 px-4">Laporan</th>{" "}
                       {/* Kolom Laporan */}
                       <th className="py-2 px-4">Bukti</th> {/* Kolom Bukti */}
@@ -160,6 +161,9 @@ const RealizationDetails = () => {
                         </td>
                         <td className="py-2 px-4">
                           Rp.{item.netto_amount.toLocaleString("id-ID")}
+                        </td>
+                        <td className="py-2 px-4 text-gray-600">
+                          {item.category} {/* Menampilkan Kategori */}
                         </td>
 
                         {/* Kolom Laporan */}
