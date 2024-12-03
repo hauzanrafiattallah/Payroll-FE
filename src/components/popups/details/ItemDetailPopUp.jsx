@@ -1,8 +1,8 @@
 // Import necessary libraries
 // - React for component management
 // - Axios for API requests
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 // ItemDetailPopUp Component
 // A modal dialog that displays item details related to a specific planning ID.
@@ -15,8 +15,8 @@ const ItemDetailPopUp = ({ planningId, onClose }) => {
   const [loading, setLoading] = useState(true); // Loading state
 
   // Retrieve the auth token from localStorage for API requests
-  const authToken = localStorage.getItem('token');
-  
+  const authToken = localStorage.getItem("token");
+
   // Effect to fetch item details when the planning ID changes
   useEffect(() => {
     fetchItems();
@@ -29,8 +29,8 @@ const ItemDetailPopUp = ({ planningId, onClose }) => {
         `${import.meta.env.VITE_API_URL}/planning/${planningId}`,
         {
           headers: {
-            Authorization: `Bearer ${authToken}` // Include auth token in the headers
-          }
+            Authorization: `Bearer ${authToken}`, // Include auth token in the headers
+          },
         }
       );
 
@@ -46,7 +46,7 @@ const ItemDetailPopUp = ({ planningId, onClose }) => {
         ); // Calculate total tax amount
       }
     } catch (error) {
-      console.error('Error fetching item details:', error); // Log error for debugging
+      console.error("Error fetching item details:", error); // Log error for debugging
     } finally {
       setLoading(false); // Set loading to false once data is fetched
     }
@@ -54,7 +54,7 @@ const ItemDetailPopUp = ({ planningId, onClose }) => {
 
   // Function to format currency values to Indonesian Rupiah
   const formatCurrency = (value) =>
-    `Rp.${parseInt(value).toLocaleString('id-ID')}`;
+    `Rp.${parseInt(value).toLocaleString("id-ID")}`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -75,6 +75,8 @@ const ItemDetailPopUp = ({ planningId, onClose }) => {
                   <th className="py-2 px-4">Keterangan</th>
                   <th className="py-2 px-4">Nilai Bruto</th>
                   <th className="py-2 px-4">Nilai Pajak</th>
+                  <th className="py-2 px-4">Nilai Netto</th>
+                  <th className="py-2 px-4">Kategori</th>
                 </tr>
               </thead>
               <tbody>
@@ -82,11 +84,20 @@ const ItemDetailPopUp = ({ planningId, onClose }) => {
                 {items.map((item) => (
                   <tr key={item.id} className="text-gray-900">
                     <td className="py-2 px-4">
-                      {new Date(item.date).toLocaleDateString('id-ID')} {/* Format date */}
+                      {new Date(item.date).toLocaleDateString("id-ID")}{" "}
+                      {/* Format date */}
                     </td>
                     <td className="py-2 px-4">{item.information}</td>
-                    <td className="py-2 px-4">{formatCurrency(item.bruto_amount)}</td>
-                    <td className="py-2 px-4">{formatCurrency(item.tax_amount)}</td>
+                    <td className="py-2 px-4">
+                      {formatCurrency(item.bruto_amount)}
+                    </td>
+                    <td className="py-2 px-4">
+                      {formatCurrency(item.tax_amount)}
+                    </td>
+                    <td className="py-2 px-4">
+                      {formatCurrency(item.netto_amount)}
+                    </td>
+                    <td className="py-2 px-4">{item.category}</td>
                   </tr>
                 ))}
 
