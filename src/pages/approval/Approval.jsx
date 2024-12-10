@@ -214,6 +214,7 @@ const Approval = () => {
     setIsDeclinePopupOpen(false);
   };
 
+  // Skeleton Loading
   const renderSkeleton = () => (
     <div className="p-6 overflow-x-auto bg-white rounded-lg shadow-lg">
       <table className="min-w-full text-left border-collapse table-auto">
