@@ -951,7 +951,7 @@ const Dashboard = () => {
                   to="/compare"
                   className="px-6 py-3 text-white bg-[#B4252A] rounded-full shadow-md hover:bg-[#8E1F22] focus:outline-none"
                 >
-                  Compare Event
+                  Compare 
                 </Link>
               </div>
 
