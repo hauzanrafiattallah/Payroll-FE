@@ -24,7 +24,7 @@ const Planning = () => {
   const [role, setRole] = useState(localStorage.getItem("role"));
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [availableYears, setAvailableYears] = useState([
-    2026, 2025, 2024, 2023,
+    2030, 2029, 2028, 2027, 2026, 2025, 2024, 2023,
   ]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
