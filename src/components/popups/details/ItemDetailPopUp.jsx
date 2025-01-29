@@ -12,6 +12,7 @@ const ItemDetailPopUp = ({ planningId, onClose }) => {
   const [items, setItems] = useState([]); // Stores the list of items
   const [totalBruto, setTotalBruto] = useState(0); // Total bruto amount
   const [totalPajak, setTotalPajak] = useState(0); // Total tax amount
+  const [totalNetto, setTotalNetto] = useState(0); // Total netto amount
   const [loading, setLoading] = useState(true); // Loading state
 
   // Retrieve the auth token from localStorage for API requests
@@ -44,6 +45,9 @@ const ItemDetailPopUp = ({ planningId, onClose }) => {
         setTotalPajak(
           itemData.reduce((acc, item) => acc + parseInt(item.tax_amount), 0)
         ); // Calculate total tax amount
+        setTotalNetto(
+          itemData.reduce((acc, item) => acc + parseInt(item.netto_amount), 0)
+        ); // Calculate total netto amount
       }
     } catch (error) {
       console.error("Error fetching item details:", error); // Log error for debugging
@@ -108,6 +112,7 @@ const ItemDetailPopUp = ({ planningId, onClose }) => {
                   </td>
                   <td className="py-2 px-4">{formatCurrency(totalBruto)}</td>
                   <td className="py-2 px-4">{formatCurrency(totalPajak)}</td>
+                  <td className="py-2 px-4">{formatCurrency(totalNetto)}</td>
                 </tr>
               </tbody>
             </table>
