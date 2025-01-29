@@ -174,8 +174,8 @@ const CompareDetail = () => {
                       <th className="py-2 px-3">Nilai Pajak</th>
                       <th className="py-2 px-3">Nilai Netto</th>
                       <th className="py-2 px-3">Kategori</th>
-                      <th className="py-2 px-3">Laporan</th>{" "}
-                      {/* Kolom Laporan */}
+                      <th className="py-2 px-3">Invoice</th>{" "}
+                      {/* Kolom Invoice */}
                       <th className="py-2 px-3">Bukti</th> {/* Kolom Bukti */}
                     </tr>
                   </thead>
@@ -199,7 +199,7 @@ const CompareDetail = () => {
                         <td className="py-3 px-3">
                           {renderFileLink(item.document_evidence)}
                         </td>{" "}
-                        {/* Render Laporan */}
+                        {/* Render Invoice */}
                         <td className="py-3 px-3">
                           {renderFileLink(item.image_evidence)}
                         </td>{" "}

@@ -134,8 +134,8 @@ const RealizationDetails = () => {
                       <th className="py-2 px-4">Nilai Pajak</th>
                       <th className="py-2 px-4">Nilai Netto</th>
                       <th className="py-2 px-4">Kategori</th>
-                      <th className="py-2 px-4">Laporan</th>{" "}
-                      {/* Kolom Laporan */}
+                      <th className="py-2 px-4">Invoice</th>{" "}
+                      {/* Kolom Invoice */}
                       <th className="py-2 px-4">Bukti</th> {/* Kolom Bukti */}
                     </tr>
                   </thead>
@@ -166,7 +166,7 @@ const RealizationDetails = () => {
                           {item.category} {/* Menampilkan Kategori */}
                         </td>
 
-                        {/* Kolom Laporan */}
+                        {/* Kolom Invoice */}
                         <td className="py-2 px-4 text-gray-600">
                           {item.document_evidence ? (
                             <a
@@ -177,7 +177,7 @@ const RealizationDetails = () => {
                               rel="noopener noreferrer"
                               className="hover:underline"
                             >
-                              Lihat Laporan
+                              Lihat Invoice
                             </a>
                           ) : (
                             <span className="text-gray-400">Tidak Ada</span>

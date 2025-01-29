@@ -430,7 +430,7 @@ const Approval = () => {
                           className="hover:underline"
                         >
                           {item.document_evidence
-                            ? `Laporan.${item.document_evidence
+                            ? `Invoice.${item.document_evidence
                                 .split(".")
                                 .pop()}`
                             : "No Document"}

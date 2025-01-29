@@ -89,7 +89,7 @@ const Export = () => {
       );
       downloadFile(
         response,
-        `Laporan Keuangan dari ${startDate2} hingga ${endDate2}.${
+        `Invoice Keuangan dari ${startDate2} hingga ${endDate2}.${
           exportType2 === "excel" ? "xlsx" : "pdf"
         }`
       );

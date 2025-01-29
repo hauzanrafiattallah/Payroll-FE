@@ -123,7 +123,7 @@ const EditRealization = () => {
       return;
     }
 
-    // Validasi jenis file untuk laporan (Excel/PDF) dan bukti (JPG, JPEG, PNG)
+    // Validasi jenis file untuk Invoice (Excel/PDF) dan bukti (JPG, JPEG, PNG)
     const validDocumentTypes = [
       "application/pdf",
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -136,7 +136,7 @@ const EditRealization = () => {
       !validDocumentTypes.includes(tempItem.document_evidence.type)
     ) {
       toast.error(
-        "Laporan harus berupa file Excel (.xls, .xlsx) atau PDF (.pdf)."
+        "Invoice harus berupa file Excel (.xls, .xlsx) atau PDF (.pdf)."
       );
       return;
     }
@@ -238,7 +238,7 @@ const EditRealization = () => {
       return;
     }
 
-    // Validasi jenis file untuk laporan (Excel/PDF) dan bukti (JPG, JPEG, PNG)
+    // Validasi jenis file untuk Invoice (Excel/PDF) dan bukti (JPG, JPEG, PNG)
     const validDocumentTypes = [
       "application/pdf",
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -251,7 +251,7 @@ const EditRealization = () => {
       !validDocumentTypes.includes(tempItem.document_evidence.type)
     ) {
       toast.error(
-        "Laporan harus berupa file Excel (.xls, .xlsx) atau PDF (.pdf)."
+        "Invoice harus berupa file Excel (.xls, .xlsx) atau PDF (.pdf)."
       );
       return;
     }
@@ -490,7 +490,7 @@ const EditRealization = () => {
                       <th className="py-2 px-4">Nilai Pajak</th>
                       <th className="py-2 px-4">Nilai Netto</th>
                       <th className="py-2 px-4">Kategori</th>
-                      <th className="py-2 px-4">Laporan</th>
+                      <th className="py-2 px-4">Invoice</th>
                       <th className="py-2 px-4">Bukti</th>
                     </tr>
                   </thead>
@@ -598,7 +598,7 @@ const EditRealization = () => {
                                     <option value="rka">RKA</option>
                                   </select>
                                 </td>
-                                {/* Kolom Laporan */}
+                                {/* Kolom Invoice */}
                                 <td className="py-2 px-4">
                                   <input
                                     type="file"
@@ -657,7 +657,7 @@ const EditRealization = () => {
                                 </td>
                                 <td className="py-2 px-4">{item.category}</td>
 
-                                {/* Kolom Laporan */}
+                                {/* Kolom Invoice */}
                                 <td className="py-2 px-4">
                                   {item.document_evidence ? (
                                     <a
@@ -668,7 +668,7 @@ const EditRealization = () => {
                                       rel="noopener noreferrer"
                                       className=" hover:underline"
                                     >
-                                      Lihat Laporan
+                                      Lihat Invoice
                                     </a>
                                   ) : (
                                     <span className="text-gray-500">

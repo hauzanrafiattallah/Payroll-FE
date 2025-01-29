@@ -89,7 +89,9 @@ const TransactionPopup = ({ isOpen, onClose, transactionId }) => {
             {/* Display activity name */}
             <div className="flex justify-between">
               <span className="font-semibold text-gray-600">Kegiatan</span>
-              <span className="text-gray-800">{transaction.activity_name || "N/A"}</span>
+              <span className="text-gray-800">
+                {transaction.activity_name || "N/A"}
+              </span>
             </div>
 
             {/* Display transaction date */}
@@ -135,7 +137,7 @@ const TransactionPopup = ({ isOpen, onClose, transactionId }) => {
                   className="flex items-center hover:underline"
                 >
                   <FaFileAlt className="mr-2" />{" "}
-                  {`Laporan.${transaction.document_evidence.split(".").pop()}`}
+                  {`Invoice.${transaction.document_evidence.split(".").pop()}`}
                 </a>
               </div>
             )}
