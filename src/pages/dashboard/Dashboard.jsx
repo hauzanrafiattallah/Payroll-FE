@@ -51,8 +51,12 @@ const Dashboard = () => {
   const [prevPageUrl, setPrevPageUrl] = useState(null);
   const [loading, setLoading] = useState(true);
   const authToken = localStorage.getItem("token");
-  const [selectedYearBarChart, setSelectedYearBarChart] = useState(2024);
-  const [selectedYearPieChart, setSelectedYearPieChart] = useState(2024);
+  const [selectedYearBarChart, setSelectedYearBarChart] = useState(
+    new Date().getFullYear()
+  );
+  const [selectedYearPieChart, setSelectedYearPieChart] = useState(
+    new Date().getFullYear()
+  );
   const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [role, setRole] = useState(localStorage.getItem("role")); // Stores the user's role
@@ -64,7 +68,7 @@ const Dashboard = () => {
     useState(false);
   const barChartDropdownRef = useRef(null);
   const pieChartDropdownRef = useRef(null);
-  const years = [2026, 2025, 2024, 2023];
+  const years = [2030, 2029, 2028, 2027, 2026, 2025, 2024, 2023];
 
   const handleClickOutside = (e) => {
     if (
@@ -677,7 +681,11 @@ const Dashboard = () => {
                       {years.map((year) => (
                         <div
                           key={year}
-                          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                          className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
+                            year === selectedYearBarChart
+                              ? "font-bold text-[#B4252A]"
+                              : ""
+                          }`}
                           onClick={() => handleYearSelectBarChart(year)}
                         >
                           {year}
@@ -699,7 +707,7 @@ const Dashboard = () => {
                       tickFormatter={(value) =>
                         `${value.toLocaleString("id-ID")}`
                       }
-                      tick={{ fontSize: 12 }} 
+                      tick={{ fontSize: 12 }}
                     />
                     <Tooltip
                       formatter={(value) => `${value.toLocaleString("id-ID")}`}
@@ -843,7 +851,11 @@ const Dashboard = () => {
                           {years.map((year) => (
                             <div
                               key={year}
-                              className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                              className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
+                                year === selectedYearPieChart
+                                  ? "font-bold text-[#B4252A]"
+                                  : ""
+                              }`}
                               onClick={() => handleYearSelectPieChart(year)}
                             >
                               {year}
